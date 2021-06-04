@@ -31,7 +31,7 @@ resources:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config
-    branch: DASD-8831 #master
+    branch: master
 
 stages:
 - stage: Build
