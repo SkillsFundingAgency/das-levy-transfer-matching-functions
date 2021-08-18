@@ -9,5 +9,6 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure
         public const string CreatedAccount = "SFA.DAS.LevyTransferMatching.CreatedAccount";
         public const string ChangedAccountName = "SFA.DAS.LevyTransferMatching.ChangedAccountName";
         public const string RunHealthCheck = "SFA.DAS.LevyTransferMatching.MessageHandlers";
+        public const string ApplicationApprovedEvent = "SFA.DAS.LevyTransferMatching.ApplicationApproved"; 
     }
 }

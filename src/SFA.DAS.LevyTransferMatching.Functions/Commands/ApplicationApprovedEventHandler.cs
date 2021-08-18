@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
         }
 
         [FunctionName("RunApplicationApprovedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.RunHealthCheck)] ApplicationApprovedEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
         }

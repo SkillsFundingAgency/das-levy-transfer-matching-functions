@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using NServiceBus;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerAccounts.Messages.Events;
+using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
@@ -34,11 +35,15 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
 
             if (connString == "UseDevelopmentStorage=true")
             {
-                endpointConfiguration.UseTransport<LearningTransport>().StorageDirectory(
+                var t = endpointConfiguration.UseTransport<LearningTransport>();
+                    t.StorageDirectory(
                     Path.Combine(
                         Directory.GetCurrentDirectory()
                             .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
                         @"src\.learningtransport"));
+                    t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
+                    t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
+                    t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
             }
 
             else
@@ -48,6 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                     .CustomTokenProvider(TokenProvider.CreateManagedServiceIdentityTokenProvider());
                 t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
                 t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
+                t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
             }
 
             var endpoint = await Endpoint.Start(endpointConfiguration);
