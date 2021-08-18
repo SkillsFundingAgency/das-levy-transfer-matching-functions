@@ -29,6 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions
             }
             else
             {
+                Environment.SetEnvironmentVariable("NServiceBusConnectionString", config.NServiceBusConnectionString);
                 services.AddNServiceBus(logger);
             }
 
