@@ -19,5 +19,9 @@
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2978" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.LevyTransferMatching.Functions\SFA.DAS.LevyTransferMatching.Functions.csproj" />
+  </ItemGroup>
+
 
 </Project>
