@@ -6,6 +6,6 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
     public interface ILevyTransferMatchingApi
     {
         [Post("functions/application-approved")]
-        Task ApplicationApproved(ApplicationApprovedRequest request);
+        Task ApplicationApproved([Body]ApplicationApprovedRequest request);
     }
 }
