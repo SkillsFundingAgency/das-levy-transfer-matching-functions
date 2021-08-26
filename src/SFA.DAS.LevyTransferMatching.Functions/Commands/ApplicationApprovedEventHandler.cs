@@ -29,11 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
                 Amount = @event.Amount
             };
 
-            log.LogInformation($"Debiting pledge {request.PledgeId} by {request.Amount}");
-
             await _api.ApplicationApproved(request);
-
-            log.LogInformation("Completed");
         }
     }
 }
