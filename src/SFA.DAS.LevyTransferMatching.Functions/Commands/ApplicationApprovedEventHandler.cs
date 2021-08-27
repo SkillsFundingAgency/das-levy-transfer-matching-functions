@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
@@ -29,7 +32,16 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
                 Amount = @event.Amount
             };
 
-            await _api.ApplicationApproved(request);
+            try
+            {
+                await _api.ApplicationApproved(request);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+
+                log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            }
         }
     }
 }
