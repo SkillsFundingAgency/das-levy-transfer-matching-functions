@@ -47,7 +47,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published ChangedAccountNameEvent");
                             break;
                         case ConsoleKey.C:
-                            await _publisher.Publish(new ApplicationApprovedEvent(1, DateTime.UtcNow, 10000));
+                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationApprovedEvent");
                             break;
