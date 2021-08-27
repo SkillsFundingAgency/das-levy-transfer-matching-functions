@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -9,7 +8,7 @@ using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Commands
+namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
     public class ApplicationApprovedEventHandler
     {
