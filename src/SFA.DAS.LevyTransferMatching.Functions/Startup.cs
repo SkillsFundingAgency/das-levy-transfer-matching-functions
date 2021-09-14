@@ -3,7 +3,10 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RestEase.HttpClientFactory;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Http.Configuration;
+using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
@@ -42,20 +45,34 @@ namespace SFA.DAS.LevyTransferMatching.Functions
             
             builder.Services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), config));
             builder.Services.AddOptions();
-            
+
             ConfigureServices(builder, config, serviceProvider);
         }
 
         private void ConfigureServices(IFunctionsHostBuilder builder, IConfiguration configuration, ServiceProvider serviceProvider)
         {
             var config = configuration.GetSection("LevyTransferMatchingFunctions").Get<LevyTransferMatchingFunctions>();
+
             var logger = serviceProvider.GetLogger(GetType().AssemblyQualifiedName);
 
             builder.Services
                 .AddNServiceBus(config, logger)
                 .AddCache(config)
-                .AddDasDataProtection(config)
-            ;
+                .AddDasDataProtection(config);
+
+            var apiConfig = configuration.GetSection("LevyTransferMatchingApi").Get<LevyTransferMatchingApiConfiguration>();
+
+            builder.Services.AddSingleton(apiConfig);
+
+            builder.Services.AddSingleton<IApimClientConfiguration>(x => x.GetRequiredService<LevyTransferMatchingApiConfiguration>());
+            builder.Services.AddTransient<Http.MessageHandlers.DefaultHeadersHandler>();
+            builder.Services.AddTransient<Http.MessageHandlers.LoggingMessageHandler>();
+            builder.Services.AddTransient<Http.MessageHandlers.ApimHeadersHandler>();
+
+            builder.Services.AddRestEaseClient<ILevyTransferMatchingApi>(apiConfig.ApiBaseUrl)
+                .AddHttpMessageHandler<Http.MessageHandlers.DefaultHeadersHandler>()
+                .AddHttpMessageHandler<Http.MessageHandlers.ApimHeadersHandler>()
+                .AddHttpMessageHandler<Http.MessageHandlers.LoggingMessageHandler>();
         }
     }
 }

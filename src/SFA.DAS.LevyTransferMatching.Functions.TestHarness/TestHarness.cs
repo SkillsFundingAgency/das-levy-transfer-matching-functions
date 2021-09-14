@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.EmployerAccounts.Messages.Events;
+using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
 {
@@ -26,6 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("------------");
                 Console.WriteLine("A - CreateAccountEvent");
                 Console.WriteLine("B - ChangedAccountNameEvent");
+                Console.WriteLine("C - ApplicationApprovedEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -43,6 +45,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             await _publisher.Publish(new ChangedAccountNameEvent { AccountId = accountId, Created = DateTime.Now, CurrentName = "My Test new", PreviousName = "My Test", HashedAccountId = "PUBH", UserName = "Tester", UserRef = Guid.NewGuid() });
                             Console.WriteLine();
                             Console.WriteLine($"Published ChangedAccountNameEvent");
+                            break;
+                        case ConsoleKey.C:
+                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000));
+                            Console.WriteLine();
+                            Console.WriteLine($"Published ApplicationApprovedEvent");
                             break;
                     }
                 }
