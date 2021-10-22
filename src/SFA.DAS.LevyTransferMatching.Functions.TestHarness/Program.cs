@@ -1,14 +1,13 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus.Primitives;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using NServiceBus;
+using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerAccounts.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.Configuration;
-using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
@@ -44,6 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                     t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
                     t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
                     t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
+                    t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
             }
 
             else
@@ -54,6 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
                 t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
                 t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
+                t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
             }
 
             var endpoint = await Endpoint.Start(endpointConfiguration);

@@ -10,5 +10,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Post("functions/pledge-debit-failed")]
         Task PledgeDebitFailed([Body] PledgeDebitFailedRequest request);
+
+        [Post("functions/debit-application")]
+        Task DebitApplication([Body] TransferRequestApprovedRequest request);
     }
 }

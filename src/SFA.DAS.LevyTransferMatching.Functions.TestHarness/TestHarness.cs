@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.EmployerAccounts.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -28,6 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("A - CreateAccountEvent");
                 Console.WriteLine("B - ChangedAccountNameEvent");
                 Console.WriteLine("C - ApplicationApprovedEvent");
+                Console.WriteLine("D - TransferRequestApprovedEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -50,6 +52,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationApprovedEvent");
+                            break;
+                        case ConsoleKey.D:
+                            await _publisher.Publish(new TransferRequestApprovedEvent(1, 1, DateTime.UtcNow, new CommitmentsV2.Types.UserInfo(), 1, 300, 2017));
+                            Console.WriteLine();
+                            Console.WriteLine($"Published TransferRequestApprovedEvent");
                             break;
                     }
                 }
