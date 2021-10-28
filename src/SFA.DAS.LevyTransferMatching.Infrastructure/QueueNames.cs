@@ -7,6 +7,6 @@
         public const string RunHealthCheck = "SFA.DAS.LevyTransferMatching.HealthCheck";
         public const string ApplicationApprovedEvent = "SFA.DAS.LevyTransferMatching.ApplicationApproved";
         public const string PledgeDebitFailed = "SFA.DAS.LevyTransferMatching.PledgeDebitFailed";
-        public const string TransferRequestApprovedEvent = "SFA.DAS.LevyTransferMatching.TransferRequestApproved";
+        public const string TransferRequestApprovedEvent = "SFA.DAS.LTM.TransferRequestApproved";
     }
 }
