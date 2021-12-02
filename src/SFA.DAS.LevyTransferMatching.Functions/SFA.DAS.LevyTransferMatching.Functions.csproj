@@ -18,6 +18,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="3.88.5" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2978" />
+    <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.62" />
     <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.52-prerelease-5" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />

@@ -16,5 +16,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Post("functions/application-funding-declined")]
         Task ApplicationFundingDeclined([Body] ApplicationFundingDeclinedRequest request);
+
+        [Get("functions/get-pending-application-email-data")]
+        Task<GetPendingApplicationEmailDataResponse> GetPendingApplicationEmailData();
+
+        [Post("functions/send-emails")]
+        Task SendEmails([Body] SendEmailsRequest request);
     }
 }
