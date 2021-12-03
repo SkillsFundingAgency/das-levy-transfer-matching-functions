@@ -26,29 +26,32 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         [FunctionName("RunTransferRequestApprovedEvent")]
         public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
         {
-            if (@event.PledgeApplicationId != null)
+            if (!@event.PledgeApplicationId.HasValue)
             {
-
-                log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
-
-                var request = new TransferRequestApprovedRequest
-                {
-                    ApplicationId = @event.PledgeApplicationId.Value,
-                    NumberOfApprentices = @event.NumberOfApprentices,
-                    Amount = @event.FundingCap.HasValue ? (int)decimal.Round(@event.FundingCap.Value) : 0
-                };
-
-                try
-                {
-                    await _api.DebitApplication(request);
-                }
-                catch (ApiException ex)
-                {
-                    if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-
-                    log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
-                }
+                log.LogInformation($"TransferRequestApprovedEvent for Transfer Request {@event.TransferRequestId} has no PledgeApplicationId; ignoring");
+                return;
             }
+
+            log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
+
+            var request = new TransferRequestApprovedRequest
+            {
+                ApplicationId = @event.PledgeApplicationId.Value,
+                NumberOfApprentices = @event.NumberOfApprentices,
+                Amount = @event.FundingCap.HasValue ? (int)decimal.Round(@event.FundingCap.Value) : 0
+            };
+
+            try
+            {
+                await _api.DebitApplication(request);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+
+                log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
+            }
+            
         }
     }
 }
