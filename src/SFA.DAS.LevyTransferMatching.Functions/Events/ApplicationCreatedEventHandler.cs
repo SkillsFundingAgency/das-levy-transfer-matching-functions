@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using RestEase;
-using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
@@ -30,7 +25,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                _legacyTopicMessagePublisher.PublishAsync()
+                var legacyMessage = new Messages.Legacy.PledgeApplicationCreated(@event.ApplicationId, @event.PledgeId, @event.CreatedOn, @event.TransferSenderId);
+                await _legacyTopicMessagePublisher.PublishAsync(legacyMessage);
             }
             catch (Exception ex)
             {

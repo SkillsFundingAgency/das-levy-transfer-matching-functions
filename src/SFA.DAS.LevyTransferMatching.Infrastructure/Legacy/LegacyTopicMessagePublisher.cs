@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
 using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 {
@@ -15,21 +16,25 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
         private readonly ILogger<LegacyTopicMessagePublisher> _logger;
         private readonly string _connectionString;
 
-        public LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, string connectionString)
+        public LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, LevyTransferMatchingFunctions config)
         {
             _logger = logger;
-            _connectionString = connectionString;
+            _connectionString = config.NServiceBusConnectionString;
         }
 
         public async Task PublishAsync<T>(T @event)
         {
-            var messageGroupName = GetMessageGroupName(@event);
+            var topicName = GetTopicName(@event);
+            var subscriptionName = GetSubscriptionName(@event);
+
+            await CreateTopic(topicName);
+            await CreateSubscription(topicName, subscriptionName);
 
             ServiceBusClient client = null;
             try
             {
                 client = new ServiceBusClient(_connectionString);
-                var sender = client.CreateSender(messageGroupName);
+                var sender = client.CreateSender(topicName);
                 var messageBody = Serialize(@event);
                 var message = new ServiceBusMessage(messageBody);
                 await sender.SendMessageAsync(message);
@@ -51,13 +56,33 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
             }
         }
 
-        private static string GetMessageGroupName(object obj)
+        private async Task CreateTopic(string topicName)
         {
-            CustomAttributeData customAttributeData = obj.GetType().CustomAttributes.FirstOrDefault<CustomAttributeData>((Func<CustomAttributeData, bool>)(att => att.AttributeType.Name == "MessageGroupAttribute"));
-            string str = customAttributeData != null ? (string)customAttributeData.ConstructorArguments.FirstOrDefault<CustomAttributeTypedArgument>().Value : (string)(object)null;
-            if (!string.IsNullOrEmpty(str))
-                return str;
-            return obj.GetType().Name;
+            var client = new ServiceBusAdministrationClient(_connectionString);
+            var exists = await client.TopicExistsAsync(topicName);
+            if (exists) return;
+
+            await client.CreateTopicAsync(topicName);
+        }
+
+        private async Task CreateSubscription(string topicName, string subscriptionName)
+        {
+            var client = new ServiceBusAdministrationClient(_connectionString);
+            var exists = await client.SubscriptionExistsAsync(topicName, subscriptionName);
+            if (exists) return;
+
+            var subscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
+            await client.CreateSubscriptionAsync(subscriptionOptions);
+        }
+
+        private static string GetSubscriptionName(object obj)
+        {
+            return $"Task_{obj.GetType().Name}";
+        }
+
+        private static string GetTopicName(object obj)
+        {
+            return obj.GetType().Name.ToUnderscoreCase();
         }
 
         private static byte[] Serialize<T>(T obj)

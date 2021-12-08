@@ -44,6 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                     t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
                     t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
                     t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
+                    t.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
             }
 
             else
@@ -55,6 +56,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
                 t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
                 t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
+                t.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
             }
 
             var endpoint = await Endpoint.Start(endpointConfiguration);

@@ -57,6 +57,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions
 
             builder.Services
                 .AddNServiceBus(config, logger)
+                .AddLegacyServiceBus(config)
                 .AddCache(config)
                 .AddDasDataProtection(config);
 
