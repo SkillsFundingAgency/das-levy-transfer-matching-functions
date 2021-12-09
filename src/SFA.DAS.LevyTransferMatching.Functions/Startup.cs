@@ -56,6 +56,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions
             var logger = serviceProvider.GetLogger(GetType().AssemblyQualifiedName);
 
             builder.Services
+                .AddSingleton(config)
                 .AddNServiceBus(config, logger)
                 .AddLegacyServiceBus(config)
                 .AddCache(config)
