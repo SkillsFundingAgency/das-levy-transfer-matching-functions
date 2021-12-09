@@ -20,7 +20,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
         public LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, LevyTransferMatchingFunctions config)
         {
             _logger = logger;
-            _connectionString = config.NServiceBusConnectionString;
+            _connectionString = config.NServiceBusConnectionString.Replace("Endpoint=sb://", "").Replace("/", ""); ;
         }
 
         public async Task PublishAsync<T>(T @event)
