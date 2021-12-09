@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
+using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Logging;
@@ -27,14 +28,13 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
             ServiceBusClient client = null;
             try
             {
-
                 var topicName = GetTopicName(@event);
                 var subscriptionName = GetSubscriptionName(@event);
 
                 await CreateTopic(topicName);
                 await CreateSubscription(topicName, subscriptionName);
 
-                client = new ServiceBusClient(_connectionString);
+                client = new ServiceBusClient(_connectionString, new DefaultAzureCredential());
                 var sender = client.CreateSender(topicName);
                 var messageBody = Serialize(@event);
                 var message = new ServiceBusMessage(messageBody);
@@ -59,7 +59,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 
         private async Task CreateTopic(string topicName)
         {
-            var client = new ServiceBusAdministrationClient(_connectionString);
+            var client = new ServiceBusAdministrationClient(_connectionString, new DefaultAzureCredential());
             var exists = await client.TopicExistsAsync(topicName);
             if (exists) return;
 
@@ -68,7 +68,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 
         private async Task CreateSubscription(string topicName, string subscriptionName)
         {
-            var client = new ServiceBusAdministrationClient(_connectionString);
+            var client = new ServiceBusAdministrationClient(_connectionString, new DefaultAzureCredential());
             var exists = await client.SubscriptionExistsAsync(topicName, subscriptionName);
             if (exists) return;
 
