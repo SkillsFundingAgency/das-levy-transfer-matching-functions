@@ -26,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
         public async Task PublishAsync<T>(T @event)
         {
             _logger.LogInformation($"Publishing {@event.GetType()}");
+            _logger.LogInformation($"NS is {_connectionString.Length} length");
 
             //ServiceBusClient client = null;
             //try
