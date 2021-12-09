@@ -24,15 +24,16 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 
         public async Task PublishAsync<T>(T @event)
         {
-            var topicName = GetTopicName(@event);
-            var subscriptionName = GetSubscriptionName(@event);
-
-            await CreateTopic(topicName);
-            await CreateSubscription(topicName, subscriptionName);
-
             ServiceBusClient client = null;
             try
             {
+
+                var topicName = GetTopicName(@event);
+                var subscriptionName = GetSubscriptionName(@event);
+
+                await CreateTopic(topicName);
+                await CreateSubscription(topicName, subscriptionName);
+
                 client = new ServiceBusClient(_connectionString);
                 var sender = client.CreateSender(topicName);
                 var messageBody = Serialize(@event);
