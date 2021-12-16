@@ -13,5 +13,6 @@
         public const string ApplicationWithdrawn = "SFA.DAS.LTM.ApplicationWithdrawn";
         public const string ApplicationRejected = "SFA.DAS.LTM.ApplicationRejected";
         public const string ApplicationApproved = "SFA.DAS.LTM.ApplicationApproved";
+        public const string ApplicationApprovedForLegacyTopicPublishing = "SFA.DAS.LTM.ApplicationApprovedLegacy";
     }
 }

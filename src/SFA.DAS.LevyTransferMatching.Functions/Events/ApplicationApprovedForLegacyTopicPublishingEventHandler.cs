@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         }
 
         [FunctionName("ApplicationApprovedForLegacyTopicPublishing")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApproved)] ApplicationApprovedEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
 
