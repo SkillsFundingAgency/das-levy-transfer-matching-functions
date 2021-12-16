@@ -15,18 +15,18 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
     public class LegacyTopicMessagePublisher : ILegacyTopicMessagePublisher
     {
         private readonly ILogger<LegacyTopicMessagePublisher> _logger;
-        private readonly string _connectionString;
+        private readonly string _legacyServiceBusNamespace;
 
         public LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, LevyTransferMatchingFunctions config)
         {
             _logger = logger;
-            _connectionString = config.NServiceBusConnectionString.Replace("Endpoint=sb://", "").Replace("/", ""); ;
+            _legacyServiceBusNamespace = config.SharedServiceBusNamespace;
         }
 
         public async Task PublishAsync<T>(T @event)
         {
             _logger.LogInformation($"Publishing {@event.GetType()}");
-            _logger.LogInformation($"NS is {_connectionString.Length} length");
+            _logger.LogInformation($"NS is {_legacyServiceBusNamespace.Length} length");
 
             ServiceBusClient client = null;
             try
@@ -37,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
                 await CreateTopic(topicName);
                 await CreateSubscription(topicName, subscriptionName);
 
-                client = new ServiceBusClient(_connectionString, new DefaultAzureCredential());
+                client = new ServiceBusClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
                 var sender = client.CreateSender(topicName);
                 var messageBody = Serialize(@event);
                 var message = new ServiceBusMessage(messageBody);
@@ -62,7 +62,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 
         private async Task CreateTopic(string topicName)
         {
-            var client = new ServiceBusAdministrationClient(_connectionString, new DefaultAzureCredential());
+            var client = new ServiceBusAdministrationClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
             var exists = await client.TopicExistsAsync(topicName);
             if (exists) return;
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 
         private async Task CreateSubscription(string topicName, string subscriptionName)
         {
-            var client = new ServiceBusAdministrationClient(_connectionString, new DefaultAzureCredential());
+            var client = new ServiceBusAdministrationClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
             var exists = await client.SubscriptionExistsAsync(topicName, subscriptionName);
             if (exists) return;
 
