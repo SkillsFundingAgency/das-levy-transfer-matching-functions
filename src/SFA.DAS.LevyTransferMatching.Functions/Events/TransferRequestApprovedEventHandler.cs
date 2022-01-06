@@ -1,15 +1,11 @@
 ﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using RestEase;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events

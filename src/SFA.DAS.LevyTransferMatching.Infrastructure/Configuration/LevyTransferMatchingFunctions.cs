@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.LevyTransferMatching.Infrastructure.Configuration
+﻿namespace SFA.DAS.LevyTransferMatching.Infrastructure.Configuration
 {
     public class LevyTransferMatchingFunctions
     {
@@ -11,5 +7,6 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Configuration
         public string NServiceBusLicense { get; set; }
         public string RedisConnectionString { get; set; }
         public string DataProtectionKeysDatabase { get; set; }
+        public string SharedServiceBusNamespace { get; set; }
     }
 }
