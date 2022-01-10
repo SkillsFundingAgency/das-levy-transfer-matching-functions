@@ -31,6 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("C - ApplicationApprovedEvent");
                 Console.WriteLine("D - TransferRequestApprovedEvent");
                 Console.WriteLine("E - ApplicationFundingDeclinedEvent");
+                Console.WriteLine("F - ApplicationCreatedEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -50,7 +51,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published ChangedAccountNameEvent");
                             break;
                         case ConsoleKey.C:
-                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000));
+                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000, 1));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationApprovedEvent");
                             break;
@@ -63,6 +64,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             await _publisher.Publish(new ApplicationFundingDeclinedEvent(1, 1, DateTime.UtcNow, 10000));
                             Console.WriteLine();
                             Console.WriteLine("Published ApplicationFundingDeclinedEvent");
+                            break;
+                        case ConsoleKey.F:
+                            await _publisher.Publish(new ApplicationCreatedEvent(1,2, DateTime.UtcNow, 3));
+                            Console.WriteLine();
+                            Console.WriteLine($"Published ApplicationCreatedEvent");
                             break;
                     }
                 }

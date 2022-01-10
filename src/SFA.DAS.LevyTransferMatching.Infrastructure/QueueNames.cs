@@ -9,6 +9,11 @@
         public const string PledgeDebitFailed = "SFA.DAS.LevyTransferMatching.PledgeDebitFailed";
         public const string TransferRequestApprovedEvent = "SFA.DAS.LTM.TransferRequestApproved";
         public const string ApplicationFundingDeclined = "SFA.DAS.LTM.ApplicationFundingDeclined";
+        public const string ApplicationCreated = "SFA.DAS.LTM.ApplicationCreated";
+        public const string ApplicationWithdrawn = "SFA.DAS.LTM.ApplicationWithdrawn";
+        public const string ApplicationRejected = "SFA.DAS.LTM.ApplicationRejected";
+        public const string ApplicationApproved = "SFA.DAS.LTM.ApplicationApproved";
+        public const string ApplicationApprovedForLegacyTopicPublishing = "SFA.DAS.LTM.ApplicationApprovedLegacy";
         public const string SendPendingApplicationEmails = "SFA.DAS.LevyTransferMatching.SendPendingApplicationEmails";
     }
 }
