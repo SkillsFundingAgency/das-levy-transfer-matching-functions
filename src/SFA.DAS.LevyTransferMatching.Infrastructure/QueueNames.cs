@@ -6,6 +6,7 @@
         public const string ChangedAccountName = "SFA.DAS.LevyTransferMatching.ChangedAccountName";
         public const string RunHealthCheck = "SFA.DAS.LevyTransferMatching.HealthCheck";
         public const string ApplicationApprovedEvent = "SFA.DAS.LevyTransferMatching.ApplicationApproved";
+        public const string ApplicationApprovedEventForReceiverNotification = "SFA.DAS.LevyTransferMatching.ApplicationApprovedForReceiverNotification";
         public const string PledgeDebitFailed = "SFA.DAS.LevyTransferMatching.PledgeDebitFailed";
         public const string TransferRequestApprovedEvent = "SFA.DAS.LTM.TransferRequestApproved";
         public const string ApplicationFundingDeclined = "SFA.DAS.LTM.ApplicationFundingDeclined";

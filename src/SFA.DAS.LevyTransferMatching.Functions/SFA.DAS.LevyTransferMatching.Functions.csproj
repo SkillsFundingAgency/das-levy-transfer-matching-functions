@@ -21,7 +21,7 @@
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2978" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.62" />
-    <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.70-prerelease-16" />
+    <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.72-prerelease-10" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageReference Include="SFA.DAS.NServiceBus.AzureFunction" Version="16.0.21" />
   </ItemGroup>
