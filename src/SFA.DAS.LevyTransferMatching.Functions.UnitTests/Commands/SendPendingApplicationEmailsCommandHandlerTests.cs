@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Commands
         [Test]
         public void Handle_Runs_Successfully()
         {
-            Assert.DoesNotThrowAsync(() => _handler.Run(_logger.Object));
+            Assert.DoesNotThrowAsync(() => _handler.Run(default(TimerInfo), _logger.Object));
         }
     }
 }
