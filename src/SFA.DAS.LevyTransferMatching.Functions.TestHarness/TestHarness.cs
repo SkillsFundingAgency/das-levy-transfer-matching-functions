@@ -74,7 +74,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                         case ConsoleKey.G:
                             await _publisher.Publish(new ApplicationApprovedReceiverNotificationEvent(1, 1, 1, 8194, 8194));
                             Console.WriteLine();
-                            Console.WriteLine($"Published ApplicationApprovedEvent");
+                            Console.WriteLine($"Published ApplicationApprovedReceiverNotificationEvent");
                             break;
                     }
                 }
