@@ -14,13 +14,13 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
     public class ApplicationApprovedEventHandlerForReceiverNotification
     {
-        private readonly ILevyTransferMatchingApi __levyTransferMatchingApi;
+        private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
         private readonly IEncodingService _encodingService;
         private readonly EmailNotificationsConfiguration _config;
 
         public ApplicationApprovedEventHandlerForReceiverNotification(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
         {
-            __levyTransferMatchingApi = api;
+            _levyTransferMatchingApi = api;
             _encodingService = encodingService;
             _config = config;
         }
@@ -41,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                await __levyTransferMatchingApi.ApplicationApprovedReceiverNotification(request);
+                await _levyTransferMatchingApi.ApplicationApprovedReceiverNotification(request);
             }
             catch (ApiException ex)
             {
