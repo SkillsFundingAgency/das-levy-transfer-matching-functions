@@ -3,8 +3,10 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Encoding;
 using SFA.DAS.Http.Configuration;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
@@ -63,10 +65,15 @@ namespace SFA.DAS.LevyTransferMatching.Functions
                 .AddDasDataProtection(config);
 
             var apiConfig = configuration.GetSection("LevyTransferMatchingApi").Get<LevyTransferMatchingApiConfiguration>();
+            var emailNotificationsConfig = configuration.GetSection("EmailNotifications").Get<EmailNotificationsConfiguration>();
+
+            builder.Services.Configure<EncodingConfig>(configuration.GetSection("EncodingService"));
+            builder.Services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
 
             builder.Services.AddSingleton(apiConfig);
-
+            builder.Services.AddSingleton(emailNotificationsConfig);
             builder.Services.AddSingleton<IApimClientConfiguration>(x => x.GetRequiredService<LevyTransferMatchingApiConfiguration>());
+            builder.Services.AddSingleton<IEncodingService, EncodingService>();
             builder.Services.AddTransient<Http.MessageHandlers.DefaultHeadersHandler>();
             builder.Services.AddTransient<Http.MessageHandlers.LoggingMessageHandler>();
             builder.Services.AddTransient<Http.MessageHandlers.ApimHeadersHandler>();
