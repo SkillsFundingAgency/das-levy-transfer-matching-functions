@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("D - TransferRequestApprovedEvent");
                 Console.WriteLine("E - ApplicationFundingDeclinedEvent");
                 Console.WriteLine("F - ApplicationCreatedEvent");
-                Console.WriteLine("G - ApplicationApprovedEventForReceiverNotification");
+                Console.WriteLine("G - ApplicationApprovedEmailEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -72,9 +72,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published ApplicationCreatedEvent");
                             break;
                         case ConsoleKey.G:
-                            await _publisher.Publish(new ApplicationApprovedReceiverNotificationEvent(1, 1, 1, 8194, 8194));
+                            await _publisher.Publish(new ApplicationApprovedEmailEvent(1, 1, 1, 8194, 8194));
                             Console.WriteLine();
-                            Console.WriteLine($"Published ApplicationApprovedReceiverNotificationEvent");
+                            Console.WriteLine($"Published ApplicationApprovedEmailEvent");
                             break;
                     }
                 }

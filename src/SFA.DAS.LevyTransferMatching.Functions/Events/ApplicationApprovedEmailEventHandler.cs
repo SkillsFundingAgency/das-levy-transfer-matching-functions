@@ -12,25 +12,25 @@ using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
-    public class ApplicationApprovedEventHandlerForReceiverNotification
+    public class ApplicationApprovedEmailEventHandler
     {
         private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
         private readonly IEncodingService _encodingService;
         private readonly EmailNotificationsConfiguration _config;
 
-        public ApplicationApprovedEventHandlerForReceiverNotification(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
+        public ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
         {
             _levyTransferMatchingApi = api;
             _encodingService = encodingService;
             _config = config;
         }
 
-        [FunctionName("ApplicationApprovedEventForReceiverNotification")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEventForReceiverNotification)] ApplicationApprovedReceiverNotificationEvent @event, ILogger log)
+        [FunctionName("ApplicationApprovedEmailEvent")]
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEmailEvent @event, ILogger log)
         {
-            log.LogInformation($"Handling ApplicationApprovedEventForReceiverNotification handler for application {@event.ApplicationId}");
+            log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
 
-            var request = new ApplicationApprovedReceiverNotificationRequest
+            var request = new ApplicationApprovedEmailRequest
             {
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId,
@@ -41,13 +41,13 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                await _levyTransferMatchingApi.ApplicationApprovedReceiverNotification(request);
+                await _levyTransferMatchingApi.ApplicationApprovedEmail(request);
             }
             catch (ApiException ex)
             {
                 if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                log.LogError(ex, $"Error handling ApplicationApprovedEventForReceiverNotification for application {@event.ApplicationId}");
+                log.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {@event.ApplicationId}");
             }
         }
     }

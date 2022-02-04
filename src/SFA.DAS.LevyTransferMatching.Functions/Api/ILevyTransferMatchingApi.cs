@@ -9,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task ApplicationApproved([Body]ApplicationApprovedRequest request);
 
         [Post("functions/application-approved-receiver-notification")]
-        Task ApplicationApprovedReceiverNotification([Body] ApplicationApprovedReceiverNotificationRequest request);
+        Task ApplicationApprovedEmail([Body] ApplicationApprovedEmailRequest request);
 
         [Post("functions/pledge-debit-failed")]
         Task PledgeDebitFailed([Body] PledgeDebitFailedRequest request);

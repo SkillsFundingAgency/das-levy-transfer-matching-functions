@@ -13,10 +13,10 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 {
     [TestFixture]
-    public class ApplicationApprovedEventHandlerForReceiverNotificationTests
+    public class ApplicationApprovedEmailEventHandlerTests
     {
-        private ApplicationApprovedEventHandlerForReceiverNotification _handler;
-        private ApplicationApprovedReceiverNotificationEvent _event;
+        private ApplicationApprovedEmailEventHandler _handler;
+        private ApplicationApprovedEmailEvent _event;
         private Mock<ILevyTransferMatchingApi> _levyTransferMatchingApi;
         private readonly Fixture _fixture = new Fixture();
 
@@ -29,17 +29,17 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             EmailNotificationsConfiguration config = new EmailNotificationsConfiguration { ViewTransfersBaseUrl = "www.testurl.com" };
 
-            _event = _fixture.Create<ApplicationApprovedReceiverNotificationEvent>();
+            _event = _fixture.Create<ApplicationApprovedEmailEvent>();
 
-            _handler = new ApplicationApprovedEventHandlerForReceiverNotification(_levyTransferMatchingApi.Object, encodingService.Object, config);
+            _handler = new ApplicationApprovedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, config);
         }
 
         [Test]
-        public async Task Run_Invokes_ApplicationApprovedReceiverNotification_Api_Endpoint()
+        public async Task Run_Invokes_ApplicationApprovedEmail_Api_Endpoint()
         {
             await _handler.Run(_event, Mock.Of<ILogger>());
 
-            _levyTransferMatchingApi.Verify(x => x.ApplicationApprovedReceiverNotification(It.Is<ApplicationApprovedReceiverNotificationRequest>(r =>
+            _levyTransferMatchingApi.Verify(x => x.ApplicationApprovedEmail(It.Is<ApplicationApprovedEmailRequest>(r =>
                 r.ApplicationId == _event.ApplicationId &&
                 r.PledgeId == _event.PledgeId &&
                 r.ReceiverId == _event.TransferReceiverId)));
