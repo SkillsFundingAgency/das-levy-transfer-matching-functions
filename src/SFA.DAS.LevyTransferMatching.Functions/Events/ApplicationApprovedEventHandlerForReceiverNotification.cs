@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
             _config = config;
         }
 
-        [FunctionName("RunApplicationApprovedEventForReceiverNotification")]
+        [FunctionName("ApplicationApprovedEventForReceiverNotification")]
         public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEventForReceiverNotification)] ApplicationApprovedReceiverNotificationEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationApprovedEventForReceiverNotification handler for application {@event.ApplicationId}");
