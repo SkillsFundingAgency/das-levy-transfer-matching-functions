@@ -24,7 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
         }
 
         [FunctionName("SendPendingApplicationEmailsCommand")]
-        public async Task Run([TimerTrigger("0 0 8 * * 1")]TimerInfo timer, ILogger logger)
+        public async Task Run([TimerTrigger("0 0 8 * * 1")] TimerInfo timer, ILogger logger)
         {
             logger.LogInformation("Sending pending application emails");
             var response = await _levyTransferMatchingApi.GetPendingApplicationEmailData();
