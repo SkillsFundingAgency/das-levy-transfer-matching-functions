@@ -17,5 +17,6 @@
         public const string ApplicationApprovedForLegacyTopicPublishing = "SFA.DAS.LTM.ApplicationApprovedLegacy";
         public const string SendPendingApplicationEmails = "SFA.DAS.LevyTransferMatching.SendPendingApplicationEmails";
         public const string ApplicationFundingAcceptedForLegacyTopicPublishing = "SFA.DAS.LTM.ApplicationFundingAcceptedLegacy";
+        public const string ApplicationFundingDeclinedForLegacyTopicPublishing = "SFA.DAS.LTM.ApplicationFundingDeclinedLegacy";
     }
 }

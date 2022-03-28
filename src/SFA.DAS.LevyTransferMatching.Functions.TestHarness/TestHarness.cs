@@ -63,7 +63,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published TransferRequestApprovedEvent");
                             break;
                         case ConsoleKey.E:
-                            await _publisher.Publish(new ApplicationFundingDeclinedEvent(1, 1, DateTime.UtcNow, 10000));
+                            await _publisher.Publish(new ApplicationFundingDeclinedEvent(1, 1, DateTime.UtcNow, 10000, 1));
                             Console.WriteLine();
                             Console.WriteLine("Published ApplicationFundingDeclinedEvent");
                             break;
@@ -78,7 +78,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published ApplicationApprovedEmailEvent");
                             break;
                         case ConsoleKey.H:
-                            await _publisher.Publish(new ApplicationFundingAcceptedEvent(1, 1, 1, DateTime.UtcNow));
+                            await _publisher.Publish(new ApplicationFundingAcceptedEvent(1, 1, 20001, DateTime.UtcNow));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationFundingAcceptedEvent");
                             break;
