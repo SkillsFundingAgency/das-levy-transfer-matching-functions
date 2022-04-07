@@ -39,7 +39,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
                 r.ApplicationId == sourceEvent.ApplicationId &&
                 r.ApprovedOn == sourceEvent.ApprovedOn &&
                 r.Amount == sourceEvent.Amount &&
-                r.TransferSenderId == sourceEvent.TransferSenderId)));
+                r.TransferSenderId == sourceEvent.TransferSenderId &&
+                r.ReceiverAccountId == sourceEvent.ReceiverAccountId)));
         }
     }
 }
