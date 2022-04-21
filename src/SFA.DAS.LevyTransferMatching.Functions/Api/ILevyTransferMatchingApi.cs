@@ -28,5 +28,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Post("functions/backfill-application-matching-criteria")]
         Task BackfillApplicationMatchingCriteria();
+
+        [Get("functions/get-pledge-options-email-data")]
+        Task<GetPledgeOptionsEmailDataResponse> GetPledgeOptionsEmailData();
     }
 }
