@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         [Post("functions/send-emails")]
         Task SendEmails([Body] SendEmailsRequest request);
 
-        [Post("functions/backfill-application-matching-criteria")]
-        Task BackfillApplicationMatchingCriteria();
+        [Post("functions/recalculate-application-cost-projections")]
+        Task RecalculateApplicationCostProjections();
     }
 }

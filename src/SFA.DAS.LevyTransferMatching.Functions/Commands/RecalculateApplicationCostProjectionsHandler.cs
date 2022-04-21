@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Commands
 {
-    public class BackfillApplicationMatchingCriteriaHandler
+    public class RecalculateApplicationCostProjectionsHandler
     {
         private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
 
-        public BackfillApplicationMatchingCriteriaHandler(ILevyTransferMatchingApi levyTransferMatchingApi)
+        public RecalculateApplicationCostProjectionsHandler(ILevyTransferMatchingApi levyTransferMatchingApi)
         {
             _levyTransferMatchingApi = levyTransferMatchingApi;
         }
 
-        [FunctionName("BackfillApplicationMatchingCriteriaHandler")]
+        [FunctionName("RecalculateApplicationCostProjectionsHandler")]
         public async Task Run([TimerTrigger("0 0 22 * * *")] TimerInfo timer, ILogger logger)
         {
-            logger.LogInformation("Backfilling application matching criteria");
+            logger.LogInformation("Recalculating application cost projections");
             
             try
             {
-                await _levyTransferMatchingApi.BackfillApplicationMatchingCriteria();
+                await _levyTransferMatchingApi.RecalculateApplicationCostProjections();
             }
             catch (ApiException ex)
             {
-                logger.LogError(ex, $"Error backfilling matching criteria");
+                logger.LogError(ex, $"Error recalculating application cost projections");
             }
         }
     }
