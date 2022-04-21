@@ -28,5 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Post("functions/recalculate-application-cost-projections")]
         Task RecalculateApplicationCostProjections();
+        [Get("functions/get-pledge-options-email-data")]
+        Task<GetPledgeOptionsEmailDataResponse> GetPledgeOptionsEmailData();
     }
 }
