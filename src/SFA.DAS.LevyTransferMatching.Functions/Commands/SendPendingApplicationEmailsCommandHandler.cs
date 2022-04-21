@@ -37,7 +37,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
                     { "EmployerName", emailData.EmployerName },
                     { "NumberOfApplications", emailData.NumberOfApplications.ToString() },
                     { "BaseUrl", _config.ViewTransfersBaseUrl },
-                    { "EncodedAccountId", _encodingService.Encode(emailData.AccountId, EncodingType.AccountId) }
+                    { "EncodedAccountId", _encodingService.Encode(emailData.AccountId, EncodingType.AccountId) },
+                    { "ApplicationsText", emailData.NumberOfApplications == 1 ? "application" : "applications" }
                 };
 
                 sendEmailsRequest.EmailDataList.Add(new SendEmailsRequest.EmailData(_config.PendingApplicationsTemplateName, emailData.RecipientEmailAddress, tokens));
