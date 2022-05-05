@@ -31,5 +31,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Get("functions/get-pledge-options-email-data")]
         Task<GetPledgeOptionsEmailDataResponse> GetPledgeOptionsEmailData();
+
+        [Post("functions/application-withdrawn-after-acceptance")]
+        Task ApplicationWithdrawnAfterAcceptance([Body] ApplicationWithdrawnAfterAcceptanceRequest request);
     }
 }
