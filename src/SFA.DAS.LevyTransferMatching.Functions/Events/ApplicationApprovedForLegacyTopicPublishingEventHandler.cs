@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                var legacyMessage = new Messages.Legacy.PledgeApplicationApproved(@event.ApplicationId, @event.PledgeId, @event.ApprovedOn, @event.Amount, @event.TransferSenderId);
+                var legacyMessage = new Messages.Legacy.PledgeApplicationApproved(@event.ApplicationId, @event.PledgeId, @event.ApprovedOn, @event.Amount, @event.TransferSenderId, @event.ReceiverAccountId);
                 await _legacyTopicMessagePublisher.PublishAsync(legacyMessage);
             }
             catch (Exception ex)
