@@ -33,6 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("E - ApplicationFundingDeclinedEvent");
                 Console.WriteLine("F - ApplicationCreatedEvent");
                 Console.WriteLine("G - ApplicationApprovedEmailEvent");
+                Console.WriteLine("H - ApplicationFundingAcceptedEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -52,7 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published ChangedAccountNameEvent");
                             break;
                         case ConsoleKey.C:
-                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000, 1));
+                            await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000, 1, 2));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationApprovedEvent");
                             break;
@@ -62,7 +63,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             Console.WriteLine($"Published TransferRequestApprovedEvent");
                             break;
                         case ConsoleKey.E:
-                            await _publisher.Publish(new ApplicationFundingDeclinedEvent(1, 1, DateTime.UtcNow, 10000));
+                            await _publisher.Publish(new ApplicationFundingDeclinedEvent(1, 1, DateTime.UtcNow, 10000, 1));
                             Console.WriteLine();
                             Console.WriteLine("Published ApplicationFundingDeclinedEvent");
                             break;
@@ -75,6 +76,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             await _publisher.Publish(new ApplicationApprovedEmailEvent(1, 1, 1, 8194, 8194));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationApprovedEmailEvent");
+                            break;
+                        case ConsoleKey.H:
+                            await _publisher.Publish(new ApplicationFundingAcceptedEvent(1, 1, 20001, DateTime.UtcNow));
+                            Console.WriteLine();
+                            Console.WriteLine($"Published ApplicationFundingAcceptedEvent");
                             break;
                     }
                 }
