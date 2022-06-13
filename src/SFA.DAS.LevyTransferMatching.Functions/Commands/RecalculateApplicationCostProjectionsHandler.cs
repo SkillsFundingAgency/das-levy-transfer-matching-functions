@@ -16,7 +16,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
         }
 
         [FunctionName("RecalculateApplicationCostProjectionsHandler")]
-        public async Task Run([TimerTrigger("0 0 22 10 6 *")] TimerInfo timer, ILogger logger)
+        public async Task Run([TimerTrigger("0 0 22 13 6 *")] TimerInfo timer, ILogger logger)
         {
             logger.LogInformation("Recalculating application cost projections");
             
