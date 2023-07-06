@@ -4,21 +4,21 @@ using Microsoft.Extensions.Logging;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Commands
 {
-    public class ApplicationAutomaticApprovalEventHandler
+    public class ApplicationAutomaticApprovalCommandHandler
     {
         private readonly ILevyTransferMatchingApi _api;
 
-        public ApplicationAutomaticApprovalEventHandler(ILevyTransferMatchingApi api)
+        public ApplicationAutomaticApprovalCommandHandler(ILevyTransferMatchingApi api)
         {
             _api = api;
         }
 
-        [FunctionName("RunApplicationsWithAutomaticApprovalEvent")]
+        [FunctionName("RunApplicationsWithAutomaticApprovalCommand")]
         public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
         {
-            log.LogInformation($"Handling ApplicationsWithAutomaticApprovalEvent handler");          
+            log.LogInformation($"Handling ApplicationsWithAutomaticApprovalCommand handler");
 
             try
             {
@@ -26,12 +26,12 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
                 foreach (var app in applications.Applications)
                 {
-                    await _api.ApproveAutomaticApplication(new ApproveAutomaticApplicationRequest { ApplicationId =app.Id, PledgeId= app.PledgeId});
+                    await _api.ApproveAutomaticApplication(new ApproveAutomaticApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
                 }
             }
             catch (ApiException ex)
             {
-                log.LogError(ex, $"Error handling ApplicationAutomaticApprovalEvent");
+                log.LogError(ex, $"Error handling ApplicationsWithAutomaticApprovalCommand");
                 throw;
             }
         }
