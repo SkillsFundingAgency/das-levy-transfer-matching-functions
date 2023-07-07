@@ -36,9 +36,12 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task ApplicationWithdrawnAfterAcceptance([Body] ApplicationWithdrawnAfterAcceptanceRequest request);
 
         [Get("functions/application-auto-approval")]
-        Task<ApplicationAutomaticApprovalResponse> ApplicationsWithAutomaticApproval();
+        Task<ApplicationAutomaticApprovalResponse> ApplicationsWithAutomaticApproval(ApplicationAutomaticApprovalRequest request);
 
         [Post("functions/approve-automatic-application")]
         Task ApproveAutomaticApplication([Body] ApproveAutomaticApplicationRequest request);
+
+        [Post("functions/approve-automatic-application-immediate")]
+        Task ApplicationCreatedForImmediateAutoApproval([Body] ApproveAutomaticApplicationRequest request);
     }
 }

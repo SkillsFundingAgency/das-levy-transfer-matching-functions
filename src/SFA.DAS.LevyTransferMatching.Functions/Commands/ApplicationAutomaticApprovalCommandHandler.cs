@@ -22,7 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
 
             try
             {
-                var applications = await _api.ApplicationsWithAutomaticApproval();
+                var applications = await _api.ApplicationsWithAutomaticApproval( new ApplicationAutomaticApprovalRequest());
 
                 foreach (var app in applications.Applications)
                 {

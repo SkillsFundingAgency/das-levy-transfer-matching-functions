@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Commands
 
             _apiApplicationsResponse = _fixture.Create<ApplicationAutomaticApprovalResponse>();
 
-            _api.Setup(x => x.ApplicationsWithAutomaticApproval()).ReturnsAsync(_apiApplicationsResponse);
+            _api.Setup(x => x.ApplicationsWithAutomaticApproval(new ApplicationAutomaticApprovalRequest())).ReturnsAsync(_apiApplicationsResponse);
 
             _handler = new ApplicationAutomaticApprovalCommandHandler(_api.Object);
         }
