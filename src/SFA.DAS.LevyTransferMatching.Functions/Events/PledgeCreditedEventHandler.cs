@@ -8,45 +8,38 @@ using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
+namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
     public class PledgeCreditedEventHandler
     {
         private readonly ILevyTransferMatchingApi _api;
-
 
         public PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
         {
             _api = api;
         }
 
-        //replace event wiht PledgeCreditedEvent
         [FunctionName("PledgeCreditedEventHandler")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeCredited)] ApplicationCreatedEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
         {
-            //REPLACE ApplicationCreatedEvent with PledgeCreditedEvent once available
-            // log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} handler for pledge {@event.PledgeId}");
+             log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 
-            var request = new ApplicationAutomaticApprovalRequest
+            var request = new GetApplicationsForAutomaticApprovalRequest
             {
                 PledgeId = @event.PledgeId,               
             };
 
             try
             {
-                var response = await _api.ApplicationsWithAutomaticApproval(request);
+                var response = await _api.GetApplicationsForAutomaticApproval(request);
 
-                if (response != null)
+                foreach (var app in response.Applications)
                 {
-                    foreach (var app in response.Applications)
-                    {
-                        
-                        await _api.ApproveAutomaticApplication(new ApproveAutomaticApplicationRequest 
-                        { 
-                            ApplicationId = app.Id, 
-                            PledgeId = app.PledgeId 
-                        });
-                    }
+                    await _api.ApproveApplication(new ApproveApplicationRequest 
+                    { 
+                        ApplicationId = app.Id, 
+                        PledgeId = app.PledgeId 
+                    });
                 }
             }
             catch (ApiException ex)
