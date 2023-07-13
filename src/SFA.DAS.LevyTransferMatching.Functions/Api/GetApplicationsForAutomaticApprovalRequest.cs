@@ -1,5 +1,4 @@
-﻿
-namespace SFA.DAS.LevyTransferMatching.Functions.Api
+﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api
 {
     public class GetApplicationsForAutomaticApprovalRequest
     {

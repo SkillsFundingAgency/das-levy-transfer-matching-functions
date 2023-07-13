@@ -25,7 +25,13 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                await _api.ApplicationCreatedForImmediateAutoApproval(new ApproveApplicationRequest { PledgeId = @event.PledgeId, ApplicationId = @event.ApplicationId });
+                var request = new ApplicationCreatedForImmediateAutoApprovalRequest
+                {
+                    PledgeId = @event.PledgeId,
+                    ApplicationId = @event.ApplicationId
+                };
+                
+                await _api.ApplicationCreatedForImmediateAutoApproval(request);
             }
             catch (ApiException ex)
             {

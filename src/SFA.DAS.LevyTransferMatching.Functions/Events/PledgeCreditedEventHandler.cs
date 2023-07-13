@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             var request = new GetApplicationsForAutomaticApprovalRequest
             {
-                PledgeId = @event.PledgeId,               
+                PledgeId = @event.PledgeId
             };
 
             try
