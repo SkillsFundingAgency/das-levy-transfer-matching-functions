@@ -24,14 +24,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         {
              log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 
-            var request = new GetApplicationsForAutomaticApprovalRequest
-            {
-                PledgeId = @event.PledgeId
-            };
-
             try
             {
-                var response = await _api.GetApplicationsForAutomaticApproval(request);
+                var response = await _api.GetApplicationsForAutomaticApproval(@event.PledgeId);
 
                 foreach (var app in response.Applications)
                 {

@@ -36,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task ApplicationWithdrawnAfterAcceptance([Body] ApplicationWithdrawnAfterAcceptanceRequest request);
 
         [Get("functions/applications-for-auto-approval")]
-        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval(GetApplicationsForAutomaticApprovalRequest request);
+        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval([Query] int? pledgeId = null);
 
         [Post("functions/approve-application")]
         Task ApproveApplication([Body] ApproveApplicationRequest request);

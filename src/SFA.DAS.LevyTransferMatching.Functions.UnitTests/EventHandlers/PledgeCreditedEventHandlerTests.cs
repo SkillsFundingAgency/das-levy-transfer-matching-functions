@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
@@ -33,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             _api.Setup(x =>
                     x.GetApplicationsForAutomaticApproval(
-                        It.Is<GetApplicationsForAutomaticApprovalRequest>(r => r.PledgeId == _event.PledgeId)))
+                        It.Is<int?>(r => r == _event.PledgeId)))
                 .ReturnsAsync(_apiResponse);
 
             _handler = new PledgeCreditedEventHandler(_api.Object);
