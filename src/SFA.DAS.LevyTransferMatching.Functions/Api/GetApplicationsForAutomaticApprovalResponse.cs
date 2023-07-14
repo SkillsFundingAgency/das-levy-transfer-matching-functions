@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Api
 {
-    public  class GetApplicationsForAutomaticApprovalResponse
+    public class GetApplicationsForAutomaticApprovalResponse
     {
         public IEnumerable<Application> Applications { get; set; }
 
