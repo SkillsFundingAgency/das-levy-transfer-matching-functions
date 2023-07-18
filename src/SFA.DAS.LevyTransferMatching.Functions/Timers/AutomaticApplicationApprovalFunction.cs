@@ -15,10 +15,10 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Timers
             _api = api;
         }
 
-        [FunctionName("RunApplicationsWithAutomaticApprovalFunction")]
+        [FunctionName("ApplicationsWithAutomaticApprovalFunction")]
         public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
         {
-            log.LogInformation($"Executing RunApplicationsWithAutomaticApprovalFunction");
+            log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
 
             try
             {
