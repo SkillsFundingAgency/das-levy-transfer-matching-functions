@@ -34,6 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                 Console.WriteLine("F - ApplicationCreatedEvent");
                 Console.WriteLine("G - ApplicationApprovedEmailEvent");
                 Console.WriteLine("H - ApplicationWithdrawnAfterAcceptanceEvent");
+                Console.WriteLine("I - PledgeCreditedEvent");
                 Console.WriteLine("X - Exit");
                 Console.WriteLine("Press [Key] for Test Option");
                 key = Console.ReadKey().Key;
@@ -81,6 +82,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
                             await _publisher.Publish(new ApplicationWithdrawnAfterAcceptanceEvent(1, 3, 800));
                             Console.WriteLine();
                             Console.WriteLine($"Published ApplicationWithdrawnAfterAcceptanceEvent");
+                            break;
+                        case ConsoleKey.I:
+                            await _publisher.Publish(new PledgeCreditedEvent(1, 8));
+                            Console.WriteLine();
+                            Console.WriteLine($"Published PledgeCreditedEvent");
                             break;
                     }
                 }
