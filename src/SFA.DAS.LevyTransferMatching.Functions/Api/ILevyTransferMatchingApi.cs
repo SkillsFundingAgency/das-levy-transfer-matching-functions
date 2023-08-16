@@ -28,10 +28,20 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
 
         [Post("functions/recalculate-application-cost-projections")]
         Task RecalculateApplicationCostProjections();
+
         [Get("functions/get-pledge-options-email-data")]
         Task<GetPledgeOptionsEmailDataResponse> GetPledgeOptionsEmailData();
 
         [Post("functions/application-withdrawn-after-acceptance")]
         Task ApplicationWithdrawnAfterAcceptance([Body] ApplicationWithdrawnAfterAcceptanceRequest request);
+
+        [Get("functions/applications-for-auto-approval")]
+        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval([Query] int? pledgeId = null);
+
+        [Post("functions/approve-application")]
+        Task ApproveApplication([Body] ApproveApplicationRequest request);
+
+        [Post("functions/application-created-immediate-auto-approval")]
+        Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
     }
 }
