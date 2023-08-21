@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         }
 
         [FunctionName("RunApplicationCreatedForImmediateAutoApprovalEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
 
