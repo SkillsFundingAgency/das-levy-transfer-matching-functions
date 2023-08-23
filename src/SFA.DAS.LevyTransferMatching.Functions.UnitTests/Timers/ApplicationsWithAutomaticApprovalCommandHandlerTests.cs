@@ -1,4 +1,6 @@
 ﻿using AutoFixture;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -41,5 +43,20 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
             // Assert
             _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
         }
+
+        [Test]
+        public async Task HttpTrigger_Should_Return_OkResult()
+        {
+            // Arrange
+            var httpRequestMock = new Mock<HttpRequest>();
+
+            // Act
+            var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.AreEqual("ApplicationsWithAutomaticApproval successfully ran", (result as OkObjectResult)?.Value);
+        }
+
     }
 }
