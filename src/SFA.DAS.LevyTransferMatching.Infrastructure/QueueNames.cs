@@ -11,6 +11,7 @@
         public const string TransferRequestApprovedEvent = "SFA.DAS.LTM.TransferRequestApproved";
         public const string ApplicationFundingDeclined = "SFA.DAS.LTM.ApplicationFundingDeclined";
         public const string ApplicationCreated = "SFA.DAS.LTM.ApplicationCreated";
+        public const string ApplicationCreatedEmailEvent = "SFA.DAS.LTM.ApplicationCreatedEmail";
         public const string ApplicationCreatedForImmediateAutoApproval = "SFA.DAS.LTM.ApplicationCreatedForImmdtAutoApproval";
         public const string ApplicationWithdrawn = "SFA.DAS.LTM.ApplicationWithdrawn";
         public const string ApplicationRejected = "SFA.DAS.LTM.ApplicationRejected";

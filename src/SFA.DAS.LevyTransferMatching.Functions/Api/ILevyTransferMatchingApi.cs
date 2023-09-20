@@ -11,6 +11,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         [Post("functions/application-approved-receiver-notification")]
         Task ApplicationApprovedEmail([Body] ApplicationApprovedEmailRequest request);
 
+        [Post("functions/application-created-receiver-notification")]
+        Task ApplicationCreatedEmail([Body] ApplicationCreatedEmailRequest request);
+
         [Post("functions/pledge-debit-failed")]
         Task PledgeDebitFailed([Body] PledgeDebitFailedRequest request);
 
