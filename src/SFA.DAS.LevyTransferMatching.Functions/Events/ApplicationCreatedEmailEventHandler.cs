@@ -6,6 +6,7 @@ using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
@@ -15,11 +16,13 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
     {
         private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
         private readonly IEncodingService _encodingService;
+        private readonly EmailNotificationsConfiguration _config;
 
         public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
         {
             _levyTransferMatchingApi = api;
             _encodingService = encodingService;
+            _config = config;
         }
 
         [FunctionName("ApplicationCreatedEmailEvent")]
