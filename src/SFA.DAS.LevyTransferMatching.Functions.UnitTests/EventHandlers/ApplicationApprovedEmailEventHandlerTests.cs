@@ -27,11 +27,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             Mock<IEncodingService> encodingService = new Mock<IEncodingService>();
 
-            EmailNotificationsConfiguration config = new EmailNotificationsConfiguration { ViewTransfersBaseUrl = "www.testurl.com" };
-
             _event = _fixture.Create<ApplicationApprovedEmailEvent>();
 
-            _handler = new ApplicationApprovedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, config);
+            _handler = new ApplicationApprovedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object);
         }
 
         [Test]
@@ -42,7 +40,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
             _levyTransferMatchingApi.Verify(x => x.ApplicationApprovedEmail(It.Is<ApplicationApprovedEmailRequest>(r =>
                 r.ApplicationId == _event.ApplicationId &&
                 r.PledgeId == _event.PledgeId &&
-                r.ReceiverId == _event.TransferReceiverId)));
+                r.ReceiverId == _event.ReceiverAccountId)));
         }
     }
 }
