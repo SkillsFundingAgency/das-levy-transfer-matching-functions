@@ -16,13 +16,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
     {
         private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
         private readonly IEncodingService _encodingService;
-        private readonly EmailNotificationsConfiguration _config;
 
         public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
         {
             _levyTransferMatchingApi = api;
             _encodingService = encodingService;
-            _config = config;
         }
 
         [FunctionName("ApplicationCreatedEmailEvent")]
@@ -35,7 +33,6 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId,
                 ReceiverId = @event.TransferReceiverId,
-                BaseUrl = _config.ViewTransfersBaseUrl,
                 ReceiverEncodedAccountId = _encodingService.Encode(@event.ReceiverAccountId, EncodingType.AccountId)
             };
 
