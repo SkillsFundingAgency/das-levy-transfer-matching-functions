@@ -19,18 +19,19 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
         private ApplicationRejectedEmailEvent _event;
         private Mock<ILevyTransferMatchingApi> _levyTransferMatchingApi;
         private readonly Fixture _fixture = new Fixture();
+        private EmailNotificationsConfiguration _config;
 
         [SetUp]
         public void Setup()
         {
             _levyTransferMatchingApi = new Mock<ILevyTransferMatchingApi>();
+            _config = _fixture.Create<EmailNotificationsConfiguration>();
 
             Mock<IEncodingService> encodingService = new Mock<IEncodingService>();
-            EmailNotificationsConfiguration config = new EmailNotificationsConfiguration { ViewOpportunitiesBaseUrl = "www.testurl.com" };
 
             _event = _fixture.Create<ApplicationRejectedEmailEvent>();
 
-            _handler = new ApplicationRejectedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, config);
+            _handler = new ApplicationRejectedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, _config);
         }
 
         [Test]

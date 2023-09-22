@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId,
                 ReceiverId = @event.ReceiverAccountId,
-                BaseUrl= _config.ViewOpportunitiesBaseUrl,
+                BaseUrl= _config.ViewTransfersBaseUrl,
                 EncodedApplicationId = _encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
             };
 
