@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Commands;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
@@ -27,6 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
             _config = _fixture.Create<EmailNotificationsConfiguration>();
 
             Mock<IEncodingService> encodingService = new Mock<IEncodingService>();
+            EmailNotificationsConfiguration config = new EmailNotificationsConfiguration { ViewOpportunitiesBaseUrl = "www.testurl.com" };
 
             _event = _fixture.Create<ApplicationRejectedEvent>();
 
