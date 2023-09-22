@@ -28,7 +28,6 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
             _config = _fixture.Create<EmailNotificationsConfiguration>();
 
             Mock<IEncodingService> encodingService = new Mock<IEncodingService>();
-            EmailNotificationsConfiguration config = new EmailNotificationsConfiguration { ViewOpportunitiesBaseUrl = "www.testurl.com" };
 
             _event = _fixture.Create<ApplicationRejectedEvent>();
 
