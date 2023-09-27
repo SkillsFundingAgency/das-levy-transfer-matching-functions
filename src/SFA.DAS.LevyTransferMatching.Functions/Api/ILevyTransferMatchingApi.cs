@@ -39,7 +39,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval([Query] int? pledgeId = null);
 
         [Get("functions/applications-for-auto-rejection")]
-        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticRejection();
+        Task<GetApplicationsForAutomaticRejectionResponse> GetApplicationsForAutomaticRejection();
 
         [Post("functions/approve-application")]
         Task ApproveApplication([Body] ApproveApplicationRequest request);
