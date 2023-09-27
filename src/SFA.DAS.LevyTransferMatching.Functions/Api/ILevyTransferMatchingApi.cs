@@ -38,8 +38,14 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         [Get("functions/applications-for-auto-approval")]
         Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval([Query] int? pledgeId = null);
 
+        [Get("functions/applications-for-auto-rejection")]
+        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticRejection();
+
         [Post("functions/approve-application")]
         Task ApproveApplication([Body] ApproveApplicationRequest request);
+
+        [Post("functions/reject-application")]
+        Task RejectApplication([Body] RejectApplicationRequest request);
 
         [Post("functions/application-created-immediate-auto-approval")]
         Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
