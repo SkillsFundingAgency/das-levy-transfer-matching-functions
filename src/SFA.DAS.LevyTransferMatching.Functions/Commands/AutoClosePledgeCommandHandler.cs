@@ -4,7 +4,6 @@ using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Commands;
-using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using System.Threading.Tasks;
 
@@ -30,8 +29,10 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
                 {
                     PledgeId = @event.PledgeId,
                 };
-                                
-                if (await _api.ClosePledge(request))
+
+                var result = await _api.ClosePledge(request);
+
+                if (result.IsSuccessStatusCode)
                 {
                     await _api.RejectPledgeApplications(new RejectPledgeApplicationsRequest { PledgeId = @event.PledgeId });
                 }
