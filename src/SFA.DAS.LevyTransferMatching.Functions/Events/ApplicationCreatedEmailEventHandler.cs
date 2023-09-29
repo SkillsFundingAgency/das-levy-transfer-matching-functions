@@ -23,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         }
 
         [FunctionName("ApplicationCreatedEmailEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationCreatedEmailEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationCreatedEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 

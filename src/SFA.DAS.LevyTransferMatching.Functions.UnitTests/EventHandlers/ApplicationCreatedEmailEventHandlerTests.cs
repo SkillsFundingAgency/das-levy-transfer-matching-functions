@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
     public class ApplicationCreatedEmailEventHandlerTests
     {
         private ApplicationCreatedEmailEventHandler _handler;
-        private ApplicationCreatedEmailEvent _event;
+        private ApplicationCreatedEvent _event;
         private Mock<ILevyTransferMatchingApi> _levyTransferMatchingApi;
         private readonly Fixture _fixture = new Fixture();
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             Mock<IEncodingService> encodingService = new Mock<IEncodingService>();
 
-            _event = _fixture.Create<ApplicationCreatedEmailEvent>();
+            _event = _fixture.Create<ApplicationCreatedEvent>();
 
             _handler = new ApplicationCreatedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object);
         }
