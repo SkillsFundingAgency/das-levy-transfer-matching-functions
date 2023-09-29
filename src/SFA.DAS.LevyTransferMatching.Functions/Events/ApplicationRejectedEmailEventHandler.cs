@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
         }
 
         [FunctionName("ApplicationRejectedEmailEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEmailEvent @event, ILogger log)
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event, ILogger log)
         {
             log.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
 
