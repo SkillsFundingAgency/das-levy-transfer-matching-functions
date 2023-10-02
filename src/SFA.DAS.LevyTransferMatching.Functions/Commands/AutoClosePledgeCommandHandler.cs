@@ -3,12 +3,11 @@ using Microsoft.Extensions.Logging;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.LevyTransferMatching.Messages.Commands;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Commands
 {
     public class AutoClosePledgeCommandHandler
     {
