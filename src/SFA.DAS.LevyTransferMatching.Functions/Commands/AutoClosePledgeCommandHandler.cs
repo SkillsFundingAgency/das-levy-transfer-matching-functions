@@ -31,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
                     ApplicationId = @event.ApplicationId
                 };
                 
-                var result = await _api.ClosePledge(request);
+                var result = await _api.AutoClosePledge(request);
 
                 if (result.IsSuccessStatusCode)
                 {

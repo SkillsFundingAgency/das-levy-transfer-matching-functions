@@ -51,8 +51,8 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         [Post("functions/application-created-immediate-auto-approval")]
         Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
         
-        [Post("functions/close-pledge")]
-        Task<HttpResponseMessage> ClosePledge([Body] AutoClosePledgeRequest request);
+        [Post("functions/auto-close-pledge")]
+        Task<HttpResponseMessage> AutoClosePledge([Body] AutoClosePledgeRequest request);
 
         [Post("functions/reject-pledge-applications")]
         Task RejectPledgeApplications([Body] RejectPledgeApplicationsRequest request);
