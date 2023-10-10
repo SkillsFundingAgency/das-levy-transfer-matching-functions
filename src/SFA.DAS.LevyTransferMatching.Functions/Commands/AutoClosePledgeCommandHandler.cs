@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Commands
                 
                 var result = await _api.AutoClosePledge(request);
 
-                if (result.IsSuccessStatusCode)
+                if (result.PledgeClosed)
                 {
                     await _api.RejectPledgeApplications(new RejectPledgeApplicationsRequest { PledgeId = @event.PledgeId });
                 }

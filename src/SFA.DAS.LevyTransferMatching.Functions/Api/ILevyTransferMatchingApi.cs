@@ -52,7 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
         
         [Post("functions/auto-close-pledge")]
-        Task<HttpResponseMessage> AutoClosePledge([Body] AutoClosePledgeRequest request);
+        Task<AutoClosePledgeResponse> AutoClosePledge([Body] AutoClosePledgeRequest request);
 
         [Post("functions/reject-pledge-applications")]
         Task RejectPledgeApplications([Body] RejectPledgeApplicationsRequest request);
