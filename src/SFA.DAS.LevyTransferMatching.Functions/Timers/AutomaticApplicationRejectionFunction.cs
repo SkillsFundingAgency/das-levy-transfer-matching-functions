@@ -22,7 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Timers
         }
 
         [FunctionName("ApplicationsWithAutomaticRejectionFunction")]
-        public async Task Run([TimerTrigger("0 */10 * * * *")] TimerInfo timer, ILogger log)
+        public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger log)
         {
             log.LogInformation($"Executing ApplicationsWithAutomaticRejectionFunction");
 
