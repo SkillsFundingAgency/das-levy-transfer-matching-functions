@@ -48,6 +48,6 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task ApproveApplication([Body] ApproveApplicationRequest request);
 
         [Post("functions/application-created-immediate-auto-approval")]
-        Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);       
+        Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
     }
 }
