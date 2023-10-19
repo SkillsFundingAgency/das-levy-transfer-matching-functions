@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api
 {
-    public class ApplicationApprovedEmailRequest
+    public class ApplicationCreatedEmailRequest
     {
         public int ApplicationId { get; set; }
         public int PledgeId { get; set; }

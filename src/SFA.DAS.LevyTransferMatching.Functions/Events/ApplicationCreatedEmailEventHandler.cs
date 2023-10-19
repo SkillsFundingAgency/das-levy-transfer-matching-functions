@@ -11,23 +11,23 @@ using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
-    public class ApplicationApprovedEmailEventHandler
+    public class ApplicationCreatedEmailEventHandler
     {
         private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
         private readonly IEncodingService _encodingService;
 
-        public ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
+        public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
         {
             _levyTransferMatchingApi = api;
             _encodingService = encodingService;
         }
 
-        [FunctionName("ApplicationApprovedEmailEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event, ILogger log)
+        [FunctionName("ApplicationCreatedEmailEvent")]
+        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
         {
-            log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
+            log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 
-            var request = new ApplicationApprovedEmailRequest
+            var request = new ApplicationCreatedEmailRequest
             {
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId,
@@ -37,13 +37,13 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
 
             try
             {
-                await _levyTransferMatchingApi.ApplicationApprovedEmail(request);
+                await _levyTransferMatchingApi.ApplicationCreatedEmail(request);
             }
             catch (ApiException ex)
             {
                 if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                log.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {@event.ApplicationId}");
+                log.LogError(ex, $"Error handling ApplicationCreatedEmailEvent for application {@event.ApplicationId}");
             }
         }
     }
