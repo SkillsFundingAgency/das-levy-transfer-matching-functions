@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
 {
     [TestFixture]
-    public class ApplicationAutomaticApprovalCommandHandlerTests
+    public class AutomaticApplicationRejectionFunctionTests
     {
-        private AutomaticApplicationApprovalFunction _handler;
+        private AutomaticApplicationRejectionFunction _handler;
         private Mock<ILevyTransferMatchingApi> _api;
         private Mock<ILogger> _logger;
-        private GetApplicationsForAutomaticApprovalResponse _apiResponse;
+        private GetApplicationsForAutomaticRejectionResponse _apiResponse;
 
         [SetUp]
         public void Setup()
@@ -27,21 +27,21 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
             _api = new Mock<ILevyTransferMatchingApi>();
             _logger = new Mock<ILogger>();
 
-            _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
+            _apiResponse = fixture.Create<GetApplicationsForAutomaticRejectionResponse>();
 
-            _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);
+            _api.Setup(x => x.GetApplicationsForAutomaticRejection()).ReturnsAsync(_apiResponse);
 
-            _handler = new AutomaticApplicationApprovalFunction(_api.Object);
+            _handler = new AutomaticApplicationRejectionFunction(_api.Object);
         }
 
         [Test]
-        public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
+        public async Task Run_Rejects_Each_Application_Ready_For_Automatic_Rejection()
         {
             // Act
             await _handler.Run(default, _logger.Object);
 
             // Assert
-            _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
+            _api.Verify(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
         }
 
         [Test]
@@ -51,11 +51,11 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
             var httpRequestMock = new Mock<HttpRequest>();
 
             // Act
-            var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
+            var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual("ApplicationsWithAutomaticApproval successfully ran", (result as OkObjectResult)?.Value);
+            Assert.AreEqual("ApplicationsWithAutomaticRejection successfully ran", (result as OkObjectResult)?.Value);
         }
 
     }
