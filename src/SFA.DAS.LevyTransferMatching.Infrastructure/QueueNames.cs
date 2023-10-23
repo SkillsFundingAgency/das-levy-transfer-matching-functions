@@ -19,5 +19,7 @@
         public const string SendPendingApplicationEmails = "SFA.DAS.LevyTransferMatching.SendPendingApplicationEmails";
         public const string ApplicationWithdrawnAfterAcceptance = "SFA.DAS.LTM.ApplicationWithdrawnAfterAcceptance";
         public const string PledgeCredited = "SFA.DAS.LTM.PledgeCredited";
+        public const string ApplicationRejectedEmail = "SFA.DAS.LTM.ApplicationRejectedEmail";
+        public const string ApplicationCreatedEmailEvent = "SFA.DAS.LTM.ApplicationCreatedEmail";
     }
 }
