@@ -18,7 +18,10 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Api
         Task DebitApplication([Body] TransferRequestApprovedRequest request);
 
         [Post("functions/application-funding-declined")]
-        Task ApplicationFundingDeclined([Body] ApplicationFundingDeclinedRequest request);
+        Task ApplicationFundingDeclined([Body] ApplicationFundingDeclinedRequest request);  
+        
+        [Post("functions/application-funding-accepted")]
+        Task ApplicationFundingAccepted([Body] ApplicationFundingAcceptedRequest request);
 
         [Get("functions/get-pending-application-email-data")]
         Task<GetPendingApplicationEmailDataResponse> GetPendingApplicationEmailData();
