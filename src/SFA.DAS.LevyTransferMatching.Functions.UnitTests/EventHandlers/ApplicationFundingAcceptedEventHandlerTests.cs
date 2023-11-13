@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             await _handler.Run(_event, Mock.Of<ILogger>());
 
-            _api.Verify(x => x.ApplicationFundingAccepted(It.Is<ApplicationFundingAcceptedRequest>(r =>
+            _api.Verify(x => x.RejectPledgeApplications(It.Is<RejectPledgeApplicationsRequest>(r =>
                 r.PledgeId == _event.PledgeId)));
         }
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
 
             await _handler.Run(_event, Mock.Of<ILogger>());
 
-            _api.Verify(x => x.ApplicationFundingAccepted(It.Is<ApplicationFundingAcceptedRequest>(r =>
+            _api.Verify(x => x.RejectPledgeApplications(It.Is<RejectPledgeApplicationsRequest>(r =>
                 r.PledgeId == _event.PledgeId)), Times.Never());
         }
     }

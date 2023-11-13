@@ -27,20 +27,20 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
             {
                 log.LogInformation($"Rejecting Pengding applications for pledge {@event.PledgeId}");
 
-                var request = new ApplicationFundingAcceptedRequest
+                var request = new RejectPledgeApplicationsRequest
                 {
                     PledgeId = @event.PledgeId
                 };
 
                 try
                 {
-                    await _api.ApplicationFundingAccepted(request);
+                    await _api.RejectPledgeApplications(request);
                 }
                 catch (ApiException ex)
                 {
                     if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                    log.LogError(ex, $"Error handling ApplicationAcceptedEvent for application {@event.ApplicationId}");
+                    log.LogError(ex, $"Error handling {nameof(ApplicationFundingAcceptedEvent)} for application {@event.ApplicationId}");
                 }
             }          
         }
