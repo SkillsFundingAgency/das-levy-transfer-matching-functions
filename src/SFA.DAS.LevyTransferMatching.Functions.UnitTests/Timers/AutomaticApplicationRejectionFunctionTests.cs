@@ -9,54 +9,53 @@ using SFA.DAS.LevyTransferMatching.Functions.Timers;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
+namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers;
+
+[TestFixture]
+public class AutomaticApplicationRejectionFunctionTests
 {
-    [TestFixture]
-    public class AutomaticApplicationRejectionFunctionTests
+    private AutomaticApplicationRejectionFunction _handler;
+    private Mock<ILevyTransferMatchingApi> _api;
+    private Mock<ILogger> _logger;
+    private GetApplicationsForAutomaticRejectionResponse _apiResponse;
+
+    [SetUp]
+    public void Setup()
     {
-        private AutomaticApplicationRejectionFunction _handler;
-        private Mock<ILevyTransferMatchingApi> _api;
-        private Mock<ILogger> _logger;
-        private GetApplicationsForAutomaticRejectionResponse _apiResponse;
+        var fixture = new Fixture();
 
-        [SetUp]
-        public void Setup()
-        {
-            var fixture = new Fixture();
+        _api = new Mock<ILevyTransferMatchingApi>();
+        _logger = new Mock<ILogger>();
 
-            _api = new Mock<ILevyTransferMatchingApi>();
-            _logger = new Mock<ILogger>();
+        _apiResponse = fixture.Create<GetApplicationsForAutomaticRejectionResponse>();
 
-            _apiResponse = fixture.Create<GetApplicationsForAutomaticRejectionResponse>();
+        _api.Setup(x => x.GetApplicationsForAutomaticRejection()).ReturnsAsync(_apiResponse);
 
-            _api.Setup(x => x.GetApplicationsForAutomaticRejection()).ReturnsAsync(_apiResponse);
-
-            _handler = new AutomaticApplicationRejectionFunction(_api.Object);
-        }
-
-        [Test]
-        public async Task Run_Rejects_Each_Application_Ready_For_Automatic_Rejection()
-        {
-            // Act
-            await _handler.Run(default, _logger.Object);
-
-            // Assert
-            _api.Verify(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
-        }
-
-        [Test]
-        public async Task HttpTrigger_Should_Return_OkResult()
-        {
-            // Arrange
-            var httpRequestMock = new Mock<HttpRequest>();
-
-            // Act
-            var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual("ApplicationsWithAutomaticRejection successfully ran", (result as OkObjectResult)?.Value);
-        }
-
+        _handler = new AutomaticApplicationRejectionFunction(_api.Object);
     }
+
+    [Test]
+    public async Task Run_Rejects_Each_Application_Ready_For_Automatic_Rejection()
+    {
+        // Act
+        await _handler.Run(default, _logger.Object);
+
+        // Assert
+        _api.Verify(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
+    }
+
+    [Test]
+    public async Task HttpTrigger_Should_Return_OkResult()
+    {
+        // Arrange
+        var httpRequestMock = new Mock<HttpRequest>();
+
+        // Act
+        var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticRejection successfully ran"));
+    }
+
 }

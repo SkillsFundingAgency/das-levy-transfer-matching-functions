@@ -55,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual("ApplicationsWithAutomaticApproval successfully ran", (result as OkObjectResult)?.Value);
+            Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticApproval successfully ran"));
         }
 
     }
