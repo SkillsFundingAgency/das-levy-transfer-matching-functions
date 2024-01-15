@@ -21,7 +21,7 @@ public class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
     {
-        builder.Services.AddNLog();
+        builder.Services.AddDasLogging();
 
         var serviceProvider = builder.Services.BuildServiceProvider();
         var configuration = serviceProvider.GetConfiguration();

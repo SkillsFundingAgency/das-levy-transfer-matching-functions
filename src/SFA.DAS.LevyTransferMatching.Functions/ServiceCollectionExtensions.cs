@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using NLog.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Functions.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
@@ -9,9 +10,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddNLog(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddDasLogging(this IServiceCollection services)
     {
-        serviceCollection.AddLogging((options) =>
+        services.AddLogging(options =>
         {
             options.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
             options.SetMinimumLevel(LogLevel.Trace);
@@ -21,20 +22,25 @@ public static class ServiceCollectionExtensions
                 CaptureMessageProperties = true
             });
             options.AddConsole();
+            
+            options.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            options.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
 
             NLogConfiguration.ConfigureNLog();
         });
 
-        return serviceCollection;
+        services.AddApplicationInsightsTelemetry();
+
+        return services;
     }
 
-    public static IServiceCollection AddNServiceBus(this IServiceCollection serviceCollection, ILogger logger, Action<NServiceBusOptions> OnConfigureOptions = null)
+    public static IServiceCollection AddNServiceBus(this IServiceCollection services, ILogger logger, Action<NServiceBusOptions> OnConfigureOptions = null)
     {
-        serviceCollection.AddSingleton<IExtensionConfigProvider, NServiceBusExtensionConfigProvider>((c) =>
+        services.AddSingleton<IExtensionConfigProvider, NServiceBusExtensionConfigProvider>(provider =>
         {
             var options = new NServiceBusOptions
             {
-                OnMessageReceived = (context) =>
+                OnMessageReceived = context =>
                 {
                     context.Headers.TryGetValue("NServiceBus.EnclosedMessageTypes", out string messageType);
                     context.Headers.TryGetValue("NServiceBus.MessageId", out string messageId);
@@ -53,14 +59,11 @@ public static class ServiceCollectionExtensions
                 }
             };
 
-            if (OnConfigureOptions != null)
-            {
-                OnConfigureOptions.Invoke(options);
-            }
+            OnConfigureOptions?.Invoke(options);
 
             return new NServiceBusExtensionConfigProvider(options);
         });
 
-        return serviceCollection;
+        return services;
     }
 }
