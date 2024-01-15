@@ -10,60 +10,59 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness
+namespace SFA.DAS.LevyTransferMatching.Functions.TestHarness;
+
+internal class Program
 {
-    internal class Program
+    private const string EndpointName = "SFA.DAS.LevyTransferMatching.MessageHandlers";
+    private const string ConfigName = "SFA.DAS.LevyTransferMatching.Functions";
+
+    public static async Task Main()
     {
-        private const string EndpointName = "SFA.DAS.LevyTransferMatching.MessageHandlers";
-        private const string ConfigName = "SFA.DAS.LevyTransferMatching.Functions";
+        var builder = new ConfigurationBuilder()
+            .AddAzureTableStorage(ConfigName);
 
-        public static async Task Main()
+        var configuration = builder.Build();
+
+        var endpointConfiguration = new EndpointConfiguration(EndpointName)
+            .UseErrorQueue($"{EndpointName}-errors")
+            .UseInstallers()
+            .UseMessageConventions()
+            .UseNewtonsoftJsonSerializer();
+
+        var connString = configuration[$"{ConfigName}:LevyTransferMatchingFunctions:NServiceBusConnectionString"];
+
+        if (connString == "UseDevelopmentStorage=true")
         {
-            var builder = new ConfigurationBuilder()
-                .AddAzureTableStorage(ConfigName);
-
-            var configuration = builder.Build();
-
-            var endpointConfiguration = new EndpointConfiguration(EndpointName)
-                .UseErrorQueue($"{EndpointName}-errors")
-                .UseInstallers()
-                .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer();
-
-            var connString = configuration[$"{ConfigName}:LevyTransferMatchingFunctions:NServiceBusConnectionString"];
-
-            if (connString == "UseDevelopmentStorage=true")
-            {
-                var t = endpointConfiguration.UseTransport<LearningTransport>();
-                    t.StorageDirectory(
-                    Path.Combine(
-                        Directory.GetCurrentDirectory()
-                            .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
-                        @"src\.learningtransport"));
-                    t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
-                    t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
-                    t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
-                    t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
-                    t.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
-            }
-
-            else
-            {
-                var t = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-                t.ConnectionString(connString)
-                    .CustomTokenProvider(TokenProvider.CreateManagedServiceIdentityTokenProvider());
-                t.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
-                t.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
-                t.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
-                t.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
-                t.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
-            }
-
-            var endpoint = await Endpoint.Start(endpointConfiguration);
-            var testHarness = new TestHarness(endpoint);
-
-            await testHarness.Run();
-            await endpoint.Stop();
+            var transport = endpointConfiguration.UseTransport<LearningTransport>();
+            transport.StorageDirectory(
+                Path.Combine(
+                    Directory.GetCurrentDirectory()
+                        .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
+                    @"src\.learningtransport"));
+            transport.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
+            transport.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
+            transport.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
+            transport.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
+            transport.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
         }
+
+        else
+        {
+            var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+            transport.ConnectionString(connString)
+                .CustomTokenProvider(TokenProvider.CreateManagedServiceIdentityTokenProvider());
+            transport.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
+            transport.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
+            transport.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
+            transport.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
+            transport.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
+        }
+
+        var endpoint = await Endpoint.Start(endpointConfiguration);
+        var testHarness = new TestHarness(endpoint);
+
+        await testHarness.Run();
+        await endpoint.Stop();
     }
 }

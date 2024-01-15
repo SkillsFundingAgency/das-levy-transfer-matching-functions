@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class CreatedAccountEventHandler
 {  
     [FunctionName("CreatedAccount")]
-    public void Run([NServiceBusTrigger(Endpoint = QueueNames.CreatedAccount)] CreatedAccountEvent createdAccountEvent, ILogger log)
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.CreatedAccount)] CreatedAccountEvent createdAccountEvent, ILogger log)
     {
         log.LogInformation($"Handling event: {createdAccountEvent}");
     }

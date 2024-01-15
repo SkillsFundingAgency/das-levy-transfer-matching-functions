@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ChangedAccountNameEventHandler
 {
     [FunctionName("ChangedAccountName")]
-    public void Run([NServiceBusTrigger(Endpoint = QueueNames.ChangedAccountName)] ChangedAccountNameEvent changedAccountNameEvent, ILogger log)
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ChangedAccountName)] ChangedAccountNameEvent changedAccountNameEvent, ILogger log)
     {
         log.LogInformation($"Handling event: {changedAccountNameEvent}");
     }
