@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api
+﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api;
+
+public class GetApplicationsForAutomaticApprovalRequest
 {
-    public class GetApplicationsForAutomaticApprovalRequest
-    {
-        public int? PledgeId { get; set; }
-    }
+    public int? PledgeId { get; set; }
 }

@@ -1,23 +1,20 @@
-﻿using System.Collections.Generic;
+﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Api
+public class SendEmailsRequest
 {
-    public class SendEmailsRequest
-    {
-        public List<EmailData> EmailDataList { get; set; }
+    public List<EmailData> EmailDataList { get; set; }
 
-        public class EmailData
+    public class EmailData
+    {
+        public EmailData(string templateName, string recipientEmailAddress, Dictionary<string,string> tokens)
         {
-            public EmailData(string templateName, string recipientEmailAddress, Dictionary<string,string> tokens)
-            {
                 TemplateName = templateName;
                 RecipientEmailAddress = recipientEmailAddress;
                 Tokens = tokens;
             }
 
-            public string TemplateName { get; set; }
-            public string RecipientEmailAddress { get; set; }
-            public Dictionary<string,string> Tokens { get; set; }
-        }
+        public string TemplateName { get; set; }
+        public string RecipientEmailAddress { get; set; }
+        public Dictionary<string,string> Tokens { get; set; }
     }
 }

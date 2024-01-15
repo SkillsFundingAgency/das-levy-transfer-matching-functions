@@ -1,46 +1,41 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class ApplicationWithdrawnAfterAcceptanceEventHandler
 {
-    public class ApplicationWithdrawnAfterAcceptanceEventHandler
+    private readonly ILevyTransferMatchingApi _api;
+
+    public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
+    [FunctionName("RunApplicationWithdrawnAfterAcceptanceEvent")]
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    {
+        log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
+     
+        var request = new ApplicationWithdrawnAfterAcceptanceRequest
         {
-            _api = api;
+            ApplicationId = @event.ApplicationId,
+            PledgeId = @event.PledgeId,
+            Amount = @event.Amount,
+        };
+     
+        try
+        {
+            await _api.ApplicationWithdrawnAfterAcceptance(request);
         }
-
-        [FunctionName("RunApplicationWithdrawnAfterAcceptanceEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+        catch (ApiException ex)
         {
-            log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
-         
-            var request = new ApplicationWithdrawnAfterAcceptanceRequest
-            {
-                ApplicationId = @event.ApplicationId,
-                PledgeId = @event.PledgeId,
-                Amount = @event.Amount,
-            };
-         
-            try
-            {
-                await _api.ApplicationWithdrawnAfterAcceptance(request);
-            }
-            catch (ApiException ex)
-            {
-                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-         
-                log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
-            }
+            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+     
+            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
         }
     }
 }

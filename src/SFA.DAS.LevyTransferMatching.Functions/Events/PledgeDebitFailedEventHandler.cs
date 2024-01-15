@@ -1,44 +1,40 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class PledgeDebitFailedEventHandler
 {
-    public class PledgeDebitFailedEventHandler
+    private readonly ILevyTransferMatchingApi _api;
+
+    public PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api)
+    [FunctionName("RunPledgeDebitFailedEvent")]
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event, ILogger log)
+    {
+        log.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
+
+        var request = new PledgeDebitFailedRequest
         {
-            _api = api;
+            PledgeId = @event.PledgeId,
+            ApplicationId = @event.ApplicationId,
+            Amount = @event.Amount
+        };
+
+        try
+        {
+            await _api.PledgeDebitFailed(request);
         }
-
-        [FunctionName("RunPledgeDebitFailedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event, ILogger log)
+        catch (ApiException ex)
         {
-            log.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
-
-            var request = new PledgeDebitFailedRequest
-            {
-                PledgeId = @event.PledgeId,
-                ApplicationId = @event.ApplicationId,
-                Amount = @event.Amount
-            };
-
-            try
-            {
-                await _api.PledgeDebitFailed(request);
-            }
-            catch (ApiException ex)
-            {
-                log.LogError(ex, $"Error handling PledgeDebitFailedEvent for application {@event.ApplicationId}");
-                throw;
-            }
+            log.LogError(ex, $"Error handling PledgeDebitFailedEvent for application {@event.ApplicationId}");
+            throw;
         }
     }
 }
