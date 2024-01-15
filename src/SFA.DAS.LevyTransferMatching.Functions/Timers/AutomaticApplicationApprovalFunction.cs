@@ -7,53 +7,51 @@ using Microsoft.Extensions.Logging;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Timers
+namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
+
+public class AutomaticApplicationApprovalFunction
 {
-    public class AutomaticApplicationApprovalFunction
+    private readonly ILevyTransferMatchingApi _api;
+
+    public AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
-        {
-            _api = api;
-        }
+    [FunctionName("ApplicationsWithAutomaticApprovalFunction")]
+    public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
+    {
+        log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
 
-        [FunctionName("ApplicationsWithAutomaticApprovalFunction")]
-        public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
-        {
-            log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
-
-            await RunApplicationsWithAutomaticApprovalFunction(log);
+        await RunApplicationsWithAutomaticApprovalFunction(log);
           
-        }
+    }
 
-        [FunctionName("HttpAutomaticApplicationApprovalFunction")]
-        public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger log)
+    [FunctionName("HttpAutomaticApplicationApprovalFunction")]
+    public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger log)
+    {
+        log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");
+
+        await RunApplicationsWithAutomaticApprovalFunction(log);
+
+        return new OkObjectResult("ApplicationsWithAutomaticApproval successfully ran");
+    }
+
+    private async Task RunApplicationsWithAutomaticApprovalFunction(ILogger log)
+    {
+        try
         {
-            log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");
+            var applications = await _api.GetApplicationsForAutomaticApproval();
 
-            await RunApplicationsWithAutomaticApprovalFunction(log);
-
-            return new OkObjectResult("ApplicationsWithAutomaticApproval successfully ran");
-
+            foreach (var app in applications.Applications)
+            {
+                await _api.ApproveApplication(new ApproveApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
+            }
         }
-
-        private async Task RunApplicationsWithAutomaticApprovalFunction(ILogger log)
+        catch (ApiException ex)
         {
-            try
-            {
-                var applications = await _api.GetApplicationsForAutomaticApproval();
-
-                foreach (var app in applications.Applications)
-                {
-                    await _api.ApproveApplication(new ApproveApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
-                }
-            }
-            catch (ApiException ex)
-            {
-                log.LogError(ex, $"Error executing RunApplicationsWithAutomaticApprovalFunction");
-                throw;
-            }
+            log.LogError(ex, $"Error executing RunApplicationsWithAutomaticApprovalFunction");
+            throw;
         }
     }
 }
