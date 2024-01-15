@@ -4,6 +4,6 @@ namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy
 {
     public interface ILegacyTopicMessagePublisher
     {
-        Task PublishAsync<T>(T message);
+        Task PublishAsync<T>(T @event);
     }
 }

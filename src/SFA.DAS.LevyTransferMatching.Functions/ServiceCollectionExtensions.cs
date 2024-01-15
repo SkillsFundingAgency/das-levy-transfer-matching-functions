@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
-using NServiceBus;
 using SFA.DAS.LevyTransferMatching.Functions.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Hosting;
