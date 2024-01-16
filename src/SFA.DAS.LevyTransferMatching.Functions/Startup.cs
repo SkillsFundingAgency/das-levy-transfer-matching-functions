@@ -4,14 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
-using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http.Configuration;
+using SFA.DAS.Http.MessageHandlers;
+using SFA.DAS.LevyTransferMatching.Functions;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly: FunctionsStartup(typeof(SFA.DAS.LevyTransferMatching.Functions.Startup))]
+[assembly: FunctionsStartup(typeof(Startup))]
 namespace SFA.DAS.LevyTransferMatching.Functions;
 
 // Read before updating packages:
@@ -57,13 +58,13 @@ public class Startup : FunctionsStartup
         builder.Services.AddSingleton(emailNotificationsConfig);
         builder.Services.AddSingleton<IApimClientConfiguration>(x => x.GetRequiredService<LevyTransferMatchingApiConfiguration>());
         builder.Services.AddSingleton<IEncodingService, EncodingService>();
-        builder.Services.AddTransient<Http.MessageHandlers.DefaultHeadersHandler>();
-        builder.Services.AddTransient<Http.MessageHandlers.LoggingMessageHandler>();
-        builder.Services.AddTransient<Http.MessageHandlers.ApimHeadersHandler>();
+        builder.Services.AddTransient<DefaultHeadersHandler>();
+        builder.Services.AddTransient<LoggingMessageHandler>();
+        builder.Services.AddTransient<ApimHeadersHandler>();
 
         builder.Services.AddRestEaseClient<ILevyTransferMatchingApi>(apiConfig.ApiBaseUrl)
-            .AddHttpMessageHandler<Http.MessageHandlers.DefaultHeadersHandler>()
-            .AddHttpMessageHandler<Http.MessageHandlers.ApimHeadersHandler>()
-            .AddHttpMessageHandler<Http.MessageHandlers.LoggingMessageHandler>();
+            .AddHttpMessageHandler<DefaultHeadersHandler>()
+            .AddHttpMessageHandler<ApimHeadersHandler>()
+            .AddHttpMessageHandler<LoggingMessageHandler>();
     }
 }

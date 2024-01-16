@@ -54,8 +54,10 @@ public class AutomaticApplicationRejectionFunctionTests
         var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
 
         // Assert
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticRejection successfully ran"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticRejection successfully ran"));
+        });
     }
-
 }
