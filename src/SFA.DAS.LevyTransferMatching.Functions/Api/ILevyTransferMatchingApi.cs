@@ -16,11 +16,14 @@ public interface ILevyTransferMatchingApi
     [Post("functions/debit-application")]
     Task DebitApplication([Body] TransferRequestApprovedRequest request);
 
-    [Post("functions/application-funding-declined")]
-    Task ApplicationFundingDeclined([Body] ApplicationFundingDeclinedRequest request);
+        [Post("functions/application-funding-declined")]
+        Task ApplicationFundingDeclined([Body] ApplicationFundingDeclinedRequest request);  
+        
+        [Post("functions/reject-pledge-applications")]
+        Task RejectPledgeApplications([Body] RejectPledgeApplicationsRequest request);
 
-    [Get("functions/get-pending-application-email-data")]
-    Task<GetPendingApplicationEmailDataResponse> GetPendingApplicationEmailData();
+        [Get("functions/get-pending-application-email-data")]
+        Task<GetPendingApplicationEmailDataResponse> GetPendingApplicationEmailData();
 
     [Post("functions/send-emails")]
     Task SendEmails([Body] SendEmailsRequest request);
