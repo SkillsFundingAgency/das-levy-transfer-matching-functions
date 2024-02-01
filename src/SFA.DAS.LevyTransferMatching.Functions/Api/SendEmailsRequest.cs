@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LevyTransferMatching.Functions.Api;
+﻿using System.Text.Json.Serialization;
+
+namespace SFA.DAS.LevyTransferMatching.Functions.Api;
 
 public class SendEmailsRequest
 {
@@ -6,15 +8,16 @@ public class SendEmailsRequest
 
     public class EmailData
     {
-        public EmailData(string templateName, string recipientEmailAddress, Dictionary<string,string> tokens)
+        [JsonConstructor]
+        public EmailData(string templateName, string recipientEmailAddress, Dictionary<string, string> tokens)
         {
-                TemplateName = templateName;
-                RecipientEmailAddress = recipientEmailAddress;
-                Tokens = tokens;
-            }
+            TemplateName = templateName;
+            RecipientEmailAddress = recipientEmailAddress;
+            Tokens = tokens;
+        }
 
         public string TemplateName { get; set; }
         public string RecipientEmailAddress { get; set; }
-        public Dictionary<string,string> Tokens { get; set; }
+        public Dictionary<string, string> Tokens { get; set; }
     }
 }
