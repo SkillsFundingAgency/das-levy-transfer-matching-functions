@@ -12,19 +12,20 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDasLogging(this IServiceCollection services)
     {
-        services.AddLogging(options =>
+        services.AddLogging(builder =>
         {
-            options.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
-            options.SetMinimumLevel(LogLevel.Trace);
-            options.AddNLog(new NLogProviderOptions
+            builder.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddNLog(new NLogProviderOptions
             {
                 CaptureMessageTemplates = true,
                 CaptureMessageProperties = true
             });
-            options.AddConsole();
+            builder.AddConsole();
+            builder.AddApplicationInsightsWebJobs();
             
-            options.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-            options.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
 
             NLogConfiguration.ConfigureNLog();
         });

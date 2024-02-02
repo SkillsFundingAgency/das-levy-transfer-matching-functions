@@ -15,9 +15,6 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace SFA.DAS.LevyTransferMatching.Functions;
 
-// Read before updating packages:
-// v3 Azure functions are NOT compatible at time of writing with v5 versions of the Microsoft.Extensions.* libraries
-// https://github.com/Azure/azure-functions-core-tools/issues/2304#issuecomment-735454326
 public class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
@@ -35,11 +32,11 @@ public class Startup : FunctionsStartup
         ConfigureServices(builder, config, serviceProvider);
     }
 
-    private void ConfigureServices(IFunctionsHostBuilder builder, IConfiguration configuration, ServiceProvider serviceProvider)
+    private static void ConfigureServices(IFunctionsHostBuilder builder, IConfiguration configuration, ServiceProvider serviceProvider)
     {
         var config = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
-        var logger = serviceProvider.GetLogger(GetType().AssemblyQualifiedName);
+        var logger = serviceProvider.GetLogger(nameof(Startup));
 
         builder.Services
             .AddSingleton(config)
