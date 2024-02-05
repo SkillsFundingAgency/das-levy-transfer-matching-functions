@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using NLog.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Functions.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
@@ -22,11 +21,6 @@ public static class ServiceCollectionExtensions
                 CaptureMessageProperties = true
             });
             builder.AddConsole();
-            
-            builder.AddApplicationInsightsWebJobs();
-
-            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
 
             NLogConfiguration.ConfigureNLog();
         });
