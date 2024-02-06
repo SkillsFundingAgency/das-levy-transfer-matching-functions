@@ -2,14 +2,13 @@
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions
+namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
+
+public static class LegacyServiceBusStartupExtensions
 {
-    public static class LegacyServiceBusStartupExtensions
+    public static IServiceCollection AddLegacyServiceBus(this IServiceCollection services, LevyTransferMatchingFunctions config)
     {
-        public static IServiceCollection AddLegacyServiceBus(this IServiceCollection services, LevyTransferMatchingFunctions config)
-        {
-            services.AddTransient<ILegacyTopicMessagePublisher, LegacyTopicMessagePublisher>();
-            return services;
-        }
+        services.AddTransient<ILegacyTopicMessagePublisher, LegacyTopicMessagePublisher>();
+        return services;
     }
 }

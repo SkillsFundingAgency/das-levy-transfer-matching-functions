@@ -1,48 +1,43 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class PledgeCreditedEventHandler
 {
-    public class PledgeCreditedEventHandler
+    private readonly ILevyTransferMatchingApi _api;
+
+    public PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
+    [FunctionName("PledgeCreditedEventHandler")]
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    {
+         log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+
+        try
         {
-            _api = api;
+            var response = await _api.GetApplicationsForAutomaticApproval(@event.PledgeId);
+
+            foreach (var app in response.Applications)
+            {
+                await _api.ApproveApplication(new ApproveApplicationRequest 
+                { 
+                    ApplicationId = app.Id, 
+                    PledgeId = app.PledgeId 
+                });
+            }
         }
-
-        [FunctionName("PledgeCreditedEventHandler")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+        catch (ApiException ex)
         {
-             log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            try
-            {
-                var response = await _api.GetApplicationsForAutomaticApproval(@event.PledgeId);
-
-                foreach (var app in response.Applications)
-                {
-                    await _api.ApproveApplication(new ApproveApplicationRequest 
-                    { 
-                        ApplicationId = app.Id, 
-                        PledgeId = app.PledgeId 
-                    });
-                }
-            }
-            catch (ApiException ex)
-            {
-                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-
-                log.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
-            }
+            log.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
         }
     }
 }

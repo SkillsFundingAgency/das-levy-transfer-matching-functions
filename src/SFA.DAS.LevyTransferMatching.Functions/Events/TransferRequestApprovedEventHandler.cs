@@ -1,49 +1,44 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class TransferRequestApprovedEventHandler
 {
-    public class TransferRequestApprovedEventHandler
+    private readonly ILevyTransferMatchingApi _api;
+
+    public TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
+    [FunctionName("RunTransferRequestApprovedEvent")]
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
+    {
+        if (@event.PledgeApplicationId != null)
         {
-            _api = api;
-        }
 
-        [FunctionName("RunTransferRequestApprovedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
-        {
-            if (@event.PledgeApplicationId != null)
+            log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
+
+            var request = new TransferRequestApprovedRequest
             {
+                ApplicationId = @event.PledgeApplicationId.Value,
+                NumberOfApprentices = @event.NumberOfApprentices,
+                Amount = @event.FundingCap.HasValue ? (int)decimal.Round(@event.FundingCap.Value) : 0
+            };
 
-                log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
+            try
+            {
+                await _api.DebitApplication(request);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                var request = new TransferRequestApprovedRequest
-                {
-                    ApplicationId = @event.PledgeApplicationId.Value,
-                    NumberOfApprentices = @event.NumberOfApprentices,
-                    Amount = @event.FundingCap.HasValue ? (int)decimal.Round(@event.FundingCap.Value) : 0
-                };
-
-                try
-                {
-                    await _api.DebitApplication(request);
-                }
-                catch (ApiException ex)
-                {
-                    if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-
-                    log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
-                }
+                log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
             }
         }
     }

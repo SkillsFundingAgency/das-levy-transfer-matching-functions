@@ -9,54 +9,53 @@ using SFA.DAS.LevyTransferMatching.Functions.Timers;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers
+namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers;
+
+[TestFixture]
+public class AutomaticApplicationApprovalFunctionTests
 {
-    [TestFixture]
-    public class AutomaticApplicationApprovalFunctionTests
+    private AutomaticApplicationApprovalFunction _handler;
+    private Mock<ILevyTransferMatchingApi> _api;
+    private Mock<ILogger> _logger;
+    private GetApplicationsForAutomaticApprovalResponse _apiResponse;
+
+    [SetUp]
+    public void Setup()
     {
-        private AutomaticApplicationApprovalFunction _handler;
-        private Mock<ILevyTransferMatchingApi> _api;
-        private Mock<ILogger> _logger;
-        private GetApplicationsForAutomaticApprovalResponse _apiResponse;
+        var fixture = new Fixture();
 
-        [SetUp]
-        public void Setup()
-        {
-            var fixture = new Fixture();
+        _api = new Mock<ILevyTransferMatchingApi>();
+        _logger = new Mock<ILogger>();
 
-            _api = new Mock<ILevyTransferMatchingApi>();
-            _logger = new Mock<ILogger>();
+        _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
 
-            _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
+        _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);
 
-            _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);
-
-            _handler = new AutomaticApplicationApprovalFunction(_api.Object);
-        }
-
-        [Test]
-        public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
-        {
-            // Act
-            await _handler.Run(default, _logger.Object);
-
-            // Assert
-            _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
-        }
-
-        [Test]
-        public async Task HttpTrigger_Should_Return_OkResult()
-        {
-            // Arrange
-            var httpRequestMock = new Mock<HttpRequest>();
-
-            // Act
-            var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual("ApplicationsWithAutomaticApproval successfully ran", (result as OkObjectResult)?.Value);
-        }
-
+        _handler = new AutomaticApplicationApprovalFunction(_api.Object);
     }
+
+    [Test]
+    public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
+    {
+        // Act
+        await _handler.Run(default, _logger.Object);
+
+        // Assert
+        _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
+    }
+
+    [Test]
+    public async Task HttpTrigger_Should_Return_OkResult()
+    {
+        // Arrange
+        var httpRequestMock = new Mock<HttpRequest>();
+
+        // Act
+        var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticApproval successfully ran"));
+    }
+
 }

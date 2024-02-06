@@ -1,46 +1,41 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class ApplicationApprovedEventHandler
 {
-    public class ApplicationApprovedEventHandler
+    private readonly ILevyTransferMatchingApi _api;
+
+    public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
     {
-        private readonly ILevyTransferMatchingApi _api;
+        _api = api;
+    }
 
-        public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
+    [FunctionName("RunApplicationApprovedEvent")]
+    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
+    {
+        log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
+
+        var request = new ApplicationApprovedRequest
         {
-            _api = api;
+            PledgeId = @event.PledgeId,
+            ApplicationId = @event.ApplicationId,
+            Amount = @event.Amount
+        };
+
+        try
+        {
+            await _api.ApplicationApproved(request);
         }
-
-        [FunctionName("RunApplicationApprovedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
+        catch (ApiException ex)
         {
-            log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
+            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            var request = new ApplicationApprovedRequest
-            {
-                PledgeId = @event.PledgeId,
-                ApplicationId = @event.ApplicationId,
-                Amount = @event.Amount
-            };
-
-            try
-            {
-                await _api.ApplicationApproved(request);
-            }
-            catch (ApiException ex)
-            {
-                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-
-                log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
-            }
+            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
         }
     }
 }

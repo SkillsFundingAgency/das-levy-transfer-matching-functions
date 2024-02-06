@@ -1,27 +1,26 @@
 ﻿using System.Text;
 
-namespace SFA.DAS.LevyTransferMatching.Infrastructure.Extensions
+namespace SFA.DAS.LevyTransferMatching.Infrastructure.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string ToUnderscoreCase(this string source)
     {
-        public static string ToUnderscoreCase(this string source)
+        var stringBuilder = new StringBuilder();
+        var startOfWord = true;
+
+        foreach (var ch in source)
         {
-            var sb = new StringBuilder();
-            var startOfWord = true;
-
-            foreach (var ch in source)
+            if (char.IsUpper(ch) && !startOfWord)
             {
-                if (char.IsUpper(ch) && !startOfWord)
-                {
-                    sb.Append("_");
-                }
-
-                sb.Append(ch.ToString().ToLower());
-
-                startOfWord = char.IsWhiteSpace(ch);
+                stringBuilder.Append("_");
             }
 
-            return sb.ToString();
+            stringBuilder.Append(ch.ToString().ToLower());
+
+            startOfWord = char.IsWhiteSpace(ch);
         }
+
+        return stringBuilder.ToString();
     }
 }
