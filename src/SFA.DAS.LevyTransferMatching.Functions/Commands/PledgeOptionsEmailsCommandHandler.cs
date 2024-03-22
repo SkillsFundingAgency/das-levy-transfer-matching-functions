@@ -10,20 +10,22 @@ public class PledgeOptionsEmailsCommandHandler
     private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
     private readonly IEncodingService _encodingService;
     private readonly EmailNotificationsConfiguration _config;
+    private readonly ILogger<PledgeOptionsEmailsCommandHandler> _logger;
 
     public PledgeOptionsEmailsCommandHandler(ILevyTransferMatchingApi levyTransferMatchingApi,
-        IEncodingService encodingService, 
-        EmailNotificationsConfiguration config)
+        IEncodingService encodingService,
+        EmailNotificationsConfiguration config, ILogger<PledgeOptionsEmailsCommandHandler> logger)
     {
         _levyTransferMatchingApi = levyTransferMatchingApi;
         _encodingService = encodingService;
         _config = config;
+        _logger = logger;
     }
 
-    [FunctionName("PledgeOptionsEmailCommand")]
-    public async Task Run([TimerTrigger("0 0 8 1 5 *")] TimerInfo timer, ILogger logger)
+    [Function("PledgeOptionsEmailCommand")]
+    public async Task Run([TimerTrigger("0 0 8 1 5 *")] TimerInfo timer)
     {
-        logger.LogInformation("Sending pledge options emails");
+        _logger.LogInformation("Sending pledge options emails");
         var response = await _levyTransferMatchingApi.GetPledgeOptionsEmailData();
 
         var sendEmailsRequest = new SendEmailsRequest { EmailDataList = new List<SendEmailsRequest.EmailData>() };
@@ -49,7 +51,7 @@ public class PledgeOptionsEmailsCommandHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            logger.LogError(ex, $"Error sending pledge options emails");
+            _logger.LogError(ex, $"Error sending pledge options emails");
         }
     }
 }

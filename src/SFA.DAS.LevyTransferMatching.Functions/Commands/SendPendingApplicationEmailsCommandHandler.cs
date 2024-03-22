@@ -10,25 +10,27 @@ public class SendPendingApplicationEmailsCommandHandler
     private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
     private readonly IEncodingService _encodingService;
     private readonly EmailNotificationsConfiguration _config;
+    private readonly ILogger<SendPendingApplicationEmailsCommandHandler> _logger;
 
-    public SendPendingApplicationEmailsCommandHandler(ILevyTransferMatchingApi levyTransferMatchingApi, 
+    public SendPendingApplicationEmailsCommandHandler(ILevyTransferMatchingApi levyTransferMatchingApi,
         IEncodingService encodingService,
-        EmailNotificationsConfiguration config)
+        EmailNotificationsConfiguration config, ILogger<SendPendingApplicationEmailsCommandHandler> logger)
     {
         _levyTransferMatchingApi = levyTransferMatchingApi;
         _encodingService = encodingService;
         _config = config;
+        _logger = logger;
     }
 
-    [FunctionName("SendPendingApplicationEmailsCommand")]
-    public async Task Run([TimerTrigger("0 0 8 * * 1")] TimerInfo timer, ILogger logger)
+    [Function("SendPendingApplicationEmailsCommand")]
+    public async Task Run([TimerTrigger("0 0 8 * * 1")] TimerInfo timer)
     {
-        logger.LogInformation("Sending pending application emails");
+        _logger.LogInformation("Sending pending application emails");
         var response = await _levyTransferMatchingApi.GetPendingApplicationEmailData();
 
         var sendEmailsRequest = new SendEmailsRequest { EmailDataList = new List<SendEmailsRequest.EmailData>() };
-        
-        foreach(var emailData in response.EmailDataList)
+
+        foreach (var emailData in response.EmailDataList)
         {
             var tokens = new Dictionary<string, string>
             {
@@ -50,7 +52,7 @@ public class SendPendingApplicationEmailsCommandHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            logger.LogError(ex, $"Error sending emails");
+            _logger.LogError(ex, $"Error sending emails");
         }
     }
 }

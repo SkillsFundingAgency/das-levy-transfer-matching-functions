@@ -1,23 +1,25 @@
 ﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationCreatedEventHandler
 {
     private readonly ILegacyTopicMessagePublisher _legacyTopicMessagePublisher;
+    private readonly ILogger<ApplicationCreatedEventHandler> _logger;
 
-    public ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
+    public ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher, ILogger<ApplicationCreatedEventHandler> logger)
     {
         _legacyTopicMessagePublisher = legacyTopicMessagePublisher;
+        _logger = logger;
     }
 
-    [FunctionName("RunApplicationCreatedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
+    [Function("RunApplicationCreatedEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationCreated handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationCreated handler for application {@event.ApplicationId}");
 
         try
         {
@@ -26,7 +28,7 @@ public class ApplicationCreatedEventHandler
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationCreatedEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationCreatedEvent for application {@event.ApplicationId}");
         }
     }
 }

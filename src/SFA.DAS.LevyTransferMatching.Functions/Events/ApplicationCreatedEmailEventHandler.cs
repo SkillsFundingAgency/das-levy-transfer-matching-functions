@@ -3,7 +3,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
@@ -11,17 +11,19 @@ public class ApplicationCreatedEmailEventHandler
 {
     private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
     private readonly IEncodingService _encodingService;
+    private readonly ILogger<ApplicationCreatedEmailEventHandler> _logger;
 
-    public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
+    public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, ILogger<ApplicationCreatedEmailEventHandler> logger)
     {
         _levyTransferMatchingApi = api;
         _encodingService = encodingService;
+        _logger = logger;
     }
 
-    [FunctionName("ApplicationCreatedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
+    [Function("ApplicationCreatedEmailEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 
         var request = new ApplicationCreatedEmailRequest
         {
@@ -39,7 +41,7 @@ public class ApplicationCreatedEmailEventHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationCreatedEmailEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationCreatedEmailEvent for application {@event.ApplicationId}");
         }
     }
 }

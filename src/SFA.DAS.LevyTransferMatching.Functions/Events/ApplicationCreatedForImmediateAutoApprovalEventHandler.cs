@@ -2,23 +2,25 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationCreatedForImmediateAutoApprovalEventHandler
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<ApplicationCreatedForImmediateAutoApprovalEventHandler> _logger;
 
-    public ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api)
+    public ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api,
+        ILogger<ApplicationCreatedForImmediateAutoApprovalEventHandler> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("RunApplicationCreatedForImmediateAutoApprovalEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
+    [Function("RunApplicationCreatedForImmediateAutoApprovalEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
 
         try
         {
@@ -27,12 +29,12 @@ public class ApplicationCreatedForImmediateAutoApprovalEventHandler
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId
             };
-            
+
             await _api.ApplicationCreatedForImmediateAutoApproval(request);
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
+            _logger.LogError(ex, $"Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
             throw;
         }
     }

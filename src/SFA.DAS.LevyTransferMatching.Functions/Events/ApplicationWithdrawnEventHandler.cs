@@ -1,23 +1,25 @@
 ﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationWithdrawnEventHandler
 {
     private readonly ILegacyTopicMessagePublisher _legacyTopicMessagePublisher;
+    private readonly ILogger<ApplicationWithdrawnEventHandler> _logger;
 
-    public ApplicationWithdrawnEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
+    public ApplicationWithdrawnEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher,
+        ILogger<ApplicationWithdrawnEventHandler> logger)
     {
         _legacyTopicMessagePublisher = legacyTopicMessagePublisher;
     }
 
-    [FunctionName("RunApplicationWithdrawnEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawn)] ApplicationWithdrawnEvent @event, ILogger log)
+    [Function("RunApplicationWithdrawnEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationWithdrawn)] ApplicationWithdrawnEvent @event)
     {
-        log.LogInformation($"Handling ApplicationWithdrawn handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationWithdrawn handler for application {@event.ApplicationId}");
 
         try
         {
@@ -26,7 +28,7 @@ public class ApplicationWithdrawnEventHandler
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationWithdrawnEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationWithdrawnEvent for application {@event.ApplicationId}");
         }
     }
 }

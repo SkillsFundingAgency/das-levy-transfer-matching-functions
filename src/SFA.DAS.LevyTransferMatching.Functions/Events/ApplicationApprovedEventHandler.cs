@@ -2,23 +2,25 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationApprovedEventHandler
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<ApplicationApprovedEventHandler> _logger;
 
-    public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
+    public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationApprovedEventHandler> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("RunApplicationApprovedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
+    [Function("RunApplicationApprovedEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
 
         var request = new ApplicationApprovedRequest
         {
@@ -35,7 +37,7 @@ public class ApplicationApprovedEventHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
         }
     }
 }

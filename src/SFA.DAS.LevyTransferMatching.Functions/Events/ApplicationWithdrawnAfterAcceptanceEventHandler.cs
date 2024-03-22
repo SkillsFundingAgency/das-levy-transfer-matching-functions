@@ -2,31 +2,33 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationWithdrawnAfterAcceptanceEventHandler
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<ApplicationWithdrawnAfterAcceptanceEventHandler> _logger;
 
-    public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
+    public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationWithdrawnAfterAcceptanceEventHandler> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("RunApplicationWithdrawnAfterAcceptanceEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    [Function("RunApplicationWithdrawnAfterAcceptanceEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event)
     {
-        log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
-     
+        _logger.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
+
         var request = new ApplicationWithdrawnAfterAcceptanceRequest
         {
             ApplicationId = @event.ApplicationId,
             PledgeId = @event.PledgeId,
             Amount = @event.Amount,
         };
-     
+
         try
         {
             await _api.ApplicationWithdrawnAfterAcceptance(request);
@@ -34,8 +36,8 @@ public class ApplicationWithdrawnAfterAcceptanceEventHandler
         catch (ApiException ex)
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-     
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+
+            _logger.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
         }
     }
 }

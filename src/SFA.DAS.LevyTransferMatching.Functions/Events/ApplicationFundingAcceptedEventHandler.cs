@@ -1,31 +1,29 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events
 {
     public class ApplicationFundingAcceptedEventHandler
     {
         private readonly ILevyTransferMatchingApi _api;
+        private readonly ILogger<ApplicationFundingAcceptedEventHandler> _logger;
 
-        public ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api)
+        public ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationFundingAcceptedEventHandler> logger)
         {
             _api = api;
+            _logger = logger;
         }
 
-        [FunctionName("RunApplicationFundingAcceptedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationFundingAccepted)] ApplicationFundingAcceptedEvent @event, ILogger log)
+        [Function("RunApplicationFundingAcceptedEvent")]
+        public async Task Run([ServiceBusTrigger(QueueNames.ApplicationFundingAccepted)] ApplicationFundingAcceptedEvent @event)
         {
-            log.LogInformation($"Handling {nameof(ApplicationFundingAcceptedEvent)} handler for application {@event.ApplicationId}");
+            _logger.LogInformation($"Handling {nameof(ApplicationFundingAcceptedEvent)} handler for application {@event.ApplicationId}");
             if (@event.RejectApplications)
             {
-                log.LogInformation($"Rejecting Pengding applications for pledge {@event.PledgeId}");
+                _logger.LogInformation($"Rejecting Pengding applications for pledge {@event.PledgeId}");
 
                 var request = new RejectPledgeApplicationsRequest
                 {
@@ -40,9 +38,9 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events
                 {
                     if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                    log.LogError(ex, $"Error handling {nameof(ApplicationFundingAcceptedEvent)} for application {@event.ApplicationId}");
+                    _logger.LogError(ex, $"Error handling {nameof(ApplicationFundingAcceptedEvent)} for application {@event.ApplicationId}");
                 }
-            }          
+            }
         }
     }
 }

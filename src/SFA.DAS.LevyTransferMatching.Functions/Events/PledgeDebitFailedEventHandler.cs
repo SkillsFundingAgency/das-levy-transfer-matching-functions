@@ -2,23 +2,25 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class PledgeDebitFailedEventHandler
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<PledgeDebitFailedEventHandler> _logger;
 
-    public PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api)
+    public PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api, ILogger<PledgeDebitFailedEventHandler> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("RunPledgeDebitFailedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event, ILogger log)
+    [Function("RunPledgeDebitFailedEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event)
     {
-        log.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
 
         var request = new PledgeDebitFailedRequest
         {
@@ -33,7 +35,7 @@ public class PledgeDebitFailedEventHandler
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error handling PledgeDebitFailedEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling PledgeDebitFailedEvent for application {@event.ApplicationId}");
             throw;
         }
     }

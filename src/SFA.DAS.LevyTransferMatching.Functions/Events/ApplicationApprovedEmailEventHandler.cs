@@ -3,7 +3,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
@@ -11,17 +11,19 @@ public class ApplicationApprovedEmailEventHandler
 {
     private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
     private readonly IEncodingService _encodingService;
+    private ILogger<ApplicationApprovedEmailEventHandler> _logger;
 
-    public ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
+    public ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, ILogger<ApplicationApprovedEmailEventHandler> logger)
     {
         _levyTransferMatchingApi = api;
         _encodingService = encodingService;
+        _logger = logger;
     }
 
-    [FunctionName("ApplicationApprovedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event, ILogger log)
+    [Function("ApplicationApprovedEmailEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
 
         var request = new ApplicationApprovedEmailRequest
         {
@@ -39,7 +41,7 @@ public class ApplicationApprovedEmailEventHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {@event.ApplicationId}");
         }
     }
 }

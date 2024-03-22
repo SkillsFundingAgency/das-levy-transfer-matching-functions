@@ -2,23 +2,25 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class PledgeCreditedEventHandler
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<PledgeCreditedEventHandler> _logger;
 
-    public PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
+    public PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger<PledgeCreditedEventHandler> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("PledgeCreditedEventHandler")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    [Function("PledgeCreditedEventHandler")]
+    public async Task Run([ServiceBusTrigger(QueueNames.PledgeCredited)] PledgeCreditedEvent @event)
     {
-         log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+        _logger.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 
         try
         {
@@ -26,10 +28,10 @@ public class PledgeCreditedEventHandler
 
             foreach (var app in response.Applications)
             {
-                await _api.ApproveApplication(new ApproveApplicationRequest 
-                { 
-                    ApplicationId = app.Id, 
-                    PledgeId = app.PledgeId 
+                await _api.ApproveApplication(new ApproveApplicationRequest
+                {
+                    ApplicationId = app.Id,
+                    PledgeId = app.PledgeId
                 });
             }
         }
@@ -37,7 +39,7 @@ public class PledgeCreditedEventHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
+            _logger.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
         }
     }
 }

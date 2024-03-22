@@ -1,23 +1,24 @@
 ﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
 public class ApplicationApprovedForLegacyTopicPublishingEventHandler
 {
     private readonly ILegacyTopicMessagePublisher _legacyTopicMessagePublisher;
+    private readonly ILogger<ApplicationApprovedForLegacyTopicPublishingEventHandler> _logger;
 
-    public ApplicationApprovedForLegacyTopicPublishingEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
+    public ApplicationApprovedForLegacyTopicPublishingEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher, ILogger<ApplicationApprovedForLegacyTopicPublishingEventHandler> logger)
     {
         _legacyTopicMessagePublisher = legacyTopicMessagePublisher;
+        _logger = logger;
     }
 
-    [FunctionName("ApplicationApprovedForLegacyTopicPublishing")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
+    [Function("ApplicationApprovedForLegacyTopicPublishing")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
 
         try
         {
@@ -26,7 +27,7 @@ public class ApplicationApprovedForLegacyTopicPublishingEventHandler
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
         }
     }
 }

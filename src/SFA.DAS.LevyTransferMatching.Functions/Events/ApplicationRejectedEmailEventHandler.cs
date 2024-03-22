@@ -4,7 +4,7 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
@@ -13,18 +13,21 @@ public class ApplicationRejectedEmailEventHandler
     private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
     private readonly IEncodingService _encodingService;
     private readonly EmailNotificationsConfiguration _config;
+    private readonly ILogger<ApplicationRejectedEmailEventHandler> _logger;
 
-    public ApplicationRejectedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
+    public ApplicationRejectedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config,
+        ILogger<ApplicationRejectedEmailEventHandler> logger)
     {
         _levyTransferMatchingApi = api;
         _encodingService = encodingService;
         _config = config;
+        _logger = logger;
     }
 
-    [FunctionName("ApplicationRejectedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event, ILogger log)
+    [Function("ApplicationRejectedEmailEvent")]
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event)
     {
-        log.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
+        _logger.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
 
         var request = new ApplicationRejectedEmailRequest
         {
@@ -43,7 +46,7 @@ public class ApplicationRejectedEmailEventHandler
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationRejectedEmailEvent for application {@event.ApplicationId}");
+            _logger.LogError(ex, $"Error handling ApplicationRejectedEmailEvent for application {@event.ApplicationId}");
         }
     }
 }

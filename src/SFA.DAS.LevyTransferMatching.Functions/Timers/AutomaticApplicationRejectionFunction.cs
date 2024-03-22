@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 
@@ -9,31 +8,33 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 public class AutomaticApplicationRejectionFunction
 {
     private readonly ILevyTransferMatchingApi _api;
+    private readonly ILogger<AutomaticApplicationRejectionFunction> _logger;
 
-    public AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
+    public AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api, ILogger<AutomaticApplicationRejectionFunction> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
-    [FunctionName("ApplicationsWithAutomaticRejectionFunction")]
-    public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger log)
+    [Function("ApplicationsWithAutomaticRejectionFunction")]
+    public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer)
     {
-        log.LogInformation($"Executing ApplicationsWithAutomaticRejectionFunction");
+        _logger.LogInformation($"Executing ApplicationsWithAutomaticRejectionFunction");
 
-        await RunApplicationsWithAutomaticRejectionFunction(log);
+        await RunApplicationsWithAutomaticRejectionFunction();
     }
 
-    [FunctionName("HttpAutomaticApplicationRejectionFunction")]
-    public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req, ILogger log)
+    [Function("HttpAutomaticApplicationRejectionFunction")]
+    public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req)
     {
-        log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationRejectionFunction");
+        _logger.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationRejectionFunction");
 
-        await RunApplicationsWithAutomaticRejectionFunction(log);
+        await RunApplicationsWithAutomaticRejectionFunction();
 
         return new OkObjectResult("ApplicationsWithAutomaticRejection successfully ran");
     }
 
-    private async Task RunApplicationsWithAutomaticRejectionFunction(ILogger log)
+    private async Task RunApplicationsWithAutomaticRejectionFunction()
     {
         try
         {
@@ -46,7 +47,7 @@ public class AutomaticApplicationRejectionFunction
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error executing RunApplicationsWithAutomaticRejectionFunction");
+            _logger.LogError(ex, $"Error executing RunApplicationsWithAutomaticRejectionFunction");
             throw;
         }
     }
