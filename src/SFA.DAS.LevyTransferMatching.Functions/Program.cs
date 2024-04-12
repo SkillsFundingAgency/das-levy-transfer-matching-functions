@@ -14,31 +14,31 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
-    .ConfigureServices(services => {
-        
+    .ConfigureServices(services =>
+    {
         services.AddDasLogging();
 
         var serviceProvider = services.BuildServiceProvider();
-        var configuration = serviceProvider.GetConfiguration();
-
-        var dasConfiguration = configuration.BuildDasConfiguration();
-            
-        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), dasConfiguration));
-        services.AddOptions();
         
+        var configuration = serviceProvider
+            .GetConfiguration()
+            .BuildDasConfiguration();
+
+        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
+        services.AddOptions();
+
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        
+
         var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
         var logger = serviceProvider.GetLogger(nameof(Program));
 
-        services
-            .AddSingleton(dasConfiguration)
-            .AddNServiceBus(functionsConfig, logger)
-            .AddLegacyServiceBus(functionsConfig)
-            .AddCache(functionsConfig)
-            .AddDasDataProtection(functionsConfig);
+        services.AddSingleton(configuration);
+        services.AddNServiceBus(functionsConfig, logger);
+        services.AddLegacyServiceBus(functionsConfig);
+        services.AddCache(functionsConfig);
+        services.AddDasDataProtection(functionsConfig);
 
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
@@ -58,9 +58,7 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<DefaultHeadersHandler>()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
-        
     })
     .Build();
 
 host.Run();
-
