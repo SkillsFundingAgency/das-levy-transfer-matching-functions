@@ -1,11 +1,8 @@
 ﻿using NServiceBus;
-using NServiceBus.Logging;
 using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 

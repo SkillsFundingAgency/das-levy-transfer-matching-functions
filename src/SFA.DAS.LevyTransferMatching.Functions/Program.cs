@@ -1,8 +1,10 @@
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using NServiceBus;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http.Configuration;
@@ -14,6 +16,7 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
+    .UseNServiceBus()
     .ConfigureServices(services =>
     {
         services.AddDasLogging();
@@ -35,13 +38,15 @@ var host = new HostBuilder()
         var logger = serviceProvider.GetLogger(nameof(Program));
 
         services.AddSingleton(configuration);
-        services.AddNServiceBus(functionsConfig, logger);
+        //services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
 
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
+        
+        Environment.SetEnvironmentVariable("NServiceBusConnectionString", functionsConfig.NServiceBusConnectionString);
 
         services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
@@ -59,6 +64,46 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
     })
+    // .UseNServiceBus(config =>
+    // {
+    //     config.AddServiceBusClient<servi>(options =>
+    //     {
+    //         options.EndpointConfiguration = endpoint =>
+    //         {
+    //             endpoint.UseTransport<LearningTransport>().StorageDirectory(
+    //                 Path.Combine(
+    //                     Directory.GetCurrentDirectory()
+    //                         .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
+    //                     @"src\.learningtransport"));
+    //                 
+    //             return endpoint;
+    //         };
+    //     });
+    //     if (_apiConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
+    //     {
+    //
+    //         services.AddNServiceBus(logger, (options) =>
+    //         {
+    //             options.EndpointConfiguration = (endpoint) =>
+    //             {
+    //                 endpoint.UseTransport<LearningTransport>().StorageDirectory(
+    //                     Path.Combine(
+    //                         Directory.GetCurrentDirectory()
+    //                             .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
+    //                         @"src\.learningtransport"));
+    //                 
+    //                 return endpoint;
+    //             };
+    //         });
+    //     }
+    //     else
+    //     {
+    //         Environment.SetEnvironmentVariable("NServiceBusConnectionString", config.NServiceBusConnectionString);
+    //         services.AddNServiceBus(logger);
+    //     }
+    //     
+    //     config.Transport
+    // })
     .Build();
 
 host.Run();
