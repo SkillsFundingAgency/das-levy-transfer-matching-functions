@@ -20,7 +20,7 @@ public class PledgeOptionsEmailsCommandHandler
         _config = config;
     }
 
-    [FunctionName("PledgeOptionsEmailCommand")]
+    [Function("PledgeOptionsEmailCommand")]
     public async Task Run([TimerTrigger("0 0 8 1 5 *")] TimerInfo timer, ILogger logger)
     {
         logger.LogInformation("Sending pledge options emails");

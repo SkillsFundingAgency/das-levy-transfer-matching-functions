@@ -14,7 +14,7 @@ public class AutomaticApplicationApprovalFunction
         _api = api;
     }
 
-    [FunctionName("ApplicationsWithAutomaticApprovalFunction")]
+    [Function("ApplicationsWithAutomaticApprovalFunction")]
     public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
     {
         log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
@@ -23,7 +23,7 @@ public class AutomaticApplicationApprovalFunction
           
     }
 
-    [FunctionName("HttpAutomaticApplicationApprovalFunction")]
+    [Function("HttpAutomaticApplicationApprovalFunction")]
     public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger log)
     {
         log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");

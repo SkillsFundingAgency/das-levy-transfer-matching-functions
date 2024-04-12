@@ -14,7 +14,7 @@ public class RunHealthCheckCommandHandler
         _distributedCache = distributedCache;
     }
 
-    [FunctionName("RunHealthCheckCommand")]
+    [Function("RunHealthCheckCommand")]
     public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.RunHealthCheck)] RunHealthCheckCommand runHealthCheck, ILogger log)
     {
         log.LogInformation($"Handling command: {runHealthCheck}");

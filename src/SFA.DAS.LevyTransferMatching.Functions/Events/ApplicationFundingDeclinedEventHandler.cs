@@ -2,21 +2,13 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationFundingDeclinedEventHandler
+public class ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
-    [FunctionName("RunApplicationFundingDeclinedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationFundingDeclined)] ApplicationFundingDeclinedEvent @event, ILogger log)
+    [Function("RunApplicationFundingDeclinedEvent")]
+    public async Task Run([QueueTrigger(QueueNames.ApplicationFundingDeclined)] ApplicationFundingDeclinedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling {nameof(ApplicationFundingDeclinedEvent)} handler for application {@event.ApplicationId}");
      
@@ -29,7 +21,7 @@ public class ApplicationFundingDeclinedEventHandler
      
         try
         {
-            await _api.ApplicationFundingDeclined(request);
+            await api.ApplicationFundingDeclined(request);
         }
         catch (ApiException ex)
         {

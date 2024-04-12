@@ -14,7 +14,7 @@ public class AutomaticApplicationRejectionFunction
         _api = api;
     }
 
-    [FunctionName("ApplicationsWithAutomaticRejectionFunction")]
+    [Function("ApplicationsWithAutomaticRejectionFunction")]
     public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger log)
     {
         log.LogInformation($"Executing ApplicationsWithAutomaticRejectionFunction");
@@ -22,7 +22,7 @@ public class AutomaticApplicationRejectionFunction
         await RunApplicationsWithAutomaticRejectionFunction(log);
     }
 
-    [FunctionName("HttpAutomaticApplicationRejectionFunction")]
+    [Function("HttpAutomaticApplicationRejectionFunction")]
     public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req, ILogger log)
     {
         log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationRejectionFunction");

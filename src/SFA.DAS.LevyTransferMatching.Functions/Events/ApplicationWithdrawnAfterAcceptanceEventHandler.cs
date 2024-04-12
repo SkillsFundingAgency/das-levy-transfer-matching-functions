@@ -2,21 +2,13 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationWithdrawnAfterAcceptanceEventHandler
+public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
-    [FunctionName("RunApplicationWithdrawnAfterAcceptanceEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    [Function("RunApplicationWithdrawnAfterAcceptanceEvent")]
+    public async Task Run([QueueTrigger(QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
     {
         log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
      
@@ -29,7 +21,7 @@ public class ApplicationWithdrawnAfterAcceptanceEventHandler
      
         try
         {
-            await _api.ApplicationWithdrawnAfterAcceptance(request);
+            await api.ApplicationWithdrawnAfterAcceptance(request);
         }
         catch (ApiException ex)
         {

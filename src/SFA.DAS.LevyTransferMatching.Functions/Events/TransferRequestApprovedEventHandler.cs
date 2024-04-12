@@ -2,21 +2,13 @@
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class TransferRequestApprovedEventHandler
+public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
-    [FunctionName("RunTransferRequestApprovedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
+    [Function("RunTransferRequestApprovedEvent")]
+    public async Task Run([QueueTrigger(QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
     {
         if (@event.PledgeApplicationId != null)
         {
@@ -32,7 +24,7 @@ public class TransferRequestApprovedEventHandler
 
             try
             {
-                await _api.DebitApplication(request);
+                await api.DebitApplication(request);
             }
             catch (ApiException ex)
             {

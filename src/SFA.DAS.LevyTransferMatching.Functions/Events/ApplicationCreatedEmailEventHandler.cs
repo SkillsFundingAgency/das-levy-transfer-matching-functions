@@ -3,23 +3,13 @@ using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationCreatedEmailEventHandler
+public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
 {
-    private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
-    private readonly IEncodingService _encodingService;
-
-    public ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
-    {
-        _levyTransferMatchingApi = api;
-        _encodingService = encodingService;
-    }
-
-    [FunctionName("ApplicationCreatedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
+    [Function("ApplicationCreatedEmailEvent")]
+    public async Task Run([QueueTrigger(QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 
@@ -28,12 +18,12 @@ public class ApplicationCreatedEmailEventHandler
             PledgeId = @event.PledgeId,
             ApplicationId = @event.ApplicationId,
             ReceiverId = @event.ReceiverAccountId,
-            EncodedApplicationId = _encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
+            EncodedApplicationId = encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
         };
 
         try
         {
-            await _levyTransferMatchingApi.ApplicationCreatedEmail(request);
+            await api.ApplicationCreatedEmail(request);
         }
         catch (ApiException ex)
         {

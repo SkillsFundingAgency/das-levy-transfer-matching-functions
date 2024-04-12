@@ -1,28 +1,21 @@
 ﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationApprovedForLegacyTopicPublishingEventHandler
+public class ApplicationApprovedForLegacyTopicPublishingEventHandler(
+    ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
-    private readonly ILegacyTopicMessagePublisher _legacyTopicMessagePublisher;
-
-    public ApplicationApprovedForLegacyTopicPublishingEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
-    {
-        _legacyTopicMessagePublisher = legacyTopicMessagePublisher;
-    }
-
-    [FunctionName("ApplicationApprovedForLegacyTopicPublishing")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
+    [Function("ApplicationApprovedForLegacyTopicPublishing")]
+    public async Task Run([QueueTrigger(QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
 
         try
         {
             var legacyMessage = new Messages.Legacy.PledgeApplicationApproved(@event.ApplicationId, @event.PledgeId, @event.ApprovedOn, @event.Amount, @event.TransferSenderId);
-            await _legacyTopicMessagePublisher.PublishAsync(legacyMessage);
+            await legacyTopicMessagePublisher.PublishAsync(legacyMessage);
         }
         catch (Exception ex)
         {

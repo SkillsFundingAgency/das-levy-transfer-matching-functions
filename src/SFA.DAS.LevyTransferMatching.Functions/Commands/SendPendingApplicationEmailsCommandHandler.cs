@@ -20,7 +20,7 @@ public class SendPendingApplicationEmailsCommandHandler
         _config = config;
     }
 
-    [FunctionName("SendPendingApplicationEmailsCommand")]
+    [Function("SendPendingApplicationEmailsCommand")]
     public async Task Run([TimerTrigger("0 0 8 * * 1")] TimerInfo timer, ILogger logger)
     {
         logger.LogInformation("Sending pending application emails");

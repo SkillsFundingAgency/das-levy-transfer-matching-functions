@@ -2,21 +2,13 @@
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationApprovedEventHandler
+public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
-    [FunctionName("RunApplicationApprovedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
+    [Function("RunApplicationApprovedEvent")]
+    public async Task Run([QueueTrigger(QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
 
@@ -29,7 +21,7 @@ public class ApplicationApprovedEventHandler
 
         try
         {
-            await _api.ApplicationApproved(request);
+            await api.ApplicationApproved(request);
         }
         catch (ApiException ex)
         {
