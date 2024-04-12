@@ -14,6 +14,8 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
+[assembly:NServiceBusTriggerFunction("LevyTransferMatchingFunctionsEndpoint")]
+
 IConfiguration hostConfig = null;
 
 var host = new HostBuilder()
@@ -66,7 +68,7 @@ var host = new HostBuilder()
     {
         var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
-        var endpointConfiguration = new EndpointConfiguration("FunctionConfig");
+        var endpointConfiguration = new EndpointConfiguration("LevyTransferMatchingFunctionsEndpoint");
         
         if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
         {

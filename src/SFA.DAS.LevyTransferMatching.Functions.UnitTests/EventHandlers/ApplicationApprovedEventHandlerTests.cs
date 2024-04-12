@@ -14,7 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
     public class ApplicationApprovedEventHandlerTests
     {
         private ApplicationApprovedEventHandler _handler;
-        private ApplicationApprovedEvent _event;
+        private Events.ApplicationApprovedEvent _event;
         private Mock<ILevyTransferMatchingApi> _api;
         private readonly Fixture _fixture = new Fixture();
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
         {
             _api = new Mock<ILevyTransferMatchingApi>();
 
-            _event = _fixture.Create<ApplicationApprovedEvent>();
+            _event = _fixture.Create<Events.ApplicationApprovedEvent>();
 
             _handler = new ApplicationApprovedEventHandler(_api.Object);
         }
