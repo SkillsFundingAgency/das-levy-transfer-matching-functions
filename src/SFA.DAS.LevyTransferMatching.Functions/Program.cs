@@ -14,41 +14,39 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
+IConfiguration hostConfig = null;
+
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
-    .UseNServiceBus()
-    .ConfigureServices(services =>
+   .ConfigureServices(services =>
     {
         services.AddDasLogging();
 
         var serviceProvider = services.BuildServiceProvider();
-        
-        var configuration = serviceProvider
-            .GetConfiguration()
+
+        hostConfig = serviceProvider.GetConfiguration()
             .BuildDasConfiguration();
 
-        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
+        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), hostConfig));
         services.AddOptions();
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+        var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
-        var logger = serviceProvider.GetLogger(nameof(Program));
+        //var logger = serviceProvider.GetLogger(nameof(Program));
 
-        services.AddSingleton(configuration);
+        services.AddSingleton(hostConfig);
         //services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
 
-        var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
-        var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
-        
-        Environment.SetEnvironmentVariable("NServiceBusConnectionString", functionsConfig.NServiceBusConnectionString);
+        var apiConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
+        var emailNotificationsConfig = hostConfig.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
 
-        services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
+        services.Configure<EncodingConfig>(hostConfig.GetSection(ConfigurationKeys.EncodingService));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
 
         services.AddSingleton(apiConfig);
@@ -64,46 +62,28 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
     })
-    // .UseNServiceBus(config =>
-    // {
-    //     config.AddServiceBusClient<servi>(options =>
-    //     {
-    //         options.EndpointConfiguration = endpoint =>
-    //         {
-    //             endpoint.UseTransport<LearningTransport>().StorageDirectory(
-    //                 Path.Combine(
-    //                     Directory.GetCurrentDirectory()
-    //                         .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
-    //                     @"src\.learningtransport"));
-    //                 
-    //             return endpoint;
-    //         };
-    //     });
-    //     if (_apiConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
-    //     {
-    //
-    //         services.AddNServiceBus(logger, (options) =>
-    //         {
-    //             options.EndpointConfiguration = (endpoint) =>
-    //             {
-    //                 endpoint.UseTransport<LearningTransport>().StorageDirectory(
-    //                     Path.Combine(
-    //                         Directory.GetCurrentDirectory()
-    //                             .Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
-    //                         @"src\.learningtransport"));
-    //                 
-    //                 return endpoint;
-    //             };
-    //         });
-    //     }
-    //     else
-    //     {
-    //         Environment.SetEnvironmentVariable("NServiceBusConnectionString", config.NServiceBusConnectionString);
-    //         services.AddNServiceBus(logger);
-    //     }
-    //     
-    //     config.Transport
-    // })
+    .UseNServiceBus(context =>
+    {
+        var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+
+        var endpointConfiguration = new EndpointConfiguration("FunctionConfig");
+        
+        if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
+        {
+            endpointConfiguration
+                .UseTransport<LearningTransport>()
+                .StorageDirectory(
+                Path.Combine(
+                    Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)],
+                    @"src\.learningtransport"));
+            
+            return endpointConfiguration;
+        }
+
+        Environment.SetEnvironmentVariable("NServiceBusConnectionString", functionsConfig.NServiceBusConnectionString);
+
+        return endpointConfiguration;
+    })
     .Build();
 
 host.Run();
