@@ -29,16 +29,16 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
         
-        var config = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+        var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
         var logger = serviceProvider.GetLogger(nameof(Program));
 
         services
-            .AddSingleton(config)
-            .AddNServiceBus(config, logger)
-            .AddLegacyServiceBus(config)
-            .AddCache(config)
-            .AddDasDataProtection(config);
+            .AddSingleton(dasConfiguration)
+            .AddNServiceBus(functionsConfig, logger)
+            .AddLegacyServiceBus(functionsConfig)
+            .AddCache(functionsConfig)
+            .AddDasDataProtection(functionsConfig);
 
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
