@@ -14,7 +14,6 @@
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.4"/>
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.3.0"/>
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.0"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0"/>
 
         <!--    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.2.2" />-->
         <!--    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="5.14.0" />-->
