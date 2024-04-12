@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationWithdrawnEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("RunApplicationWithdrawnEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationWithdrawn)] ApplicationWithdrawnEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationWithdrawn)] ApplicationWithdrawnEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationWithdrawn handler for application {@event.ApplicationId}");
 

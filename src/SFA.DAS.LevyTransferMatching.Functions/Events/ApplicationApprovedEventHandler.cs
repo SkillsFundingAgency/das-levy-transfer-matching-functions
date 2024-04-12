@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationApprovedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
 

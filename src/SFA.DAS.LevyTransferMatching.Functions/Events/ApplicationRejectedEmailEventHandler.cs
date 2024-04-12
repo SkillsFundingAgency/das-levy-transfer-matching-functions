@@ -13,7 +13,7 @@ public class ApplicationRejectedEmailEventHandler(
     EmailNotificationsConfiguration config)
 {
     [Function("ApplicationRejectedEmailEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
 

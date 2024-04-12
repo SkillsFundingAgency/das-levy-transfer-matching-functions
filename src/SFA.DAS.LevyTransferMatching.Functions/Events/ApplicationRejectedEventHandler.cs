@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationRejectedEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("RunApplicationRejectedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationRejected)] ApplicationRejectedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationRejected)] ApplicationRejectedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationRejected handler for application {@event.ApplicationId}");
 

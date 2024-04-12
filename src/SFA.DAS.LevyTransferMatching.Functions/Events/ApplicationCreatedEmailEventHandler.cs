@@ -9,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
 {
     [Function("ApplicationCreatedEmailEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 

@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("RunApplicationCreatedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreated handler for application {@event.ApplicationId}");
 

@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("PledgeCreditedEventHandler")]
-    public async Task Run([QueueTrigger(QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
     {
          log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 

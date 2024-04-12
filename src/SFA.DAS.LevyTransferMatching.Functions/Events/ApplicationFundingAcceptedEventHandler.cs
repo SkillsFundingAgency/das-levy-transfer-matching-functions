@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationFundingAcceptedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationFundingAccepted)] ApplicationFundingAcceptedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationFundingAccepted)] ApplicationFundingAcceptedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling {nameof(ApplicationFundingAcceptedEvent)} handler for application {@event.ApplicationId}");
         if (@event.RejectApplications)

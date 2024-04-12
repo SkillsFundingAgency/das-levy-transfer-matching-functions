@@ -8,7 +8,7 @@ public class ApplicationApprovedForLegacyTopicPublishingEventHandler(
     ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("ApplicationApprovedForLegacyTopicPublishing")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
 

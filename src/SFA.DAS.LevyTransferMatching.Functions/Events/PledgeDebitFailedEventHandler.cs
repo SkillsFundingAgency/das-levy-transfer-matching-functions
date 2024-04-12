@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunPledgeDebitFailedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.PledgeDebitFailed)] PledgeDebitFailedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
 

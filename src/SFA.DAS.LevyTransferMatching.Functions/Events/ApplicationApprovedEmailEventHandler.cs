@@ -36,7 +36,7 @@ public class ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, 
 
 //{
 //    [Function("ApplicationApprovedEmailEvent")]
-//    public async Task Run([QueueTrigger(QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event, ILogger log)
+//    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event, ILogger log)
 //    {
 //        log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
 

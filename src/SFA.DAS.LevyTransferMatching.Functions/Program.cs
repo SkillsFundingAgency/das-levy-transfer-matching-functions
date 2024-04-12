@@ -18,7 +18,7 @@ IConfiguration hostConfig = null;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
-   .ConfigureServices(services =>
+    .ConfigureServices(services =>
     {
         services.AddDasLogging();
 
@@ -72,15 +72,15 @@ var host = new HostBuilder()
         {
             endpointConfiguration
                 .UseTransport<LearningTransport>()
-                .StorageDirectory(
-                Path.Combine(
-                    Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)],
-                    @"src\.learningtransport"));
-            
-            return endpointConfiguration;
+                .StorageDirectory(Path.Combine(Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)], @"src\.learningtransport")
+                );
+        }
+        else
+        {
+            Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);    
         }
 
-        Environment.SetEnvironmentVariable("NServiceBusConnectionString", functionsConfig.NServiceBusConnectionString);
+        Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
         return endpointConfiguration;
     })

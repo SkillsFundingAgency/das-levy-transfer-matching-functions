@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunTransferRequestApprovedEvent")]
-    public async Task Run([QueueTrigger(QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
     {
         if (@event.PledgeApplicationId != null)
         {

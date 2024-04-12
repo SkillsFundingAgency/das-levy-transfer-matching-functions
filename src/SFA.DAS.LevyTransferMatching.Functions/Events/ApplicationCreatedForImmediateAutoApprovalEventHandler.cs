@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationCreatedForImmediateAutoApprovalEvent")]
-    public async Task Run([QueueTrigger(QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
 
