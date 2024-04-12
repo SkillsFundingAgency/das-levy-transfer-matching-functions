@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using NLog.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Functions.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
@@ -13,7 +14,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddLogging(builder =>
         {
-            builder.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+
+            builder.AddFilter(typeof(Program).Namespace, LogLevel.Information);
             builder.SetMinimumLevel(LogLevel.Trace);
             builder.AddNLog(new NLogProviderOptions
             {
@@ -41,7 +45,6 @@ public static class ServiceCollectionExtensions
                     context.Headers.TryGetValue("NServiceBus.CorrelationId", out string correlationId);
                     context.Headers.TryGetValue("NServiceBus.OriginatingEndpoint", out string originatingEndpoint);
                     logger.LogInformation($"Received NServiceBusTriggerData Message of type '{(messageType != null ? messageType.Split(',')[0] : string.Empty)}' with messageId '{messageId}' and correlationId '{correlationId}' from endpoint '{originatingEndpoint}'");
-
                 },
                 OnMessageErrored = (ex, context) =>
                 {
