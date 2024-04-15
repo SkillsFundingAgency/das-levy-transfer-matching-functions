@@ -19,8 +19,8 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWebApplication()
     .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWebApplication()
     .ConfigureAppConfiguration((hostBuilderContext, builder) =>
     {
         builder.BuildDasConfiguration(hostBuilderContext.Configuration);
@@ -73,6 +73,8 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<DefaultHeadersHandler>()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
+        
+        
     })
     .UseNServiceBus((config, endpointConfiguration) =>
     {
