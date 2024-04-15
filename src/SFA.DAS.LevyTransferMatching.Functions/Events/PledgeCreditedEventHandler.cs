@@ -1,5 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("PledgeCreditedEventHandler")]
-    public async Task Run([ServiceBusTrigger(QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
     {
          log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 

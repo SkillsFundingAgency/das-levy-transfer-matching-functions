@@ -1,5 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationWithdrawnAfterAcceptanceEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
     {
         log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
      

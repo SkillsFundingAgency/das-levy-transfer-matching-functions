@@ -1,6 +1,7 @@
 ﻿using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -9,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
 {
     [Function("ApplicationCreatedEmailEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationCreatedEmailEvent)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
 

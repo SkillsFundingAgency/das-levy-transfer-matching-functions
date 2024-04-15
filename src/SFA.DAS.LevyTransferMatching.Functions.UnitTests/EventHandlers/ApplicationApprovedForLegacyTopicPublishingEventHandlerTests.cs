@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
         [Test]
         public async Task Run_Invokes_Legacy_Topic_Message_Publisher()
         {
-            var sourceEvent = _fixture.Create<Events.ApplicationApprovedEvent>();
+            var sourceEvent = _fixture.Create<ApplicationApprovedEvent>();
 
             await _handler.Run(sourceEvent, Mock.Of<ILogger>());
 

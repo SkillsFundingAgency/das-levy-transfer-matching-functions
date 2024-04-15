@@ -1,5 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationCreatedForImmediateAutoApprovalEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
 

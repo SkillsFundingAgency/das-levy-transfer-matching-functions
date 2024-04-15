@@ -14,8 +14,6 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly:NServiceBusTriggerFunction("LevyTransferMatchingFunctionsEndpoint")]
-
 IConfiguration hostConfig = null;
 
 var host = new HostBuilder()
@@ -37,10 +35,10 @@ var host = new HostBuilder()
 
         var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
-        //var logger = serviceProvider.GetLogger(nameof(Program));
+        var logger = serviceProvider.GetLogger(nameof(Program));
 
         services.AddSingleton(hostConfig);
-        //services.AddNServiceBus(functionsConfig, logger);
+        services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
@@ -64,28 +62,28 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
     })
-    .UseNServiceBus(context =>
-    {
-        var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
-
-        var endpointConfiguration = new EndpointConfiguration("LevyTransferMatchingFunctionsEndpoint");
-        
-        if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
-        {
-            endpointConfiguration
-                .UseTransport<LearningTransport>()
-                .StorageDirectory(Path.Combine(Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)], @"src\.learningtransport")
-                );
-        }
-        else
-        {
-            Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);    
-        }
-
-        Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
-
-        return endpointConfiguration;
-    })
+    // .UseNServiceBus(context =>
+    // {
+    //     var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+    //
+    //     var endpointConfiguration = new EndpointConfiguration("LevyTransferMatchingFunctionsEndpoint");
+    //     
+    //     if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
+    //     {
+    //         endpointConfiguration
+    //             .UseTransport<LearningTransport>()
+    //             .StorageDirectory(Path.Combine(Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)], @"src\.learningtransport")
+    //             );
+    //     }
+    //     else
+    //     {
+    //         Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);    
+    //     }
+    //
+    //     Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
+    //
+    //     return endpointConfiguration;
+    // })
     .Build();
 
 host.Run();

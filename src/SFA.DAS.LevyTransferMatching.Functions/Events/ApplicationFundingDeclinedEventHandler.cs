@@ -1,5 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationFundingDeclinedEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationFundingDeclined)] ApplicationFundingDeclinedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationFundingDeclined)] ApplicationFundingDeclinedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling {nameof(ApplicationFundingDeclinedEvent)} handler for application {@event.ApplicationId}");
      

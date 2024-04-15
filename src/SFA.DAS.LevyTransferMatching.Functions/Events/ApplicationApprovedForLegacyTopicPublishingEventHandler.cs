@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
+﻿using SFA.DAS.LevyTransferMatching.Functions.Bindings;
+using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ public class ApplicationApprovedForLegacyTopicPublishingEventHandler(
     ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("ApplicationApprovedForLegacyTopicPublishing")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationApprovedForLegacyTopicPublishing)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
 

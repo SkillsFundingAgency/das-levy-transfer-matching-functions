@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
+﻿using SFA.DAS.LevyTransferMatching.Functions.Bindings;
+using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -7,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyTopicMessagePublisher)
 {
     [Function("RunApplicationCreatedEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationCreated)] ApplicationCreatedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationCreated handler for application {@event.ApplicationId}");
 

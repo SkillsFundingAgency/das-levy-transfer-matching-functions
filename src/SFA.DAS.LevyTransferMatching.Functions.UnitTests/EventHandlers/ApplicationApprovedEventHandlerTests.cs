@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Functions.Commands;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -14,7 +13,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
     public class ApplicationApprovedEventHandlerTests
     {
         private ApplicationApprovedEventHandler _handler;
-        private Events.ApplicationApprovedEvent _event;
+        private ApplicationApprovedEvent _event;
         private Mock<ILevyTransferMatchingApi> _api;
         private readonly Fixture _fixture = new Fixture();
 
@@ -23,7 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
         {
             _api = new Mock<ILevyTransferMatchingApi>();
 
-            _event = _fixture.Create<Events.ApplicationApprovedEvent>();
+            _event = _fixture.Create<ApplicationApprovedEvent>();
 
             _handler = new ApplicationApprovedEventHandler(_api.Object);
         }

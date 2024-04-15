@@ -1,5 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
@@ -8,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
 {
     [Function("RunApplicationApprovedEvent")]
-    public async Task Run([ServiceBusTrigger(QueueNames.ApplicationApprovedEvent)] Events.ApplicationApprovedEvent @event, ILogger log)
+    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
     {
         log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
 
