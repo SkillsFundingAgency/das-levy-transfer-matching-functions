@@ -25,13 +25,13 @@ var host = new HostBuilder()
     {
         builder.BuildDasConfiguration(hostBuilderContext.Configuration);
     })
-    .ConfigureServices(services =>
+    .ConfigureServices((context, services) =>
     {
         services.AddDasLogging();
-
+        
         var serviceProvider = services.BuildServiceProvider();
 
-        var configuration = serviceProvider.GetConfiguration();
+        var configuration = context.Configuration;
     // .BuildDasConfiguration();
 
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
@@ -44,8 +44,6 @@ var host = new HostBuilder()
 
         var logger = serviceProvider.GetLogger(nameof(Program));
         
-        logger.LogInformation("Host configuration dump: {Config}", JsonConvert.SerializeObject(configuration));
-
         services.AddSingleton(configuration);
         //services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
@@ -54,6 +52,10 @@ var host = new HostBuilder()
 
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
+        
+        logger.LogInformation("Host configuration dump: {Config}", JsonConvert.SerializeObject(configuration));
+        logger.LogInformation("API configuration dump: {Config}", JsonConvert.SerializeObject(apiConfig));
+        logger.LogInformation("Functions configuration dump: {Config}", JsonConvert.SerializeObject(functionsConfig));
 
         Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
@@ -74,7 +76,8 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
         
-        
+        services.AddApplicationInsightsTelemetryWorkerService();
+        services.ConfigureFunctionsApplicationInsights();
     })
     .UseNServiceBus((config, endpointConfiguration) =>
     {
