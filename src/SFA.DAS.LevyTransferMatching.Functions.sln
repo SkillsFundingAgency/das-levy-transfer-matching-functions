@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching.Functions.Bindings", "SFA.DAS.LevyTransferMatching.Functions.Bindings\SFA.DAS.LevyTransferMatching.Functions.Bindings.csproj", "{05DB48BE-8694-4413-A763-686A55C8BC72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LevyTransferMatching.Messages", "SFA.DAS.LevyTransferMatching.Messages\SFA.DAS.LevyTransferMatching.Messages.csproj", "{69F004AD-5E91-4D44-93CB-6A32E9494D46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +40,10 @@ Global
 		{7ADC665B-744E-4420-B0FD-FCF28CDC700B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ADC665B-744E-4420-B0FD-FCF28CDC700B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ADC665B-744E-4420-B0FD-FCF28CDC700B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05DB48BE-8694-4413-A763-686A55C8BC72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05DB48BE-8694-4413-A763-686A55C8BC72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05DB48BE-8694-4413-A763-686A55C8BC72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05DB48BE-8694-4413-A763-686A55C8BC72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69F004AD-5E91-4D44-93CB-6A32E9494D46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69F004AD-5E91-4D44-93CB-6A32E9494D46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69F004AD-5E91-4D44-93CB-6A32E9494D46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69F004AD-5E91-4D44-93CB-6A32E9494D46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,17 +1,42 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api)
+public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger log) : IHandleMessages<PledgeCreditedEvent>
 {
-    [Function("PledgeCreditedEventHandler")]
-    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    // [Function("PledgeCreditedEventHandler")]
+    // public async Task Run([NServiceBusTriggerInput(Endpoint = QueueNames.PledgeCredited)] PledgeCreditedEvent @event, ILogger log)
+    // {
+    //      log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+    //
+    //     try
+    //     {
+    //         var response = await api.GetApplicationsForAutomaticApproval(@event.PledgeId);
+    //
+    //         foreach (var app in response.Applications)
+    //         {
+    //             await api.ApproveApplication(new ApproveApplicationRequest 
+    //             { 
+    //                 ApplicationId = app.Id, 
+    //                 PledgeId = app.PledgeId 
+    //             });
+    //         }
+    //     }
+    //     catch (ApiException ex)
+    //     {
+    //         if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+    //
+    //         log.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
+    //     }
+    // }
+
+    public async Task Handle(PledgeCreditedEvent @event, IMessageHandlerContext context)
     {
-         log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+        log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
 
         try
         {

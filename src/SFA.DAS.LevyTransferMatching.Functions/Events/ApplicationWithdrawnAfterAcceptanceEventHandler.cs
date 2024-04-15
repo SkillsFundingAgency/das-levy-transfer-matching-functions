@@ -1,15 +1,38 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Functions.Bindings;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
+public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api, ILogger log) : IHandleMessages<ApplicationWithdrawnAfterAcceptanceEvent>
 {
-    [Function("RunApplicationWithdrawnAfterAcceptanceEvent")]
-    public async Task Run([NServiceBusTriggerOutput(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    // [Function("RunApplicationWithdrawnAfterAcceptanceEvent")]
+    // public async Task Run([NServiceBusTriggerInput(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
+    // {
+    //     log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
+    //  
+    //     var request = new ApplicationWithdrawnAfterAcceptanceRequest
+    //     {
+    //         ApplicationId = @event.ApplicationId,
+    //         PledgeId = @event.PledgeId,
+    //         Amount = @event.Amount,
+    //     };
+    //  
+    //     try
+    //     {
+    //         await api.ApplicationWithdrawnAfterAcceptance(request);
+    //     }
+    //     catch (ApiException ex)
+    //     {
+    //         if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+    //  
+    //         log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+    //     }
+    // }
+
+    public async Task Handle(ApplicationWithdrawnAfterAcceptanceEvent @event, IMessageHandlerContext context)
     {
         log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
      
