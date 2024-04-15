@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NServiceBus;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Encoding;
@@ -29,32 +30,34 @@ var host = new HostBuilder()
 
         var serviceProvider = services.BuildServiceProvider();
 
-        var hostConfig = serviceProvider.GetConfiguration();
-            //.BuildDasConfiguration();
+        var configuration = serviceProvider.GetConfiguration();
+    // .BuildDasConfiguration();
 
-        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), hostConfig));
+        services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+        var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
-        //var logger = serviceProvider.GetLogger(nameof(Program));
+        var logger = serviceProvider.GetLogger(nameof(Program));
+        
+        logger.LogInformation("Host configuration dump: {Config}", JsonConvert.SerializeObject(configuration));
 
-        services.AddSingleton(hostConfig);
+        services.AddSingleton(configuration);
         //services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
 
-        var apiConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
-        var emailNotificationsConfig = hostConfig.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
-        
+        var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
+        var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
+
         Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
-        services.Configure<EncodingConfig>(hostConfig.GetSection(ConfigurationKeys.EncodingService));
+        services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
 
         services.AddSingleton(apiConfig);
@@ -75,7 +78,7 @@ var host = new HostBuilder()
         // Function endpoints can create their own queues or other infrastructure in the Azure Service Bus namespace by using the configuration.AdvancedConfiguration.EnableInstallers() method.
         endpointConfiguration.AdvancedConfiguration.EnableInstallers();
 
-       // var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+        // var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
         // if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
         // {
