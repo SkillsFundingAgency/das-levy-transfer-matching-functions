@@ -14,7 +14,7 @@ using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly:NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
+[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
 
 IConfiguration hostConfig = null;
 
@@ -47,6 +47,9 @@ var host = new HostBuilder()
 
         var apiConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = hostConfig.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
+        
+        Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
         services.Configure<EncodingConfig>(hostConfig.GetSection(ConfigurationKeys.EncodingService));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
@@ -64,27 +67,26 @@ var host = new HostBuilder()
             .AddHttpMessageHandler<ApimHeadersHandler>()
             .AddHttpMessageHandler<LoggingMessageHandler>();
     })
-    .UseNServiceBus(context =>
+    .UseNServiceBus((config, endpointConfiguration) =>
     {
-        var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
-    
-        var endpointConfiguration = new EndpointConfiguration(QueueNames.LtmFunctions);
-        
-        if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
-        {
-            endpointConfiguration
-                .UseTransport<LearningTransport>()
-                .StorageDirectory(Path.Combine(Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)], @"src\.learningtransport")
-                );
-        }
-        else
-        {
-            Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);    
-        }
-    
-        Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
-    
-        return endpointConfiguration;
+        // Function endpoints can create their own queues or other infrastructure in the Azure Service Bus namespace by using the configuration.AdvancedConfiguration.EnableInstallers() method.
+        endpointConfiguration.AdvancedConfiguration.EnableInstallers();
+
+       // var functionsConfig = hostConfig.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
+
+        // if (functionsConfig.NServiceBusConnectionString.Equals("UseDevelopmentStorage=true", StringComparison.CurrentCultureIgnoreCase))
+        // {
+        //     endpointConfiguration
+        //         .UseTransport<LearningTransport>()
+        //         .StorageDirectory(Path.Combine(Directory.GetCurrentDirectory()[..Directory.GetCurrentDirectory().IndexOf("src", StringComparison.Ordinal)], @"src\.learningtransport")
+        //         );
+        // }
+        // else
+        // {
+        //     Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        // }
+        //
+        // Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
     })
     .Build();
 
