@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
 using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
 public static class ConfigurationExtensions
 {
-    public static IConfiguration BuildDasConfiguration(this IConfiguration configuration)
+    public static IConfiguration BuildDasConfiguration(this IConfigurationBuilder configBuilder, IConfiguration configuration)
     {
-        var configBuilder = new ConfigurationBuilder()
-            .AddConfiguration(configuration)
+        configBuilder
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables();
 
@@ -17,13 +17,13 @@ public static class ConfigurationExtensions
 #endif
         configBuilder.AddAzureTableStorage(options =>
         {
-            //options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-            options.ConfigurationKeys = ["SFA.DAS.LevyTransferMatching.Functions", "SFA.DAS.Encoding:EncodingService"];
+            options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+            //options.ConfigurationKeys = ["SFA.DAS.LevyTransferMatching.Functions", "SFA.DAS.Encoding:EncodingService"];
             options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
             options.EnvironmentName = configuration["EnvironmentName"];
             options.PreFixConfigurationKeys = false;
         });
-
+        
         return configBuilder.Build();
     }
 }

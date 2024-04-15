@@ -16,18 +16,21 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 [assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
 
-IConfiguration hostConfig = null;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
+    .ConfigureAppConfiguration((hostBuilderContext, builder) =>
+    {
+        builder.BuildDasConfiguration(hostBuilderContext.Configuration);
+    })
     .ConfigureServices(services =>
     {
         services.AddDasLogging();
 
         var serviceProvider = services.BuildServiceProvider();
 
-        hostConfig = serviceProvider.GetConfiguration()
-            .BuildDasConfiguration();
+        var hostConfig = serviceProvider.GetConfiguration();
+            //.BuildDasConfiguration();
 
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), hostConfig));
         services.AddOptions();
@@ -49,6 +52,7 @@ var host = new HostBuilder()
         var emailNotificationsConfig = hostConfig.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
         
         Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        Environment.SetEnvironmentVariable("ServiceBus:ConnectionString", functionsConfig.NServiceBusConnectionString);
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
         services.Configure<EncodingConfig>(hostConfig.GetSection(ConfigurationKeys.EncodingService));
