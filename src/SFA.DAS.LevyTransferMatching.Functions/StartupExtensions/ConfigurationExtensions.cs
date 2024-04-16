@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Memory;
 using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;

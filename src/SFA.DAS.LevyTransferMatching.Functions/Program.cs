@@ -1,10 +1,8 @@
-using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using NServiceBus;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Encoding;
@@ -13,7 +11,6 @@ using SFA.DAS.Http.MessageHandlers;
 using SFA.DAS.LevyTransferMatching.Functions;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 [assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
@@ -29,11 +26,8 @@ var host = new HostBuilder()
     {
         services.AddDasLogging();
 
-        var serviceProvider = services.BuildServiceProvider();
-
         var configuration = context.Configuration;
-        // .BuildDasConfiguration();
-
+        
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
 
@@ -45,7 +39,6 @@ var host = new HostBuilder()
         // var logger = serviceProvider.GetLogger(nameof(Program));
 
         services.AddSingleton(configuration);
-        //services.AddNServiceBus(functionsConfig, logger);
         services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
@@ -53,12 +46,10 @@ var host = new HostBuilder()
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
 
-
-        // Might not need this, needs only AzureWebJobsServiceBus:fullyQualifiedNamespace env variable in azure to work with MI as per 
+        // MI isn't currently supported by NSB in isolation process so NServiceBusConnectionString will need to be a SharedAccessKey in Azure.
+        // When NSB SB triggers work with MI, AzureWebJobsServiceBus needs replacing with AzureWebJobsServiceBus:fullyQualifiedNamespace env variable in azure as per
         // https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/servicebus/Microsoft.Azure.WebJobs.Extensions.ServiceBus/README.md#managed-identity-authentication
-
-        // MI isn't currently supported by NSB in isolation process
-        //Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
         services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));

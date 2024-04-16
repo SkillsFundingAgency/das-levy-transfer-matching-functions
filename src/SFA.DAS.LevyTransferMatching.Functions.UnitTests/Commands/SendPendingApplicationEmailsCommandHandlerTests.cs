@@ -6,7 +6,6 @@ using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Commands;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
-using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Commands
