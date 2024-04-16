@@ -53,9 +53,9 @@ var host = new HostBuilder()
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
         
-        logger.LogInformation("Host configuration dump: {Config}", JsonConvert.SerializeObject(configuration));
-        logger.LogInformation("API configuration dump: {Config}", JsonConvert.SerializeObject(apiConfig));
-        logger.LogInformation("Functions configuration dump: {Config}", JsonConvert.SerializeObject(functionsConfig));
+        // logger.LogInformation("Host configuration dump: {Config}", JsonConvert.SerializeObject(configuration));
+        // logger.LogInformation("API configuration dump: {Config}", JsonConvert.SerializeObject(apiConfig));
+        // logger.LogInformation("Functions configuration dump: {Config}", JsonConvert.SerializeObject(functionsConfig));
 
         Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
