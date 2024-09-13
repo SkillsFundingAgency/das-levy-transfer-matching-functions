@@ -15,7 +15,7 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 [assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
 
-const string endpointName = "SFA.DAS.LevyTransferMatching.Functions";
+const string endpointName = nameof(SFA.DAS.LevyTransferMatching.Functions);
 const string errorEndpointName = $"{endpointName}-error";
 
 var host = new HostBuilder()
