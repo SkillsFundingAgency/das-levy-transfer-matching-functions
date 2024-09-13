@@ -15,7 +15,7 @@ public class ApplicationRejectedEmailEventHandler(
 {
     public async Task Handle(ApplicationRejectedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationRejectedEmailEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new ApplicationRejectedEmailRequest
         {
@@ -32,9 +32,12 @@ public class ApplicationRejectedEmailEventHandler(
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationRejectedEmailEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationRejectedEmailEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

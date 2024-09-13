@@ -8,7 +8,7 @@ public class ApplicationRejectedEventHandler(ILegacyTopicMessagePublisher legacy
 {
     public async Task Handle(ApplicationRejectedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationRejected handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationRejected handler for application {ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -17,7 +17,7 @@ public class ApplicationRejectedEventHandler(ILegacyTopicMessagePublisher legacy
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationRejectedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationRejectedEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

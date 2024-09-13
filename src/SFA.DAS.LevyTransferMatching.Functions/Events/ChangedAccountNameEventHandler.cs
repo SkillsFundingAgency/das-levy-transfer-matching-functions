@@ -7,7 +7,7 @@ public class ChangedAccountNameEventHandler(ILogger log) : IHandleMessages<Chang
 {
     public Task Handle(ChangedAccountNameEvent message, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling event: {message}");
+        log.LogInformation("Handling event: {EventName}", nameof(ChangedAccountNameEvent));
 
         return Task.CompletedTask;
     }

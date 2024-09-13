@@ -10,7 +10,7 @@ public class ApplicationApprovedForLegacyTopicPublishingEventHandler(
 {
     public async Task Handle(ApplicationApprovedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationApprovedForLegacyTopicPublishing handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationApprovedForLegacyTopicPublishing handler for application {ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -19,7 +19,7 @@ public class ApplicationApprovedForLegacyTopicPublishingEventHandler(
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

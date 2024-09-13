@@ -9,7 +9,7 @@ public class PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api, ILogger
 {
     public async Task Handle(PledgeDebitFailedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling PledgeDebitFailedEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling PledgeDebitFailedEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new PledgeDebitFailedRequest
         {
@@ -24,7 +24,7 @@ public class PledgeDebitFailedEventHandler(ILevyTransferMatchingApi api, ILogger
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error handling PledgeDebitFailedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling PledgeDebitFailedEvent for application {ApplicationId}", @event.ApplicationId);
             throw;
         }
     }

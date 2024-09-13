@@ -14,7 +14,7 @@ public class ApplicationApprovedEmailEventHandler(
 {
     public async Task Handle(ApplicationApprovedEvent message, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {message.ApplicationId}");
+        log.LogInformation("Handling ApplicationApprovedEmailEvent handler for application {ApplicationId}", message.ApplicationId);
 
         var request = new ApplicationApprovedEmailRequest
         {
@@ -32,7 +32,7 @@ public class ApplicationApprovedEmailEventHandler(
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {message.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEmailEvent for application {ApplicationId}", message.ApplicationId);
         }
     }
 }

@@ -9,7 +9,7 @@ public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchi
 {
     public async Task Handle(ApplicationWithdrawnAfterAcceptanceEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling {EventName} handler for application {ApplicationId}", nameof(ApplicationWithdrawnAfterAcceptanceEvent), @event.ApplicationId);
 
         var request = new ApplicationWithdrawnAfterAcceptanceRequest
         {
@@ -26,7 +26,7 @@ public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchi
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEvent for application {@event.ApplicationId}", @event.ApplicationId);
         }
     }
 }

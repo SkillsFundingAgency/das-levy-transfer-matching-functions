@@ -9,7 +9,7 @@ public class ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api
 {
     public async Task Handle(ApplicationFundingDeclinedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling {nameof(ApplicationFundingDeclinedEvent)} handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling {EventName} handler for application {ApplicationId}", nameof(ApplicationFundingDeclinedEvent), @event.ApplicationId);
 
         var request = new ApplicationFundingDeclinedRequest
         {
@@ -26,7 +26,7 @@ public class ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling {EventName} for application {ApplicationId}", nameof(ApplicationFundingDeclinedEvent), @event.ApplicationId);
         }
     }
 }

@@ -9,7 +9,7 @@ public class ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransfe
 {
     public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -23,7 +23,7 @@ public class ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransfe
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
+            log.LogError(ex, "Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
             throw;
         }
     }

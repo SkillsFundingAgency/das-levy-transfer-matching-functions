@@ -9,10 +9,10 @@ public class ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api
 {
     public async Task Handle(ApplicationFundingAcceptedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling {nameof(ApplicationFundingAcceptedEvent)} handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling {EventName)} handler for application {ApplicationId}",nameof(ApplicationFundingAcceptedEvent), @event.ApplicationId);
         if (@event.RejectApplications)
         {
-            log.LogInformation($"Rejecting Pengding applications for pledge {@event.PledgeId}");
+            log.LogInformation("Rejecting Pending applications for pledge {PledgeId}", @event.PledgeId);
 
             var request = new RejectPledgeApplicationsRequest
             {
@@ -27,7 +27,7 @@ public class ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api
             {
                 if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                log.LogError(ex, $"Error handling {nameof(ApplicationFundingAcceptedEvent)} for application {@event.ApplicationId}");
+                log.LogError(ex, "Error handling {EventName} for application {ApplicationId}", nameof(ApplicationFundingAcceptedEvent), @event.ApplicationId);
             }
         }
     }

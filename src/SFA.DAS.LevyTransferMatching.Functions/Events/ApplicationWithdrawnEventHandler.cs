@@ -8,7 +8,7 @@ public class ApplicationWithdrawnEventHandler(ILegacyTopicMessagePublisher legac
 {
     public async Task Handle(ApplicationWithdrawnEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationWithdrawn handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationWithdrawn handler for application {@event.ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -17,7 +17,7 @@ public class ApplicationWithdrawnEventHandler(ILegacyTopicMessagePublisher legac
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationWithdrawnEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationWithdrawnEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

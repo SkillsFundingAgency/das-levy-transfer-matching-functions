@@ -7,7 +7,7 @@ public class CreatedAccountEventHandler(ILogger log): IHandleMessages<CreatedAcc
 {  
     public Task Handle(CreatedAccountEvent message, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling event: {message}");
+        log.LogInformation("Handling event: {EventName}", nameof(CreatedAccountEvent));
 
         return Task.CompletedTask;
     }

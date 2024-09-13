@@ -9,7 +9,7 @@ public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api, ILogg
 {
     public async Task Handle(ApplicationApprovedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationApprovedEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new ApplicationApprovedRequest
         {
@@ -24,9 +24,12 @@ public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api, ILogg
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

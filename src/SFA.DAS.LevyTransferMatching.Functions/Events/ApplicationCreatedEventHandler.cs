@@ -8,7 +8,7 @@ public class ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyT
 {
     public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationCreated handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationCreated handler for application {ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -17,7 +17,7 @@ public class ApplicationCreatedEventHandler(ILegacyTopicMessagePublisher legacyT
         }
         catch (Exception ex)
         {
-            log.LogError(ex, $"Error handling ApplicationCreatedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationCreatedEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

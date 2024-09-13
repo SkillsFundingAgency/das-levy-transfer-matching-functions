@@ -9,7 +9,7 @@ public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger lo
 {
     public async Task Handle(PledgeCreditedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling {nameof(PledgeCreditedEvent)} for pledge {@event.PledgeId}");
+        log.LogInformation("Handling {EventName} for pledge {PledgeId}", nameof(PledgeCreditedEvent), @event.PledgeId);
 
         try
         {
@@ -26,9 +26,12 @@ public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger lo
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling PledgeCreditedEvent for pledge {@event.PledgeId}");
+            log.LogError(ex, "Error handling PledgeCreditedEvent for pledge {PledgeId}", @event.PledgeId);
         }
     }
 }

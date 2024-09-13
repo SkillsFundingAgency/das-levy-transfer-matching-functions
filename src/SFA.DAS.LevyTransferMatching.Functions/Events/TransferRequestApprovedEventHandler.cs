@@ -11,7 +11,7 @@ public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api, I
     {
         if (@event.PledgeApplicationId != null)
         {
-            log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
+            log.LogInformation("Handling TransferRequestApprovedEvent handler for application {PledgeApplicationId}", @event.PledgeApplicationId);
 
             var request = new TransferRequestApprovedRequest
             {
@@ -26,9 +26,12 @@ public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api, I
             }
             catch (ApiException ex)
             {
-                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+                if (ex.StatusCode != HttpStatusCode.BadRequest)
+                {
+                    throw;
+                }
 
-                log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
+                log.LogError(ex, "Error handling TransferRequestApprovedEvent for application {PledgeApplicationId}", @event.PledgeApplicationId);
             }
         }
     }

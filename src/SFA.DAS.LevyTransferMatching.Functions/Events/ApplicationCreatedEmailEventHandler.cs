@@ -10,7 +10,7 @@ public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, I
 {
     public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling ApplicationCreatedEmailEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationCreatedEmailEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new ApplicationCreatedEmailRequest
         {
@@ -26,9 +26,12 @@ public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, I
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationCreatedEmailEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationCreatedEmailEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }
