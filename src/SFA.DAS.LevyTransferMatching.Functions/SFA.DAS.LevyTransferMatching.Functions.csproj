@@ -29,10 +29,10 @@
 
         <PackageReference Include="NLog" Version="5.3.4" />
         <PackageReference Include="NLog.Extensions.Logging" Version="5.3.13" />
-        <PackageReference Include="NServiceBus" Version="8.2.0" />
-        <PackageReference Include="NServiceBus.AzureFunctions.Worker.ServiceBus" Version="4.2.3" />
-        <PackageReference Include="NServiceBus.Extensions.Hosting" Version="2.0.0" />
-        <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="3.0.0" />
+        <PackageReference Include="NServiceBus" Version="9.2.2" />
+        <PackageReference Include="NServiceBus.AzureFunctions.Worker.ServiceBus" Version="5.2.0" />
+        <PackageReference Include="NServiceBus.Extensions.Hosting" Version="3.0.0" />
+        <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="4.0.0" />
         <PackageReference Include="RestEase" Version="1.6.4" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
