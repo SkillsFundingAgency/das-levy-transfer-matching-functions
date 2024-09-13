@@ -5,15 +5,8 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 
-public class AutomaticApplicationApprovalFunction
+public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
     [Function("ApplicationsWithAutomaticApprovalFunction")]
     public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
     {
@@ -37,11 +30,11 @@ public class AutomaticApplicationApprovalFunction
     {
         try
         {
-            var applications = await _api.GetApplicationsForAutomaticApproval();
+            var applications = await api.GetApplicationsForAutomaticApproval();
 
             foreach (var app in applications.Applications)
             {
-                await _api.ApproveApplication(new ApproveApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
+                await api.ApproveApplication(new ApproveApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
             }
         }
         catch (ApiException ex)

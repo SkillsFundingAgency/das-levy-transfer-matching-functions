@@ -5,19 +5,12 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 
-public class AutomaticApplicationRejectionFunction
+public class AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
     [Function("ApplicationsWithAutomaticRejectionFunction")]
     public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger log)
     {
-        log.LogInformation($"Executing ApplicationsWithAutomaticRejectionFunction");
+        log.LogInformation("Executing ApplicationsWithAutomaticRejectionFunction");
 
         await RunApplicationsWithAutomaticRejectionFunction(log);
     }
@@ -25,27 +18,27 @@ public class AutomaticApplicationRejectionFunction
     [Function("HttpAutomaticApplicationRejectionFunction")]
     public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req, ILogger log)
     {
-        log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationRejectionFunction");
+        log.LogInformation("Executing HTTP Triggered {FunctionName}", nameof(HttpAutomaticApplicationRejectionFunction));
 
         await RunApplicationsWithAutomaticRejectionFunction(log);
 
-        return new OkObjectResult("ApplicationsWithAutomaticRejection successfully ran");
+        return new OkObjectResult($"{nameof(HttpAutomaticApplicationRejectionFunction)} successfully completed.");
     }
 
     private async Task RunApplicationsWithAutomaticRejectionFunction(ILogger log)
     {
         try
         {
-            var applications = await _api.GetApplicationsForAutomaticRejection();
+            var applications = await api.GetApplicationsForAutomaticRejection();
 
             foreach (var app in applications.Applications)
             {
-                await _api.RejectApplication(new RejectApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
+                await api.RejectApplication(new RejectApplicationRequest { ApplicationId = app.Id, PledgeId = app.PledgeId });
             }
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error executing RunApplicationsWithAutomaticRejectionFunction");
+            log.LogError(ex, "Error executing {MethodName}", nameof(RunApplicationsWithAutomaticRejectionFunction));
             throw;
         }
     }
