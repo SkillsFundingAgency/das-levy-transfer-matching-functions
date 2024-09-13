@@ -8,33 +8,31 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 using System.Threading.Tasks;
 using NServiceBus;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
+namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
+
+[TestFixture]
+class ApplicationWithdrawnAfterAcceptanceEventHandlerTests
 {
-    [TestFixture]
-    class ApplicationWithdrawnAfterAcceptanceEventHandlerTests
+    private ApplicationWithdrawnAfterAcceptanceEventHandler _handler;
+    private Mock<ILevyTransferMatchingApi> _api;
+    private readonly Fixture _fixture = new();
+
+    [SetUp]
+    public void Setup()
     {
-        private ApplicationWithdrawnAfterAcceptanceEventHandler _handler;
-        private Mock<ILevyTransferMatchingApi> _api;
-        private readonly Fixture _fixture = new Fixture();
+        _api = new Mock<ILevyTransferMatchingApi>();
+        _handler = new ApplicationWithdrawnAfterAcceptanceEventHandler(_api.Object, Mock.Of<ILogger>());
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _api = new Mock<ILevyTransferMatchingApi>();
+    [Test]
+    public async Task Run_Invokes_ApplicationWithdrawnAfterAcceptance_Api_Endpoint()
+    {
+        var acceptanceEvent = _fixture.Create<ApplicationWithdrawnAfterAcceptanceEvent>();
+        await _handler.Handle(acceptanceEvent, Mock.Of<IMessageHandlerContext>());
 
-            _handler = new ApplicationWithdrawnAfterAcceptanceEventHandler(_api.Object, Mock.Of<ILogger>());
-        }
-
-        [Test]
-        public async Task Run_Invokes_ApplicationWithdrawnAfterAcceptance_Api_Endpoint()
-        {
-            var _event = _fixture.Create<ApplicationWithdrawnAfterAcceptanceEvent>();
-            await _handler.Handle(_event, Mock.Of<IMessageHandlerContext>());
-
-            _api.Verify(x => x.ApplicationWithdrawnAfterAcceptance(It.Is<ApplicationWithdrawnAfterAcceptanceRequest>(r =>
-                r.ApplicationId == _event.ApplicationId &&
-                r.PledgeId == _event.PledgeId &&
-                r.Amount == _event.Amount)));
-        }
+        _api.Verify(x => x.ApplicationWithdrawnAfterAcceptance(It.Is<ApplicationWithdrawnAfterAcceptanceRequest>(r =>
+            r.ApplicationId == acceptanceEvent.ApplicationId &&
+            r.PledgeId == acceptanceEvent.PledgeId &&
+            r.Amount == acceptanceEvent.Amount)));
     }
 }

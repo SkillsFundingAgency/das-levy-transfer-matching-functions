@@ -9,45 +9,44 @@ using NServiceBus;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
+namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
+
+[TestFixture]
+public class PledgeCreditedEventHandlerTests
 {
-    [TestFixture]
-    public class PledgeCreditedEventHandlerTests
+    private PledgeCreditedEventHandler _handler;
+    private PledgeCreditedEvent _event;
+    private Mock<ILevyTransferMatchingApi> _api;
+    private Mock<ILogger> _logger;
+    private GetApplicationsForAutomaticApprovalResponse _apiResponse;
+
+    [SetUp]
+    public void Setup()
     {
-        private PledgeCreditedEventHandler _handler;
-        private PledgeCreditedEvent _event;
-        private Mock<ILevyTransferMatchingApi> _api;
-        private Mock<ILogger> _logger;
-        private GetApplicationsForAutomaticApprovalResponse _apiResponse;
+        var fixture = new Fixture();
 
-        [SetUp]
-        public void Setup()
-        {
-            var fixture = new Fixture();
+        _api = new Mock<ILevyTransferMatchingApi>();
+        _logger = new Mock<ILogger>();
 
-            _api = new Mock<ILevyTransferMatchingApi>();
-            _logger = new Mock<ILogger>();
+        _event = fixture.Create<PledgeCreditedEvent>();
 
-            _event = fixture.Create<PledgeCreditedEvent>();
+        _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
 
-            _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
+        _api.Setup(x =>
+                x.GetApplicationsForAutomaticApproval(
+                    It.Is<int?>(r => r == _event.PledgeId)))
+            .ReturnsAsync(_apiResponse);
 
-            _api.Setup(x =>
-                    x.GetApplicationsForAutomaticApproval(
-                        It.Is<int?>(r => r == _event.PledgeId)))
-                .ReturnsAsync(_apiResponse);
+        _handler = new PledgeCreditedEventHandler(_api.Object, _logger.Object);
+    }
 
-            _handler = new PledgeCreditedEventHandler(_api.Object, _logger.Object);
-        }
+    [Test]
+    public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
+    {
+        // Act
+        await _handler.Handle(_event, Mock.Of<IMessageHandlerContext>());
 
-        [Test]
-        public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
-        {
-            // Act
-            await _handler.Handle(_event, Mock.Of<IMessageHandlerContext>());
-
-            // Assert
-            _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
-        }
+        // Assert
+        _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
     }
 }

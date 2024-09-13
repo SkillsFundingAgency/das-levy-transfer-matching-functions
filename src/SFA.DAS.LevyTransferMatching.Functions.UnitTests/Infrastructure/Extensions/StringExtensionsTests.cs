@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Infrastructure.Extensions;
@@ -13,6 +14,6 @@ public class StringExtensionsTests
     public void ToUnderscoreCaseProducesExpectedResults(string source, string expected)
     {
         var result = source.ToUnderscoreCase();
-        Assert.That(result, Is.EqualTo(expected));
+        result.Should().Be(expected);
     }
 }

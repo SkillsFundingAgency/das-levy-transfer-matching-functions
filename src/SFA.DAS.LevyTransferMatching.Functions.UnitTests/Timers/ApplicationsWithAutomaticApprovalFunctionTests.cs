@@ -8,6 +8,7 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Timers;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers;
 
@@ -28,9 +29,7 @@ public class AutomaticApplicationApprovalFunctionTests
         _logger = new Mock<ILogger>();
 
         _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
-
         _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);
-
         _handler = new AutomaticApplicationApprovalFunction(_api.Object);
     }
 
@@ -54,8 +53,7 @@ public class AutomaticApplicationApprovalFunctionTests
         var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
 
         // Assert
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticApproval successfully ran"));
+        result.Should().BeAssignableTo<OkObjectResult>();
+        (result as OkObjectResult)?.Value.Should().Be("ApplicationsWithAutomaticApproval successfully ran");
     }
-
 }

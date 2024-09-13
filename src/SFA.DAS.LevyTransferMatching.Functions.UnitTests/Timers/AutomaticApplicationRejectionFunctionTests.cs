@@ -8,6 +8,7 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Timers;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.Timers;
 
@@ -54,10 +55,7 @@ public class AutomaticApplicationRejectionFunctionTests
         var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
 
         // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            Assert.That((result as OkObjectResult)?.Value, Is.EqualTo($"HttpAutomaticApplicationRejectionFunction successfully completed."));
-        });
+        result.Should().BeAssignableTo<OkObjectResult>();
+        (result as OkObjectResult)?.Value.Should().Be("HttpAutomaticApplicationRejectionFunction successfully completed.");
     }
 }
