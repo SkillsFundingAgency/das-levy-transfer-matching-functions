@@ -30,7 +30,10 @@ public class ApplicationApprovedEmailEventHandler(
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
             log.LogError(ex, "Error handling ApplicationApprovedEmailEvent for application {ApplicationId}", message.ApplicationId);
         }

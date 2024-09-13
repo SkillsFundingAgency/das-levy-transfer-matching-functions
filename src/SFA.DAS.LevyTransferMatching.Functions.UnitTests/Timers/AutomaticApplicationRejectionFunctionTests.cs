@@ -57,7 +57,7 @@ public class AutomaticApplicationRejectionFunctionTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            Assert.That((result as OkObjectResult)?.Value, Is.EqualTo("ApplicationsWithAutomaticRejection successfully ran"));
+            Assert.That((result as OkObjectResult)?.Value, Is.EqualTo($"HttpAutomaticApplicationRejectionFunction successfully completed."));
         });
     }
 }
