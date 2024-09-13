@@ -73,6 +73,8 @@ var host = new HostBuilder()
         // Function endpoints can create their own queues or other infrastructure in the Azure Service Bus namespace by using the configuration.AdvancedConfiguration.EnableInstallers() method.
         endpointConfiguration.AdvancedConfiguration.EnableInstallers();
         endpointConfiguration.AdvancedConfiguration.SendFailedMessagesTo(errorEndpointName);
+        endpointConfiguration.AdvancedConfiguration.Conventions().DefiningEventsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Events));
+        endpointConfiguration.AdvancedConfiguration.Conventions().DefiningCommandsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Commands));
     })
     .Build();
 
