@@ -12,13 +12,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.22.0" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.ServiceBus" Version="5.17.0" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.3.0" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.0" />
         <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.5" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
@@ -43,7 +43,7 @@
         <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
         <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.112-prerelease-3" />
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
-        <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
         <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />
     </ItemGroup>
