@@ -7,55 +7,55 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext"/>
+        <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.22.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.22.0" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.4" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.ServiceBus" Version="5.17.0" />
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.3.0"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.3.0" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.0" />
 
         <!--    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.2.2" />-->
         <!--    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="5.14.0" />-->
 
-        <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.2"/>
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.4"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.5" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
 
         <!--<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.3.0" />-->
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.2"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="1.2.1"/>
-        <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0"/>
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.2.0"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.21.0" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.2" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="1.2.1" />
+        <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.2.0" />
 
-        <PackageReference Include="NLog" Version="5.2.8"/>
-        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
+        <PackageReference Include="NLog" Version="5.2.8" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
         <PackageReference Include="NServiceBus" Version="8.2.0" />
         <PackageReference Include="NServiceBus.AzureFunctions.Worker.ServiceBus" Version="4.2.3" />
         <PackageReference Include="NServiceBus.Extensions.Hosting" Version="2.0.0" />
         <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="3.0.0" />
-        <PackageReference Include="RestEase" Version="1.6.4"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4"/>
-        <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="3.88.5"/>
-        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84"/>
-        <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.3195"/>
-        <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76"/>
-        <PackageReference Include="SFA.DAS.Http" Version="3.2.69"/>
-        <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.118-prerelease-2" />
-        <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1"/>
+        <PackageReference Include="RestEase" Version="1.6.4" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
+        <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="3.88.5" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
+        <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.3195" />
+        <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
+        <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
+        <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.112-prerelease-3" />
+        <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
         <!--        <PackageReference Include="SFA.DAS.NServiceBus.AzureFunction" Version="17.0.49" />-->
-        <PackageReference Include="System.Drawing.Common" Version="8.0.4"/>
-        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0"/>
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0"/>
+        <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\SFA.DAS.LevyTransferMatching.Infrastructure\SFA.DAS.LevyTransferMatching.Infrastructure.csproj"/>
+        <ProjectReference Include="..\SFA.DAS.LevyTransferMatching.Infrastructure\SFA.DAS.LevyTransferMatching.Infrastructure.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="host.json">

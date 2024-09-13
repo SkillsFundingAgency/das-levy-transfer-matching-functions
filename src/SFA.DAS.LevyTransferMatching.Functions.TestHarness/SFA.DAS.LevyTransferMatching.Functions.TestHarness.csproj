@@ -17,7 +17,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="3.88.5" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2978" />
-    <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.118-prerelease-2" />
+    <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.112-prerelease-3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
