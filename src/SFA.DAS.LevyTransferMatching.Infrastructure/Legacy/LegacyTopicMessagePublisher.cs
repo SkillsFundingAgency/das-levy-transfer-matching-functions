@@ -12,23 +12,18 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Extensions;
 
 namespace SFA.DAS.LevyTransferMatching.Infrastructure.Legacy;
 
-public class LegacyTopicMessagePublisher : ILegacyTopicMessagePublisher
+public class LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, LevyTransferMatchingFunctions config)
+    : ILegacyTopicMessagePublisher
 {
-    private readonly ILogger<LegacyTopicMessagePublisher> _logger;
-    private readonly string _legacyServiceBusNamespace;
-
-    public LegacyTopicMessagePublisher(ILogger<LegacyTopicMessagePublisher> logger, LevyTransferMatchingFunctions config)
-    {
-        _logger = logger;
-        _legacyServiceBusNamespace = config.SharedServiceBusNamespace;
-    }
+    private readonly string _legacyServiceBusNamespace = config.SharedServiceBusNamespace;
 
     public async Task PublishAsync<T>(T @event)
     {
-        _logger.LogInformation($"Publishing {@event.GetType()}");
-        _logger.LogInformation($"NS is {_legacyServiceBusNamespace.Length} length");
+        logger.LogInformation("Publishing {Type}", @event.GetType());
+        logger.LogInformation("NS is {Length} length", _legacyServiceBusNamespace.Length);
 
         ServiceBusClient client = null;
+        
         try
         {
             var topicName = GetTopicName(@event);
@@ -38,23 +33,25 @@ public class LegacyTopicMessagePublisher : ILegacyTopicMessagePublisher
             await CreateSubscription(topicName, subscriptionName);
 
             client = new ServiceBusClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
+            
             var sender = client.CreateSender(topicName);
             var messageBody = Serialize(@event);
             var message = new ServiceBusMessage(messageBody);
+            
             await sender.SendMessageAsync(message);
 
-            _logger.LogInformation($"Sent Message {typeof(T).Name} to Azure ServiceBus ");
+            logger.LogInformation("Sent Message {Name} to Azure ServiceBus ", typeof(T).Name);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error sending Message {typeof(T).Name} to Azure ServiceBus");
+            logger.LogError(e, "Error sending Message {Name} to Azure ServiceBus", typeof(T).Name);
             throw;
         }
         finally
         {
             if (client != null && !client.IsClosed)
             {
-                _logger.LogDebug("Closing legacy topic message publisher");
+                logger.LogDebug("Closing legacy topic message publisher");
                 await client.DisposeAsync();
             }
         }
@@ -64,7 +61,11 @@ public class LegacyTopicMessagePublisher : ILegacyTopicMessagePublisher
     {
         var client = new ServiceBusAdministrationClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
         var exists = await client.TopicExistsAsync(topicName);
-        if (exists) return;
+        
+        if (exists)
+        {
+            return;
+        }
 
         await client.CreateTopicAsync(topicName);
     }
@@ -73,30 +74,30 @@ public class LegacyTopicMessagePublisher : ILegacyTopicMessagePublisher
     {
         var client = new ServiceBusAdministrationClient(_legacyServiceBusNamespace, new DefaultAzureCredential());
         var exists = await client.SubscriptionExistsAsync(topicName, subscriptionName);
-        if (exists) return;
+        
+        if (exists)
+        {
+            return;
+        }
 
         var subscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
         await client.CreateSubscriptionAsync(subscriptionOptions);
     }
 
-    private static string GetSubscriptionName(object obj)
-    {
-        return $"Task_{obj.GetType().Name}";
-    }
+    private static string GetSubscriptionName(object obj) => $"Task_{obj.GetType().Name}";
 
-    private static string GetTopicName(object obj)
-    {
-        return obj.GetType().Name.ToUnderscoreCase();
-    }
+    private static string GetTopicName(object obj) => obj.GetType().Name.ToUnderscoreCase();
 
     private static byte[] Serialize<T>(T obj)
     {
         var serializer = new DataContractSerializer(typeof(T));
         var stream = new MemoryStream();
+        
         using (var writer = XmlDictionaryWriter.CreateBinaryWriter(stream))
         {
             serializer.WriteObject(writer, obj);
         }
+        
         return stream.ToArray();
     }
 }
