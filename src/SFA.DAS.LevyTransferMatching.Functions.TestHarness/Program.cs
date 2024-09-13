@@ -46,18 +46,17 @@ internal class Program
             transport.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
             transport.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
         }
-
-        else
-        {
-            // var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-            // transport.ConnectionString(connString)
-            //     .CustomTokenProvider(TokenProvider.CreateManagedServiceIdentityTokenProvider());
-            // transport.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
-            // transport.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
-            // transport.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
-            // transport.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
-            // transport.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
-        }
+        // else
+        // {
+        //     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+        //     transport.ConnectionString(connString)
+        //         .CustomTokenProvider(TokenProvider.CreateManagedServiceIdentityTokenProvider());
+        //     transport.Routing().RouteToEndpoint(typeof(CreatedAccountEvent), "SFA.DAS.LevyTransferMatching.CreatedAccount");
+        //     transport.Routing().RouteToEndpoint(typeof(ChangedAccountNameEvent), "SFA.DAS.LevyTransferMatching.ChangedAccountNameEvent");
+        //     transport.Routing().RouteToEndpoint(typeof(ApplicationApprovedEvent), "SFA.DAS.LevyTransferMatching.ApplicationApprovedEvent");
+        //     transport.Routing().RouteToEndpoint(typeof(TransferRequestApprovedEvent), "SFA.DAS.LevyTransferMatching.TransferRequestApprovedEvent");
+        //     transport.Routing().RouteToEndpoint(typeof(ApplicationCreatedEvent), "SFA.DAS.LevyTransferMatching.ApplicationCreatedEvent");
+        // }
 
         var endpoint = await Endpoint.Start(endpointConfiguration);
         var testHarness = new TestHarness(endpoint);
