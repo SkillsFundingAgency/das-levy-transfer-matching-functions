@@ -16,11 +16,6 @@ public static class ConfigurationExtensions
 #endif
         configBuilder.AddAzureTableStorage(options =>
         {
-// #if DEBUG
-//             options.ConfigurationKeys = ["SFA.DAS.LevyTransferMatching.Functions", "SFA.DAS.Encoding:EncodingService"];
-// #else
-//             options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-// #endif
             options.ConfigurationKeys = ["SFA.DAS.LevyTransferMatching.Functions", "SFA.DAS.Encoding:EncodingService"];
             options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
             options.EnvironmentName = configuration["EnvironmentName"];
