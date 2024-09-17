@@ -7,5 +7,4 @@ public class LevyTransferMatchingFunctions
     public string NServiceBusLicense { get; set; }
     public string RedisConnectionString { get; set; }
     public string DataProtectionKeysDatabase { get; set; }
-    public string SharedServiceBusNamespace { get; set; }
 }
