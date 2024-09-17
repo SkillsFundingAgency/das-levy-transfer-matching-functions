@@ -36,7 +36,6 @@ var host = new HostBuilder()
         var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
         services.AddSingleton(configuration);
-        services.AddLegacyServiceBus(functionsConfig);
         services.AddCache(functionsConfig);
         services.AddDasDataProtection(functionsConfig);
 
