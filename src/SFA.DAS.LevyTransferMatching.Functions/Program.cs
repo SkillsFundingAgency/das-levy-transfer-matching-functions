@@ -13,7 +13,7 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
+[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions", Connection = "AzureWebJobsServiceBus")]
 
 const string endpointName = nameof(SFA.DAS.LevyTransferMatching.Functions);
 const string errorEndpointName = $"{endpointName}-error";
