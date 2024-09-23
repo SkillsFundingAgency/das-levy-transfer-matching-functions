@@ -26,7 +26,7 @@ var host = new HostBuilder()
         services.AddDasLogging();
 
         var configuration = context.Configuration;
-        
+
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
 
@@ -45,7 +45,14 @@ var host = new HostBuilder()
         // MI isn't currently supported by NSB in isolation process so NServiceBusConnectionString will need to be a SharedAccessKey in Azure.
         // When NSB SB triggers work with MI, AzureWebJobsServiceBus needs replacing with AzureWebJobsServiceBus:fullyQualifiedNamespace env variable in azure as per
         // https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/servicebus/Microsoft.Azure.WebJobs.Extensions.ServiceBus/README.md#managed-identity-authentication
-        Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        if (context.HostingEnvironment.IsDevelopment())
+        {
+            Environment.SetEnvironmentVariable("AzureWebJobsServiceBus", functionsConfig.NServiceBusConnectionString);
+        }
+        else
+        {
+            Environment.SetEnvironmentVariable("AzureWebJobsServiceBus:fullyQualifiedNamespace", configuration["SharedServiceBusFqdn"]);
+        }
         Environment.SetEnvironmentVariable("NSERVICEBUS_LICENSE", functionsConfig.NServiceBusLicense);
 
         services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
