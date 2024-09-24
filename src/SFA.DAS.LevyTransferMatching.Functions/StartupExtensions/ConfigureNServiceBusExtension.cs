@@ -1,10 +1,17 @@
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
-public static class ConfigureNServiceBusExtension
+public static partial class ConfigureNServiceBusExtension
 {
+    [GeneratedRegex("Command(V\\d+)?$")]
+    private static partial Regex CommandRegex();
+    
+    [GeneratedRegex("Event(V\\d+)?$")]
+    private static partial Regex EventRegex();
+    
     private const string EndpointName = "SFA.DAS.LevyTransferMatching.Functions";
     private const string ErrorEndpointName = $"{EndpointName}-error";
 
@@ -14,8 +21,9 @@ public static class ConfigureNServiceBusExtension
         {
             endpointConfiguration.AdvancedConfiguration.EnableInstallers();
             endpointConfiguration.AdvancedConfiguration.SendFailedMessagesTo(ErrorEndpointName);
-            endpointConfiguration.AdvancedConfiguration.Conventions().DefiningEventsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Events));
-            endpointConfiguration.AdvancedConfiguration.Conventions().DefiningCommandsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Commands));
+            endpointConfiguration.AdvancedConfiguration.Conventions()
+                .DefiningCommandsAs(t => CommandRegex().IsMatch(t.Name))
+                .DefiningEventsAs(t => EventRegex().IsMatch(t.Name));
 
             var decodedLicence = WebUtility.HtmlDecode(config["LevyTransferMatchingFunctions:NServiceBusLicense"]);
             endpointConfiguration.AdvancedConfiguration.License(decodedLicence);
