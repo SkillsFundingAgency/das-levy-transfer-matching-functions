@@ -13,14 +13,12 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions", Connection = "AzureWebJobsServiceBus")]
-
-const string endpointName = nameof(SFA.DAS.LevyTransferMatching.Functions);
-const string errorEndpointName = $"{endpointName}-error";
+[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.MessageHandlers")]
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
     .ConfigureAppConfiguration((hostBuilderContext, builder) => { builder.BuildDasConfiguration(hostBuilderContext.Configuration); })
+    .ConfigureNServiceBus()
     .ConfigureServices((context, services) =>
     {
         services.AddDasLogging();
@@ -65,14 +63,6 @@ var host = new HostBuilder()
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-    })
-    .UseNServiceBus((config, endpointConfiguration) =>
-    {
-        // Function endpoints can create their own queues or other infrastructure in the Azure Service Bus namespace by using the configuration.AdvancedConfiguration.EnableInstallers() method.
-        endpointConfiguration.AdvancedConfiguration.EnableInstallers();
-        endpointConfiguration.AdvancedConfiguration.SendFailedMessagesTo(errorEndpointName);
-        endpointConfiguration.AdvancedConfiguration.Conventions().DefiningEventsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Events));
-        endpointConfiguration.AdvancedConfiguration.Conventions().DefiningCommandsAs(type => type.Namespace == nameof(SFA.DAS.LevyTransferMatching.Messages.Commands));
     })
     .Build();
 

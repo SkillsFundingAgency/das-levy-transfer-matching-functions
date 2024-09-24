@@ -74,6 +74,9 @@
         },
         "SharedServiceBusFqdn": {
             "type": "string"
+        },
+        "serviceBusConnectionString": {
+            "type": "string"
         }
     },
     "variables": {
@@ -270,6 +273,10 @@
                                 {
                                     "name": "WEBSITE_RUN_FROM_PACKAGE",
                                     "value": "1"
+                                },
+                                {
+                                    "name": "AzureWebJobsServiceBus",
+                                    "value": "[parameters('serviceBusConnectionString')]"
                                 },
                                 {
                                     "name": "AzureWebJobsServiceBus__fullyQualifiedNamespace",
