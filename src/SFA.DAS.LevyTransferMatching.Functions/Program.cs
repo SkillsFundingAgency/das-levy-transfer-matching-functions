@@ -13,7 +13,7 @@ using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
-    .ConfigureAppConfiguration((hostBuilderContext, builder) => { builder.BuildDasConfiguration(hostBuilderContext.Configuration); })
+    .ConfigureAppConfiguration(builder => builder.BuildDasConfiguration())
     .ConfigureNServiceBus()
     .ConfigureServices((context, services) =>
     {
