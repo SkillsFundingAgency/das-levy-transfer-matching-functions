@@ -1,17 +1,10 @@
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
-public static partial class ConfigureNServiceBusExtension
+public static class ConfigureNServiceBusExtension
 {
-    [GeneratedRegex("Command(V\\d+)?$")]
-    private static partial Regex CommandRegex();
-    
-    [GeneratedRegex("Event(V\\d+)?$")]
-    private static partial Regex EventRegex();
-    
     private const string EndpointName = "SFA.DAS.LevyTransferMatching.Functions";
     private const string ErrorEndpointName = $"{EndpointName}-error";
 
@@ -22,12 +15,13 @@ public static partial class ConfigureNServiceBusExtension
             endpointConfiguration.AdvancedConfiguration.EnableInstallers();
             endpointConfiguration.AdvancedConfiguration.SendFailedMessagesTo(ErrorEndpointName);
             endpointConfiguration.AdvancedConfiguration.Conventions()
-                .DefiningCommandsAs(t => CommandRegex().IsMatch(t.Name))
-                .DefiningEventsAs(t => EventRegex().IsMatch(t.Name));
+                .DefiningCommandsAs(IsCommand)
+                .DefiningMessagesAs(IsMessage)
+                .DefiningEventsAs(IsEvent);
 
             var decodedLicence = WebUtility.HtmlDecode(config["LevyTransferMatchingFunctions:NServiceBusLicense"]);
             endpointConfiguration.AdvancedConfiguration.License(decodedLicence);
-            
+
 #if DEBUG
             var transport = endpointConfiguration.AdvancedConfiguration.UseTransport<LearningTransport>();
             transport.StorageDirectory(Path.Combine(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().IndexOf("src")),
@@ -38,4 +32,15 @@ public static partial class ConfigureNServiceBusExtension
 
         return hostBuilder;
     }
+
+    private static bool IsMessage(Type t) => t is IMessage || IsDasMessage(t, "Messages");
+
+    private static bool IsEvent(Type t) => t is IEvent || IsDasMessage(t, "Messages.Events");
+
+    private static bool IsCommand(Type t) => t is ICommand || IsDasMessage(t, "Messages.Commands");
+
+    private static bool IsDasMessage(Type t, string namespaceSuffix)
+        => t.Namespace != null &&
+           t.Namespace.StartsWith("SFA.DAS") &&
+           t.Namespace.EndsWith(namespaceSuffix);
 }
