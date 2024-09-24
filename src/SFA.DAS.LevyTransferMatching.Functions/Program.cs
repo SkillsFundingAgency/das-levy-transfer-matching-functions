@@ -4,12 +4,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using NServiceBus;
-using RestEase.HttpClientFactory;
 using SFA.DAS.Encoding;
-using SFA.DAS.Http.Configuration;
-using SFA.DAS.Http.MessageHandlers;
 using SFA.DAS.LevyTransferMatching.Functions;
-using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
@@ -27,34 +23,27 @@ var host = new HostBuilder()
 
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
-        
+
+        services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
+
         var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
-
-        services.AddSingleton(configuration);
-        services.AddCache(functionsConfig);
-        services.AddDasDataProtection(functionsConfig);
-
         var apiConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingApi).Get<LevyTransferMatchingApiConfiguration>();
         var emailNotificationsConfig = configuration.GetSection(ConfigurationKeys.EmailNotifications).Get<EmailNotificationsConfiguration>();
-        
-        services.Configure<EncodingConfig>(configuration.GetSection(ConfigurationKeys.EncodingService));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
 
-        services.AddSingleton(apiConfig);
-        services.AddSingleton(emailNotificationsConfig);
-        services.AddSingleton<IApimClientConfiguration>(x => x.GetRequiredService<LevyTransferMatchingApiConfiguration>());
-        services.AddSingleton<IEncodingService, EncodingService>();
-        services.AddTransient<DefaultHeadersHandler>();
-        services.AddTransient<LoggingMessageHandler>();
-        services.AddTransient<ApimHeadersHandler>();
+        services
+            .AddSingleton(configuration)
+            .AddSingleton(apiConfig)
+            .AddSingleton(emailNotificationsConfig)
+            .AddSingleton(cfg => cfg.GetService<IOptions<EncodingConfig>>().Value);
 
-        services.AddRestEaseClient<ILevyTransferMatchingApi>(apiConfig.ApiBaseUrl)
-            .AddHttpMessageHandler<DefaultHeadersHandler>()
-            .AddHttpMessageHandler<ApimHeadersHandler>()
-            .AddHttpMessageHandler<LoggingMessageHandler>();
+        services
+            .AddCache(functionsConfig)
+            .AddDasDataProtection(functionsConfig)
+            .AddApplicationServices(apiConfig);
 
-        services.AddApplicationInsightsTelemetryWorkerService();
-        services.ConfigureFunctionsApplicationInsights();
+        services
+            .AddApplicationInsightsTelemetryWorkerService()
+            .ConfigureFunctionsApplicationInsights();
     })
     .Build();
 
