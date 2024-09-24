@@ -3,7 +3,7 @@ using SFA.DAS.EmployerAccounts.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class CreatedAccountEventHandler(ILogger log): IHandleMessages<CreatedAccountEvent>
+public class CreatedAccountEventHandler(ILogger<CreatedAccountEventHandler> log): IHandleMessages<CreatedAccountEvent>
 {  
     public Task Handle(CreatedAccountEvent message, IMessageHandlerContext context)
     {

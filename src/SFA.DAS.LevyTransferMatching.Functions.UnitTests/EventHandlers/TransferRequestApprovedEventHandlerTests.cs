@@ -22,7 +22,7 @@ public class TransferRequestApprovedEventHandlerTests
     public void Setup()
     {
         _api = new Mock<ILevyTransferMatchingApi>();
-        _handler = new TransferRequestApprovedEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new TransferRequestApprovedEventHandler(_api.Object, Mock.Of<ILogger<TransferRequestApprovedEventHandler>>());
     }
 
     [Test]

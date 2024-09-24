@@ -5,7 +5,7 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger log) : IHandleMessages<PledgeCreditedEvent>
+public class PledgeCreditedEventHandler(ILevyTransferMatchingApi api, ILogger<PledgeCreditedEventHandler> log) : IHandleMessages<PledgeCreditedEvent>
 {
     public async Task Handle(PledgeCreditedEvent @event, IMessageHandlerContext context)
     {

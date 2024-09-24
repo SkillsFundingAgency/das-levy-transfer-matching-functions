@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 public class AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
 {
     [Function("ApplicationsWithAutomaticRejectionFunction")]
-    public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger log)
+    public async Task Run([TimerTrigger("0 2 * * *")] TimerInfo timer, ILogger<AutomaticApplicationRejectionFunction> log)
     {
         log.LogInformation("Executing ApplicationsWithAutomaticRejectionFunction");
 
@@ -16,7 +16,7 @@ public class AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
     }
 
     [Function("HttpAutomaticApplicationRejectionFunction")]
-    public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req, ILogger log)
+    public async Task<IActionResult> HttpAutomaticApplicationRejectionFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticRejection")] HttpRequest req, ILogger<AutomaticApplicationRejectionFunction> log)
     {
         log.LogInformation("Executing HTTP Triggered {FunctionName}", nameof(HttpAutomaticApplicationRejectionFunction));
 
@@ -25,7 +25,7 @@ public class AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api)
         return new OkObjectResult($"{nameof(HttpAutomaticApplicationRejectionFunction)} successfully completed.");
     }
 
-    private async Task RunApplicationsWithAutomaticRejectionFunction(ILogger log)
+    private async Task RunApplicationsWithAutomaticRejectionFunction(ILogger<AutomaticApplicationRejectionFunction> log)
     {
         try
         {

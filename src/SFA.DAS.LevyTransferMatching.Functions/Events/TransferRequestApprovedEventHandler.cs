@@ -5,7 +5,7 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api, ILogger log) : IHandleMessages<TransferRequestApprovedEvent>
+public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api, ILogger<TransferRequestApprovedEventHandler> log) : IHandleMessages<TransferRequestApprovedEvent>
 {
     public async Task Handle(TransferRequestApprovedEvent @event, IMessageHandlerContext context)
     {

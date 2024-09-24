@@ -6,7 +6,7 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, ILogger log) : IHandleMessages<ApplicationCreatedEvent>
+public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, ILogger<ApplicationCreatedEmailEventHandler> log) : IHandleMessages<ApplicationCreatedEvent>
 {
     public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {

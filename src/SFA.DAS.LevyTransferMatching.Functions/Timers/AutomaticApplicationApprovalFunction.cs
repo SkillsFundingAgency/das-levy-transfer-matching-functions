@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
 {
     [Function("ApplicationsWithAutomaticApprovalFunction")]
-    public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger log)
+    public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger<AutomaticApplicationApprovalFunction> log)
     {
         log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
 
@@ -17,7 +17,7 @@ public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
     }
 
     [Function("HttpAutomaticApplicationApprovalFunction")]
-    public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger log)
+    public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger<AutomaticApplicationApprovalFunction> log)
     {
         log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");
 
@@ -26,7 +26,7 @@ public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
         return new OkObjectResult("ApplicationsWithAutomaticApproval successfully ran");
     }
 
-    private async Task RunApplicationsWithAutomaticApprovalFunction(ILogger log)
+    private async Task RunApplicationsWithAutomaticApprovalFunction(ILogger<AutomaticApplicationApprovalFunction> log)
     {
         try
         {

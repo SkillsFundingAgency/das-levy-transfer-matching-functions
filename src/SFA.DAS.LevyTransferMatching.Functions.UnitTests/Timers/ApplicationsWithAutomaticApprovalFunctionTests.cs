@@ -17,7 +17,7 @@ public class AutomaticApplicationApprovalFunctionTests
 {
     private AutomaticApplicationApprovalFunction _handler;
     private Mock<ILevyTransferMatchingApi> _api;
-    private Mock<ILogger> _logger;
+    private Mock<ILogger<AutomaticApplicationApprovalFunction>> _logger;
     private GetApplicationsForAutomaticApprovalResponse _apiResponse;
 
     [SetUp]
@@ -26,7 +26,7 @@ public class AutomaticApplicationApprovalFunctionTests
         var fixture = new Fixture();
 
         _api = new Mock<ILevyTransferMatchingApi>();
-        _logger = new Mock<ILogger>();
+        _logger = new Mock<ILogger<AutomaticApplicationApprovalFunction>>();
 
         _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
         _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);

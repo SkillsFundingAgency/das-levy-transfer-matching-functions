@@ -17,7 +17,7 @@ public class PledgeCreditedEventHandlerTests
     private PledgeCreditedEventHandler _handler;
     private PledgeCreditedEvent _event;
     private Mock<ILevyTransferMatchingApi> _api;
-    private Mock<ILogger> _logger;
+    private Mock<ILogger<PledgeCreditedEventHandler>> _logger;
     private GetApplicationsForAutomaticApprovalResponse _apiResponse;
 
     [SetUp]
@@ -26,7 +26,7 @@ public class PledgeCreditedEventHandlerTests
         var fixture = new Fixture();
 
         _api = new Mock<ILevyTransferMatchingApi>();
-        _logger = new Mock<ILogger>();
+        _logger = new Mock<ILogger<PledgeCreditedEventHandler>>();
 
         _event = fixture.Create<PledgeCreditedEvent>();
 

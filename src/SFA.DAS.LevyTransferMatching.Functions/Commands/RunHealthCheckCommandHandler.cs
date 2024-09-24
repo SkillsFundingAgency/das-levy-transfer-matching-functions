@@ -4,7 +4,7 @@ using SFA.DAS.LevyTransferMatching.Messages.Commands;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Commands;
 
-public class RunHealthCheckCommandHandler(IDistributedCache distributedCache, ILogger log) : IHandleMessages<RunHealthCheckCommand>
+public class RunHealthCheckCommandHandler(IDistributedCache distributedCache, ILogger<RunHealthCheckCommandHandler> log) : IHandleMessages<RunHealthCheckCommand>
 {
     public async Task Handle(RunHealthCheckCommand runHealthCheck, IMessageHandlerContext context)
     {

@@ -31,7 +31,7 @@ public class ApplicationRejectedEmailEventHandlerTests
 
         _event = _fixture.Create<ApplicationRejectedEvent>();
 
-        _handler = new ApplicationRejectedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, _config, Mock.Of<ILogger>());
+        _handler = new ApplicationRejectedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, _config, Mock.Of<ILogger<ApplicationRejectedEmailEventHandler>>());
     }
 
     [Test]

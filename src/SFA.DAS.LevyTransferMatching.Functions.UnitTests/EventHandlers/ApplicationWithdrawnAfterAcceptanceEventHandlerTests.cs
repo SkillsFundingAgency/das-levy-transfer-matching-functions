@@ -11,7 +11,7 @@ using NServiceBus;
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
 
 [TestFixture]
-class ApplicationWithdrawnAfterAcceptanceEventHandlerTests
+public class ApplicationWithdrawnAfterAcceptanceEventHandlerTests
 {
     private ApplicationWithdrawnAfterAcceptanceEventHandler _handler;
     private Mock<ILevyTransferMatchingApi> _api;
@@ -21,7 +21,7 @@ class ApplicationWithdrawnAfterAcceptanceEventHandlerTests
     public void Setup()
     {
         _api = new Mock<ILevyTransferMatchingApi>();
-        _handler = new ApplicationWithdrawnAfterAcceptanceEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new ApplicationWithdrawnAfterAcceptanceEventHandler(_api.Object, Mock.Of<ILogger<ApplicationWithdrawnAfterAcceptanceEventHandler>>());
     }
 
     [Test]

@@ -5,7 +5,7 @@ using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api, ILogger log) : IHandleMessages<ApplicationWithdrawnAfterAcceptanceEvent>
+public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationWithdrawnAfterAcceptanceEventHandler> log) : IHandleMessages<ApplicationWithdrawnAfterAcceptanceEvent>
 {
     public async Task Handle(ApplicationWithdrawnAfterAcceptanceEvent @event, IMessageHandlerContext context)
     {

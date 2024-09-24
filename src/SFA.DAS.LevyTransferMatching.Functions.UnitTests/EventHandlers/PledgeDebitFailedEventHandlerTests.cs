@@ -23,7 +23,7 @@ public class PledgeDebitFailedEventHandlerTests
     {
         _api = new Mock<ILevyTransferMatchingApi>();
         _event = _fixture.Create<PledgeDebitFailedEvent>();
-        _handler = new PledgeDebitFailedEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new PledgeDebitFailedEventHandler(_api.Object, Mock.Of<ILogger<PledgeDebitFailedEventHandler>>());
     }
 
     [Test]

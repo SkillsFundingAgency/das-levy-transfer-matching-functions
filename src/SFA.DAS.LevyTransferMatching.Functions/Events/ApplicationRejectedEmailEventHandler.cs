@@ -11,7 +11,7 @@ public class ApplicationRejectedEmailEventHandler(
     ILevyTransferMatchingApi api,
     IEncodingService encodingService,
     EmailNotificationsConfiguration config,
-    ILogger log) : IHandleMessages<ApplicationRejectedEvent>
+    ILogger<ApplicationRejectedEmailEventHandler> log) : IHandleMessages<ApplicationRejectedEvent>
 {
     public async Task Handle(ApplicationRejectedEvent @event, IMessageHandlerContext context)
     {

@@ -17,7 +17,7 @@ public class AutomaticApplicationRejectionFunctionTests
 {
     private AutomaticApplicationRejectionFunction _handler;
     private Mock<ILevyTransferMatchingApi> _api;
-    private Mock<ILogger> _logger;
+    private Mock<ILogger<AutomaticApplicationRejectionFunction>> _logger;
     private GetApplicationsForAutomaticRejectionResponse _apiResponse;
 
     [SetUp]
@@ -26,7 +26,7 @@ public class AutomaticApplicationRejectionFunctionTests
         var fixture = new Fixture();
 
         _api = new Mock<ILevyTransferMatchingApi>();
-        _logger = new Mock<ILogger>();
+        _logger = new Mock<ILogger<AutomaticApplicationRejectionFunction>>();
 
         _apiResponse = fixture.Create<GetApplicationsForAutomaticRejectionResponse>();
 

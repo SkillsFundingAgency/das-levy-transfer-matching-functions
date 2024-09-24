@@ -23,7 +23,7 @@ public class ApplicationApprovedEventHandlerTests
     {
         _api = new Mock<ILevyTransferMatchingApi>();
         _event = _fixture.Create<ApplicationApprovedEvent>();
-        _handler = new ApplicationApprovedEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new ApplicationApprovedEventHandler(_api.Object, Mock.Of<ILogger<ApplicationApprovedEventHandler>>());
     }
 
     [Test]

@@ -11,7 +11,7 @@ public class PledgeOptionsEmailsCommandHandler(
     EmailNotificationsConfiguration config)
 {
     [Function("PledgeOptionsEmailCommand")]
-    public async Task Run([TimerTrigger("0 0 8 1 5 *")] TimerInfo timer, ILogger logger)
+    public async Task Run([TimerTrigger("0 0 8 1 5 *")] TimerInfo timer, ILogger<PledgeOptionsEmailsCommandHandler> logger)
     {
         logger.LogInformation("Sending pledge options emails");
         var response = await levyTransferMatchingApi.GetPledgeOptionsEmailData();

@@ -21,7 +21,7 @@ public class ApplicationCreatedForImmediateAutoApprovalEventHandlerTests
     public void Setup()
     {
         _api = new Mock<ILevyTransferMatchingApi>();
-        _handler = new ApplicationCreatedForImmediateAutoApprovalEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new ApplicationCreatedForImmediateAutoApprovalEventHandler(_api.Object, Mock.Of<ILogger<ApplicationCreatedForImmediateAutoApprovalEventHandler>>());
     }
 
     [Test]

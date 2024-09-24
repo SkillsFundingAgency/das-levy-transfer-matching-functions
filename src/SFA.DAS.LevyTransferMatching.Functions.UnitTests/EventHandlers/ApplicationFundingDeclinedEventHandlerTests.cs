@@ -23,7 +23,7 @@ public class ApplicationFundingDeclinedEventHandlerTests
     {
         _api = new Mock<ILevyTransferMatchingApi>();
         _event = _fixture.Create<ApplicationFundingDeclinedEvent>();
-        _handler = new ApplicationFundingDeclinedEventHandler(_api.Object, Mock.Of<ILogger>());
+        _handler = new ApplicationFundingDeclinedEventHandler(_api.Object, Mock.Of<ILogger<ApplicationFundingDeclinedEventHandler>>());
     }
 
     [Test]

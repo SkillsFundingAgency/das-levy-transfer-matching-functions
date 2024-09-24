@@ -28,7 +28,7 @@ public class ApplicationCreatedEmailEventHandlerTests
 
         _event = _fixture.Create<ApplicationCreatedEvent>();
 
-        _handler = new ApplicationCreatedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, Mock.Of<ILogger>());
+        _handler = new ApplicationCreatedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, Mock.Of<ILogger<ApplicationCreatedEmailEventHandler>>());
     }
 
     [Test]

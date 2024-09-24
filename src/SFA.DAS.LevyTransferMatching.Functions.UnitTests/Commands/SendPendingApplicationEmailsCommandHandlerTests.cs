@@ -16,7 +16,7 @@ public class SendPendingApplicationEmailsCommandHandlerTests
     private SendPendingApplicationEmailsCommandHandler _handler;
     private Mock<ILevyTransferMatchingApi> _api;
     private Mock<IEncodingService> _encodingService;
-    private Mock<ILogger> _logger;
+    private Mock<ILogger<SendPendingApplicationEmailsCommandHandler>> _logger;
     private EmailNotificationsConfiguration _config;
     private readonly Fixture _fixture = new();
 
@@ -27,7 +27,7 @@ public class SendPendingApplicationEmailsCommandHandlerTests
     {
         _api = new Mock<ILevyTransferMatchingApi>();
         _encodingService = new Mock<IEncodingService>();
-        _logger = new Mock<ILogger>();
+        _logger = new Mock<ILogger<SendPendingApplicationEmailsCommandHandler>>();
         _config = _fixture.Create<EmailNotificationsConfiguration>();
 
         _apiResponse = _fixture.Create<GetPendingApplicationEmailDataResponse>();
