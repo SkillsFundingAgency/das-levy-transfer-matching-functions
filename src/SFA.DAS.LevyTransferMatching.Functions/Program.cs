@@ -27,10 +27,7 @@ var host = new HostBuilder()
 
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
-
-        services.AddApplicationInsightsTelemetryWorkerService();
-        services.ConfigureFunctionsApplicationInsights();
-
+        
         var functionsConfig = configuration.GetSection(ConfigurationKeys.LevyTransferMatchingFunctions).Get<LevyTransferMatchingFunctions>();
 
         services.AddSingleton(configuration);
