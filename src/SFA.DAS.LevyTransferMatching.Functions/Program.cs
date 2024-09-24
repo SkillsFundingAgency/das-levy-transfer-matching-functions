@@ -9,7 +9,7 @@ using SFA.DAS.LevyTransferMatching.Functions;
 using SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 
-[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.MessageHandlers")]
+[assembly: NServiceBusTriggerFunction("SFA.DAS.LevyTransferMatching.Functions")]
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
