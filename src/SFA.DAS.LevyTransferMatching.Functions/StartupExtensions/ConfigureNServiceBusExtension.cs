@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.Hosting;
 using NServiceBus;
 
-
 namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
 public static class ConfigureNServiceBusExtension
@@ -15,7 +14,7 @@ public static class ConfigureNServiceBusExtension
         hostBuilder.UseNServiceBus((config, endpointConfiguration) =>
         {
             endpointConfiguration.Transport.SubscriptionRuleNamingConvention = AzureRuleNameShortener.Shorten;
-
+            
             endpointConfiguration.AdvancedConfiguration.EnableInstallers();
             endpointConfiguration.AdvancedConfiguration.SendFailedMessagesTo(ErrorEndpointName);
             endpointConfiguration.AdvancedConfiguration.Conventions()
@@ -49,13 +48,13 @@ public static class ConfigureNServiceBusExtension
            t.Namespace.EndsWith(namespaceSuffix);
 }
 
-public static class AzureRuleNameShortener
+internal static class AzureRuleNameShortener
 {
     private const int AzureServiceBusRuleNameMaxLength = 50;
 
-    public static string Shorten(Type arg)
+    public static string Shorten(Type type)
     {
-        var ruleName = arg.FullName;
+        var ruleName = type.FullName;
         if (ruleName!.Length <= AzureServiceBusRuleNameMaxLength)
         {
             return ruleName;
@@ -63,8 +62,6 @@ public static class AzureRuleNameShortener
 
         var bytes = System.Text.Encoding.Default.GetBytes(ruleName);
         var hash = MD5.HashData(bytes);
-        var shortenedRuleName = new Guid(hash).ToString();
-
-        return shortenedRuleName;
+        return new Guid(hash).ToString();
     }
 }
