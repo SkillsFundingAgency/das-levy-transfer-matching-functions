@@ -5,28 +5,27 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Timers;
 
-public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
+public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api, ILogger<AutomaticApplicationApprovalFunction> log)
 {
     [Function("ApplicationsWithAutomaticApprovalFunction")]
-    public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer, ILogger<AutomaticApplicationApprovalFunction> log)
+    public async Task Run([TimerTrigger("0 3 * * *")] TimerInfo timer)
     {
-        log.LogInformation($"Executing ApplicationsWithAutomaticApprovalFunction");
+        log.LogInformation("Executing ApplicationsWithAutomaticApprovalFunction");
 
-        await RunApplicationsWithAutomaticApprovalFunction(log);
-          
+        await RunApplicationsWithAutomaticApprovalFunction();
     }
 
     [Function("HttpAutomaticApplicationApprovalFunction")]
-    public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req, ILogger<AutomaticApplicationApprovalFunction> log)
+    public async Task<IActionResult> HttpAutomaticApplicationApprovalFunction([HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApplicationsWithAutomaticApproval")] HttpRequest req)
     {
-        log.LogInformation($"Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");
+        log.LogInformation("Executing HTTP Triggered HttpAutomaticApplicationApprovalFunction");
 
-        await RunApplicationsWithAutomaticApprovalFunction(log);
+        await RunApplicationsWithAutomaticApprovalFunction();
 
         return new OkObjectResult("ApplicationsWithAutomaticApproval successfully ran");
     }
 
-    private async Task RunApplicationsWithAutomaticApprovalFunction(ILogger<AutomaticApplicationApprovalFunction> log)
+    private async Task RunApplicationsWithAutomaticApprovalFunction()
     {
         try
         {
@@ -39,7 +38,7 @@ public class AutomaticApplicationApprovalFunction(ILevyTransferMatchingApi api)
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error executing RunApplicationsWithAutomaticApprovalFunction");
+            log.LogError(ex, "Error executing RunApplicationsWithAutomaticApprovalFunction");
             throw;
         }
     }

@@ -32,14 +32,14 @@ public class AutomaticApplicationRejectionFunctionTests
 
         _api.Setup(x => x.GetApplicationsForAutomaticRejection()).ReturnsAsync(_apiResponse);
 
-        _handler = new AutomaticApplicationRejectionFunction(_api.Object);
+        _handler = new AutomaticApplicationRejectionFunction(_api.Object, _logger.Object);
     }
 
     [Test]
     public async Task Run_Rejects_Each_Application_Ready_For_Automatic_Rejection()
     {
         // Act
-        await _handler.Run(default, _logger.Object);
+        await _handler.Run(default);
 
         // Assert
         _api.Verify(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
@@ -52,7 +52,7 @@ public class AutomaticApplicationRejectionFunctionTests
         var httpRequestMock = new Mock<HttpRequest>();
 
         // Act
-        var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object, _logger.Object);
+        var result = await _handler.HttpAutomaticApplicationRejectionFunction(httpRequestMock.Object);
 
         // Assert
         result.Should().BeAssignableTo<OkObjectResult>();

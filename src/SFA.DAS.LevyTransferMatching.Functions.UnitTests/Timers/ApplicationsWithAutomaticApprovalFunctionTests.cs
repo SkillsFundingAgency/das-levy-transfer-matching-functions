@@ -30,14 +30,14 @@ public class AutomaticApplicationApprovalFunctionTests
 
         _apiResponse = fixture.Create<GetApplicationsForAutomaticApprovalResponse>();
         _api.Setup(x => x.GetApplicationsForAutomaticApproval(It.IsAny<int?>())).ReturnsAsync(_apiResponse);
-        _handler = new AutomaticApplicationApprovalFunction(_api.Object);
+        _handler = new AutomaticApplicationApprovalFunction(_api.Object, _logger.Object);
     }
 
     [Test]
     public async Task Run_Approves_Each_Application_Ready_For_Automatic_Approval()
     {
         // Act
-        await _handler.Run(default, _logger.Object);
+        await _handler.Run(default);
 
         // Assert
         _api.Verify(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()), Times.Exactly(_apiResponse.Applications.Count()));
@@ -50,7 +50,7 @@ public class AutomaticApplicationApprovalFunctionTests
         var httpRequestMock = new Mock<HttpRequest>();
 
         // Act
-        var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object, _logger.Object);
+        var result = await _handler.HttpAutomaticApplicationApprovalFunction(httpRequestMock.Object);
 
         // Assert
         result.Should().BeAssignableTo<OkObjectResult>();
