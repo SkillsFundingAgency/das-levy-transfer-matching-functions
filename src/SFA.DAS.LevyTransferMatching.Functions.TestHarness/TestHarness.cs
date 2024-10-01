@@ -55,7 +55,7 @@ public class TestHarness
                         Console.WriteLine($"Published ChangedAccountNameEvent");
                         break;
                     case ConsoleKey.C:
-                        await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000, 1));
+                        await _publisher.Publish(new ApplicationApprovedEvent(1, 1, DateTime.UtcNow, 10000, 1, 1));
                         Console.WriteLine();
                         Console.WriteLine($"Published ApplicationApprovedEvent");
                         break;
@@ -70,12 +70,12 @@ public class TestHarness
                         Console.WriteLine("Published ApplicationFundingDeclinedEvent");
                         break;
                     case ConsoleKey.F:
-                        await _publisher.Publish(new ApplicationCreatedEvent(1,2, DateTime.UtcNow, 3));
+                        await _publisher.Publish(new ApplicationCreatedEvent(1,2, DateTime.UtcNow, 3, 1));
                         Console.WriteLine();
                         Console.WriteLine($"Published ApplicationCreatedEvent");
                         break;
                     case ConsoleKey.G:
-                        await _publisher.Publish(new ApplicationApprovedEmailEvent(1, 1, 1, 8194, 8194));
+                        await _publisher.Publish(new ApplicationApprovedEvent(1, 1,  DateTime.UtcNow,  8194, 8194, 1));
                         Console.WriteLine();
                         Console.WriteLine($"Published ApplicationApprovedEmailEvent");
                         break;

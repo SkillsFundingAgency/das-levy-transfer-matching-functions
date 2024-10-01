@@ -13,7 +13,7 @@ public static class StringExtensions
         {
             if (char.IsUpper(ch) && !startOfWord)
             {
-                stringBuilder.Append("_");
+                stringBuilder.Append('_');
             }
 
             stringBuilder.Append(ch.ToString().ToLower());

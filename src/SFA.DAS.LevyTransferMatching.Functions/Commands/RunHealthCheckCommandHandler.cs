@@ -1,24 +1,15 @@
 using Microsoft.Extensions.Caching.Distributed;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
+using NServiceBus;
 using SFA.DAS.LevyTransferMatching.Messages.Commands;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Commands;
 
-public class RunHealthCheckCommandHandler
+public class RunHealthCheckCommandHandler(IDistributedCache distributedCache, ILogger<RunHealthCheckCommandHandler> log) : IHandleMessages<RunHealthCheckCommand>
 {
-    private readonly IDistributedCache _distributedCache;
-
-    public RunHealthCheckCommandHandler(IDistributedCache distributedCache)
+    public async Task Handle(RunHealthCheckCommand runHealthCheck, IMessageHandlerContext context)
     {
-        _distributedCache = distributedCache;
-    }
-
-    [FunctionName("RunHealthCheckCommand")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.RunHealthCheck)] RunHealthCheckCommand runHealthCheck, ILogger log)
-    {
-        log.LogInformation($"Handling command: {runHealthCheck}");
-
-        await _distributedCache.SetStringAsync(runHealthCheck.MessageId, "OK");
+        log.LogInformation("Handling command: {CommandName}", nameof(RunHealthCheckCommand));
+        
+        await distributedCache.SetStringAsync(runHealthCheck.MessageId, "OK", context.CancellationToken);
     }
 }

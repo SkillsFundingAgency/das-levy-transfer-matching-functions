@@ -1,45 +1,41 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationApprovedEmailEventHandler
+public class ApplicationApprovedEmailEventHandler(
+    ILevyTransferMatchingApi api,
+    IEncodingService encodingService,
+    ILogger<ApplicationApprovedEmailEventHandler> log)
+    : IHandleMessages<ApplicationApprovedEvent>
 {
-    private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
-    private readonly IEncodingService _encodingService;
-
-    public ApplicationApprovedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService)
+    public async Task Handle(ApplicationApprovedEvent message, IMessageHandlerContext context)
     {
-        _levyTransferMatchingApi = api;
-        _encodingService = encodingService;
-    }
-
-    [FunctionName("ApplicationApprovedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEmail)] ApplicationApprovedEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling ApplicationApprovedEmailEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationApprovedEmailEvent handler for application {ApplicationId}", message.ApplicationId);
 
         var request = new ApplicationApprovedEmailRequest
         {
-            PledgeId = @event.PledgeId,
-            ApplicationId = @event.ApplicationId,
-            ReceiverId = @event.ReceiverAccountId,
-            EncodedApplicationId = _encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
+            PledgeId = message.PledgeId,
+            ApplicationId = message.ApplicationId,
+            ReceiverId = message.ReceiverAccountId,
+            EncodedApplicationId = encodingService.Encode(message.ApplicationId, EncodingType.PledgeApplicationId)
         };
 
         try
         {
-            await _levyTransferMatchingApi.ApplicationApprovedEmail(request);
+            await api.ApplicationApprovedEmail(request);
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEmailEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEmailEvent for application {ApplicationId}", message.ApplicationId);
         }
     }
 }

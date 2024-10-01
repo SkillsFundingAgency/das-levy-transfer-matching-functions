@@ -18,7 +18,7 @@ To get the project running you will need to:
 ### Prerequisites
 
 * Azure Function tools
-* An IDE supporting .NetCore 3.1
+* An IDE supporting .Net8
 * The latest configuration from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config)
 * Azure Table Storage Emulator
 

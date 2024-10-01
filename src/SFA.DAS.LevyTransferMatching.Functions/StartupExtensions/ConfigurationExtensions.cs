@@ -5,21 +5,28 @@ namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
 public static class ConfigurationExtensions
 {
-    public static IConfiguration BuildDasConfiguration(this IConfiguration configuration)
+    public static IConfiguration BuildDasConfiguration(this IConfigurationBuilder configBuilder)
     {
-        var configBuilder = new ConfigurationBuilder()
-            .AddConfiguration(configuration)
+        configBuilder
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables();
 
-#if DEBUG
         configBuilder.AddJsonFile("local.settings.json", optional: true);
-#endif
+
+        var config = configBuilder.Build();
+
         configBuilder.AddAzureTableStorage(options =>
         {
-            options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-            options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-            options.EnvironmentName = configuration["EnvironmentName"];
+#if DEBUG
+            options.ConfigurationKeys = config["Values:ConfigNames"].Split(",");
+            options.StorageConnectionString = config["Values:ConfigurationStorageConnectionString"];
+            options.EnvironmentName = config["Values:EnvironmentName"];
+#else
+            options.ConfigurationKeys = config["ConfigNames"].Split(",");
+            options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+            options.EnvironmentName = config["EnvironmentName"];
+#endif
+
             options.PreFixConfigurationKeys = false;
         });
 

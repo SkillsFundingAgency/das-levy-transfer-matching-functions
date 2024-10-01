@@ -1,24 +1,15 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationApprovedEventHandler
+public class ApplicationApprovedEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationApprovedEventHandler> log) : IHandleMessages<ApplicationApprovedEvent>
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationApprovedEventHandler(ILevyTransferMatchingApi api)
+    public async Task Handle(ApplicationApprovedEvent @event, IMessageHandlerContext context)
     {
-        _api = api;
-    }
-
-    [FunctionName("RunApplicationApprovedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationApprovedEvent)] ApplicationApprovedEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling ApplicationApprovedEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationApprovedEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new ApplicationApprovedRequest
         {
@@ -29,13 +20,16 @@ public class ApplicationApprovedEventHandler
 
         try
         {
-            await _api.ApplicationApproved(request);
+            await api.ApplicationApproved(request);
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationApprovedEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

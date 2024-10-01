@@ -1,41 +1,32 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationFundingDeclinedEventHandler
+public class ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationFundingDeclinedEventHandler> log) : IHandleMessages<ApplicationFundingDeclinedEvent>
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationFundingDeclinedEventHandler(ILevyTransferMatchingApi api)
+    public async Task Handle(ApplicationFundingDeclinedEvent @event, IMessageHandlerContext context)
     {
-        _api = api;
-    }
+        log.LogInformation("Handling {EventName} handler for application {ApplicationId}", nameof(ApplicationFundingDeclinedEvent), @event.ApplicationId);
 
-    [FunctionName("RunApplicationFundingDeclinedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationFundingDeclined)] ApplicationFundingDeclinedEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling {nameof(ApplicationFundingDeclinedEvent)} handler for application {@event.ApplicationId}");
-     
         var request = new ApplicationFundingDeclinedRequest
         {
             PledgeId = @event.PledgeId,
             ApplicationId = @event.ApplicationId,
             Amount = @event.Amount,
         };
-     
+
         try
         {
-            await _api.ApplicationFundingDeclined(request);
+            await api.ApplicationFundingDeclined(request);
         }
         catch (ApiException ex)
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-     
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+
+            log.LogError(ex, "Error handling {EventName} for application {ApplicationId}", nameof(ApplicationFundingDeclinedEvent), @event.ApplicationId);
         }
     }
 }

@@ -1,41 +1,32 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationWithdrawnAfterAcceptanceEventHandler
+public class ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationWithdrawnAfterAcceptanceEventHandler> log) : IHandleMessages<ApplicationWithdrawnAfterAcceptanceEvent>
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationWithdrawnAfterAcceptanceEventHandler(ILevyTransferMatchingApi api)
+    public async Task Handle(ApplicationWithdrawnAfterAcceptanceEvent @event, IMessageHandlerContext context)
     {
-        _api = api;
-    }
+        log.LogInformation("Handling {EventName} handler for application {ApplicationId}", nameof(ApplicationWithdrawnAfterAcceptanceEvent), @event.ApplicationId);
 
-    [FunctionName("RunApplicationWithdrawnAfterAcceptanceEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationWithdrawnAfterAcceptance)] ApplicationWithdrawnAfterAcceptanceEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling {nameof(ApplicationWithdrawnAfterAcceptanceEvent)} handler for application {@event.ApplicationId}");
-     
         var request = new ApplicationWithdrawnAfterAcceptanceRequest
         {
             ApplicationId = @event.ApplicationId,
             PledgeId = @event.PledgeId,
             Amount = @event.Amount,
         };
-     
+
         try
         {
-            await _api.ApplicationWithdrawnAfterAcceptance(request);
+            await api.ApplicationWithdrawnAfterAcceptance(request);
         }
         catch (ApiException ex)
         {
             if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-     
-            log.LogError(ex, $"Error handling ApplicationApprovedEvent for application {@event.ApplicationId}");
+
+            log.LogError(ex, "Error handling ApplicationApprovedEvent for application {@event.ApplicationId}", @event.ApplicationId);
         }
     }
 }

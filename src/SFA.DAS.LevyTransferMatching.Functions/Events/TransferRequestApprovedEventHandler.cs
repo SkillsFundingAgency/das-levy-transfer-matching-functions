@@ -1,27 +1,17 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class TransferRequestApprovedEventHandler
+public class TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api, ILogger<TransferRequestApprovedEventHandler> log) : IHandleMessages<TransferRequestApprovedEvent>
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public TransferRequestApprovedEventHandler(ILevyTransferMatchingApi api)
-    {
-        _api = api;
-    }
-
-    [FunctionName("RunTransferRequestApprovedEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.TransferRequestApprovedEvent)] TransferRequestApprovedEvent @event, ILogger log)
+    public async Task Handle(TransferRequestApprovedEvent @event, IMessageHandlerContext context)
     {
         if (@event.PledgeApplicationId != null)
         {
-
-            log.LogInformation($"Handling TransferRequestApprovedEvent handler for application {@event.PledgeApplicationId}");
+            log.LogInformation("Handling TransferRequestApprovedEvent handler for application {PledgeApplicationId}", @event.PledgeApplicationId);
 
             var request = new TransferRequestApprovedRequest
             {
@@ -32,13 +22,16 @@ public class TransferRequestApprovedEventHandler
 
             try
             {
-                await _api.DebitApplication(request);
+                await api.DebitApplication(request);
             }
             catch (ApiException ex)
             {
-                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+                if (ex.StatusCode != HttpStatusCode.BadRequest)
+                {
+                    throw;
+                }
 
-                log.LogError(ex, $"Error handling TransferRequestApprovedEvent for application {@event.PledgeApplicationId}");
+                log.LogError(ex, "Error handling TransferRequestApprovedEvent for application {PledgeApplicationId}", @event.PledgeApplicationId);
             }
         }
     }

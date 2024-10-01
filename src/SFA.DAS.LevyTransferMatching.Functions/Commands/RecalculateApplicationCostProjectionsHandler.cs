@@ -3,27 +3,20 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Commands;
 
-public class RecalculateApplicationCostProjectionsHandler
+public class RecalculateApplicationCostProjectionsHandler(ILevyTransferMatchingApi levyTransferMatchingApi)
 {
-    private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
-
-    public RecalculateApplicationCostProjectionsHandler(ILevyTransferMatchingApi levyTransferMatchingApi)
-    {
-        _levyTransferMatchingApi = levyTransferMatchingApi;
-    }
-
-    [FunctionName("RecalculateApplicationCostProjectionsHandler")]
-    public async Task Run([TimerTrigger("0 0 22 13 6 *")] TimerInfo timer, ILogger logger)
+    [Function("RecalculateApplicationCostProjectionsHandler")]
+    public async Task Run([TimerTrigger("0 0 22 13 6 *")] TimerInfo timer, ILogger<RecalculateApplicationCostProjectionsHandler> logger)
     {
         logger.LogInformation("Recalculating application cost projections");
         
         try
         {
-            await _levyTransferMatchingApi.RecalculateApplicationCostProjections();
+            await levyTransferMatchingApi.RecalculateApplicationCostProjections();
         }
         catch (ApiException ex)
         {
-            logger.LogError(ex, $"Error recalculating application cost projections");
+            logger.LogError(ex, "Error recalculating application cost projections");
         }
     }
 }

@@ -7,46 +7,45 @@ using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
 using System;
 using System.Threading.Tasks;
+using NServiceBus;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers
+namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
+
+[TestFixture]
+public class TransferRequestApprovedEventHandlerTests
 {
-    [TestFixture]
-    public class TransferRequestApprovedEventHandlerTests
+    private TransferRequestApprovedEventHandler _handler;
+    private Mock<ILevyTransferMatchingApi> _api;
+    private readonly Fixture _fixture = new();
+
+    [SetUp]
+    public void Setup()
     {
-        private TransferRequestApprovedEventHandler _handler;
-        private Mock<ILevyTransferMatchingApi> _api;
-        private readonly Fixture _fixture = new Fixture();
+        _api = new Mock<ILevyTransferMatchingApi>();
+        _handler = new TransferRequestApprovedEventHandler(_api.Object, Mock.Of<ILogger<TransferRequestApprovedEventHandler>>());
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _api = new Mock<ILevyTransferMatchingApi>();
+    [Test]
+    public async Task Run_Invokes_TransferRequestApproved_Api_Endpoint()
+    {
+        var approvedEvent = _fixture.Create<TransferRequestApprovedEvent>();
+        await _handler.Handle(approvedEvent, Mock.Of<IMessageHandlerContext>());
 
-            _handler = new TransferRequestApprovedEventHandler(_api.Object);
-        }
+        _api.Verify(x => x.DebitApplication(It.Is<TransferRequestApprovedRequest>(r =>
+            r.ApplicationId == approvedEvent.PledgeApplicationId &&
+            r.NumberOfApprentices == approvedEvent.NumberOfApprentices &&
+            r.Amount == approvedEvent.FundingCap)));
+    }
 
-        [Test]
-        public async Task Run_Invokes_TransferRequestApproved_Api_Endpoint()
-        {
-            var _event = _fixture.Create<TransferRequestApprovedEvent>();
-            await _handler.Run(_event, Mock.Of<ILogger>());
+    [Test]
+    public async Task Run_Ignores_Events_With_Null_PledgeApplicationId()
+    {
+        var approvedEvent = new TransferRequestApprovedEvent(1, 1, DateTime.UtcNow, new CommitmentsV2.Types.UserInfo(), 1, 300, null);
+        await _handler.Handle(approvedEvent,Mock.Of<IMessageHandlerContext>());
 
-            _api.Verify(x => x.DebitApplication(It.Is<TransferRequestApprovedRequest>(r =>
-                r.ApplicationId == _event.PledgeApplicationId &&
-                r.NumberOfApprentices == _event.NumberOfApprentices &&
-                r.Amount == _event.FundingCap)));
-        }
-
-        [Test]
-        public async Task Run_Ignores_Events_With_Null_PledgeApplicationId()
-        {
-            var _event = new TransferRequestApprovedEvent(1, 1, DateTime.UtcNow, new CommitmentsV2.Types.UserInfo(), 1, 300, null);
-            await _handler.Run(_event, Mock.Of<ILogger>());
-
-            _api.Verify(x => x.DebitApplication(It.Is<TransferRequestApprovedRequest>(r =>
-                r.ApplicationId == _event.PledgeApplicationId &&
-                r.NumberOfApprentices == _event.NumberOfApprentices &&
-                r.Amount == _event.FundingCap)), Times.Never);
-        }
+        _api.Verify(x => x.DebitApplication(It.Is<TransferRequestApprovedRequest>(r =>
+            r.ApplicationId == approvedEvent.PledgeApplicationId &&
+            r.NumberOfApprentices == approvedEvent.NumberOfApprentices &&
+            r.Amount == approvedEvent.FundingCap)), Times.Never);
     }
 }

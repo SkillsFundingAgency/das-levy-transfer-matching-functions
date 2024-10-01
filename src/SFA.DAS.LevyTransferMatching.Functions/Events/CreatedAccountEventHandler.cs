@@ -1,14 +1,14 @@
+using NServiceBus;
 using SFA.DAS.EmployerAccounts.Messages.Events;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class CreatedAccountEventHandler
+public class CreatedAccountEventHandler(ILogger<CreatedAccountEventHandler> log): IHandleMessages<CreatedAccountEvent>
 {  
-    [FunctionName("CreatedAccount")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.CreatedAccount)] CreatedAccountEvent createdAccountEvent, ILogger log)
+    public Task Handle(CreatedAccountEvent message, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling event: {createdAccountEvent}");
+        log.LogInformation("Handling event: {EventName}", nameof(CreatedAccountEvent));
+
+        return Task.CompletedTask;
     }
 }

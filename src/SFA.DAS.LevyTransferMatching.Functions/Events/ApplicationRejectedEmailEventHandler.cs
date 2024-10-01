@@ -1,49 +1,43 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationRejectedEmailEventHandler
+public class ApplicationRejectedEmailEventHandler(
+    ILevyTransferMatchingApi api,
+    IEncodingService encodingService,
+    EmailNotificationsConfiguration config,
+    ILogger<ApplicationRejectedEmailEventHandler> log) : IHandleMessages<ApplicationRejectedEvent>
 {
-    private readonly ILevyTransferMatchingApi _levyTransferMatchingApi;
-    private readonly IEncodingService _encodingService;
-    private readonly EmailNotificationsConfiguration _config;
-
-    public ApplicationRejectedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, EmailNotificationsConfiguration config)
+    public async Task Handle(ApplicationRejectedEvent @event, IMessageHandlerContext context)
     {
-        _levyTransferMatchingApi = api;
-        _encodingService = encodingService;
-        _config = config;
-    }
-
-    [FunctionName("ApplicationRejectedEmailEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationRejectedEmail)] ApplicationRejectedEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling ApplicationRejectedEmailEvent handler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationRejectedEmailEvent handler for application {ApplicationId}", @event.ApplicationId);
 
         var request = new ApplicationRejectedEmailRequest
         {
             PledgeId = @event.PledgeId,
             ApplicationId = @event.ApplicationId,
             ReceiverId = @event.ReceiverAccountId,
-            BaseUrl = _config.ViewTransfersBaseUrl,
-            EncodedApplicationId = _encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
+            BaseUrl = config.ViewTransfersBaseUrl,
+            EncodedApplicationId = encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
         };
 
         try
         {
-            await _levyTransferMatchingApi.ApplicationRejectedEmail(request);
+            await api.ApplicationRejectedEmail(request);
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
+            if (ex.StatusCode != HttpStatusCode.BadRequest)
+            {
+                throw;
+            }
 
-            log.LogError(ex, $"Error handling ApplicationRejectedEmailEvent for application {@event.ApplicationId}");
+            log.LogError(ex, "Error handling ApplicationRejectedEmailEvent for application {ApplicationId}", @event.ApplicationId);
         }
     }
 }

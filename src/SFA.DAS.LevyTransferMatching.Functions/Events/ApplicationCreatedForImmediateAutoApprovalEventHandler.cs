@@ -1,24 +1,15 @@
-﻿using RestEase;
+﻿using NServiceBus;
+using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationCreatedForImmediateAutoApprovalEventHandler
+public class ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationCreatedForImmediateAutoApprovalEventHandler> log) : IHandleMessages<ApplicationCreatedEvent>
 {
-    private readonly ILevyTransferMatchingApi _api;
-
-    public ApplicationCreatedForImmediateAutoApprovalEventHandler(ILevyTransferMatchingApi api)
+    public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {
-        _api = api;
-    }
-
-    [FunctionName("RunApplicationCreatedForImmediateAutoApprovalEvent")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationCreatedForImmediateAutoApproval)] ApplicationCreatedEvent @event, ILogger log)
-    {
-        log.LogInformation($"Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}");
+        log.LogInformation("Handling ApplicationCreatedForImmediateAutoApprovalEventHandler for application {@event.ApplicationId}", @event.ApplicationId);
 
         try
         {
@@ -27,12 +18,12 @@ public class ApplicationCreatedForImmediateAutoApprovalEventHandler
                 PledgeId = @event.PledgeId,
                 ApplicationId = @event.ApplicationId
             };
-            
-            await _api.ApplicationCreatedForImmediateAutoApproval(request);
+
+            await api.ApplicationCreatedForImmediateAutoApproval(request);
         }
         catch (ApiException ex)
         {
-            log.LogError(ex, $"Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
+            log.LogError(ex, "Error handling ApplicationCreatedForImmediateAutoApprovalEvent");
             throw;
         }
     }

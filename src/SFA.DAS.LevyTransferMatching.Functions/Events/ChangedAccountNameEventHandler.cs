@@ -1,14 +1,14 @@
+using NServiceBus;
 using SFA.DAS.EmployerAccounts.Messages.Events;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ChangedAccountNameEventHandler
+public class ChangedAccountNameEventHandler(ILogger<ChangedAccountNameEventHandler> log) : IHandleMessages<ChangedAccountNameEvent>
 {
-    [FunctionName("ChangedAccountName")]
-    public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ChangedAccountName)] ChangedAccountNameEvent changedAccountNameEvent, ILogger log)
+    public Task Handle(ChangedAccountNameEvent message, IMessageHandlerContext context)
     {
-        log.LogInformation($"Handling event: {changedAccountNameEvent}");
+        log.LogInformation("Handling event: {EventName}", nameof(ChangedAccountNameEvent));
+
+        return Task.CompletedTask;
     }
 }

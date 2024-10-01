@@ -1,48 +1,34 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
+﻿using NServiceBus;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 
-namespace SFA.DAS.LevyTransferMatching.Functions.Events
+namespace SFA.DAS.LevyTransferMatching.Functions.Events;
+
+public class ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api, ILogger<ApplicationFundingAcceptedEventHandler> log) : IHandleMessages<ApplicationFundingAcceptedEvent>
 {
-    public class ApplicationFundingAcceptedEventHandler
+    public async Task Handle(ApplicationFundingAcceptedEvent @event, IMessageHandlerContext context)
     {
-        private readonly ILevyTransferMatchingApi _api;
-
-        public ApplicationFundingAcceptedEventHandler(ILevyTransferMatchingApi api)
+        log.LogInformation("Handling {EventName)} handler for application {ApplicationId}",nameof(ApplicationFundingAcceptedEvent), @event.ApplicationId);
+        if (@event.RejectApplications)
         {
-            _api = api;
-        }
+            log.LogInformation("Rejecting Pending applications for pledge {PledgeId}", @event.PledgeId);
 
-        [FunctionName("RunApplicationFundingAcceptedEvent")]
-        public async Task Run([NServiceBusTrigger(Endpoint = QueueNames.ApplicationFundingAccepted)] ApplicationFundingAcceptedEvent @event, ILogger log)
-        {
-            log.LogInformation($"Handling {nameof(ApplicationFundingAcceptedEvent)} handler for application {@event.ApplicationId}");
-            if (@event.RejectApplications)
+            var request = new RejectPledgeApplicationsRequest
             {
-                log.LogInformation($"Rejecting Pengding applications for pledge {@event.PledgeId}");
+                PledgeId = @event.PledgeId
+            };
 
-                var request = new RejectPledgeApplicationsRequest
-                {
-                    PledgeId = @event.PledgeId
-                };
+            try
+            {
+                await api.RejectPledgeApplications(request);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
 
-                try
-                {
-                    await _api.RejectPledgeApplications(request);
-                }
-                catch (ApiException ex)
-                {
-                    if (ex.StatusCode != HttpStatusCode.BadRequest) throw;
-
-                    log.LogError(ex, $"Error handling {nameof(ApplicationFundingAcceptedEvent)} for application {@event.ApplicationId}");
-                }
-            }          
+                log.LogError(ex, "Error handling {EventName} for application {ApplicationId}", nameof(ApplicationFundingAcceptedEvent), @event.ApplicationId);
+            }
         }
     }
 }
