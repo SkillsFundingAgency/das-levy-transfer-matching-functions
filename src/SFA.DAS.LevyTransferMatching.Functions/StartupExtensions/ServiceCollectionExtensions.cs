@@ -12,11 +12,6 @@ public static class ServiceCollectionExtensions
         {
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
-
-            builder.SetMinimumLevel(LogLevel.Information);
-
-            builder.AddConsole();
-            builder.AddDebug();
         });
 
         return services;
