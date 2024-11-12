@@ -6,7 +6,7 @@ namespace SFA.DAS.LevyTransferMatching.Functions.StartupExtensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDasLogging(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDasLogging(this IServiceCollection services)
     {
         services.AddLogging(builder =>
         {
