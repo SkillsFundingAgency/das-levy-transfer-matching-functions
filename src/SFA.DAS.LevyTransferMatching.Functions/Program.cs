@@ -17,9 +17,8 @@ var host = new HostBuilder()
     .ConfigureNServiceBus()
     .ConfigureServices((context, services) =>
     {
-        services.AddDasLogging();
-
         var configuration = context.Configuration;
+        services.AddDasLogging(configuration);
 
         services.Replace(ServiceDescriptor.Singleton(typeof(IConfiguration), configuration));
         services.AddOptions();
