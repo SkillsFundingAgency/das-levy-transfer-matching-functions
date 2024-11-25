@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
@@ -30,6 +31,7 @@ public class AutomaticApplicationRejectionFunction(ILevyTransferMatchingApi api,
         try
         {
             var applications = await api.GetApplicationsForAutomaticRejection();
+            log.LogInformation("GetApplicationsForAutomaticRejection has returned {count}", applications?.Applications.Count());
 
             foreach (var app in applications.Applications)
             {
