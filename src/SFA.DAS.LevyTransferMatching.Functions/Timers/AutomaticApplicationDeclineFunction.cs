@@ -29,15 +29,23 @@ public class AutomaticApplicationDeclineFunction(ILevyTransferMatchingApi api, I
     {
         try
         {
-            var applications = await api.GetApplicationsForAutomaticDecline();
-            log.LogInformation("GetApplicationsForAutomaticDecline returns {count} applications", 
-                applications?.ApplicationsToDecline.Count());
-
-            foreach (var id in applications.ApplicationsToDecline)
+            var applications = await api.GetApplicationsForAutomaticDecline();            
+            
+            if (applications!= null)
             {
-                log.LogInformation("auto-declining application {id}", id);
-                await api.DeclineAcceptedFunding(new DeclineAcceptedFundingRequest { ApplicationId = id});
+                log.LogInformation("GetApplicationsForAutomaticDecline returns {count} applications",
+                applications.ApplicationsToDecline.Count());
+
+                foreach (var id in applications.ApplicationsToDecline)
+                {
+                    log.LogInformation("auto-declining application {id}", id);
+                    await api.DeclineAcceptedFunding(new DeclineAcceptedFundingRequest { ApplicationId = id });
+                }
             }
+            else
+            {
+                log.LogInformation("GetApplicationsForAutomaticDecline returns NULL");
+            }        
         }
         catch (Exception ex)
         {
