@@ -52,8 +52,8 @@ public interface ILevyTransferMatchingApi
     [Post("functions/reject-application")]
     Task RejectApplication([Body] RejectApplicationRequest request);
     
-    [Post("functions/decline-accepted-funding")]
-    Task DeclineAcceptedFunding([Body] DeclineAcceptedFundingRequest request);
+    [Post("functions/decline-approved-funding")]
+    Task DeclineApprovedFunding([Body] DeclineApprovedFundingRequest request);
 
     [Post("functions/application-created-immediate-auto-approval")]
     Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);

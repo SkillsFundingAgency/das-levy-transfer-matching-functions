@@ -39,7 +39,7 @@ public class AutomaticApplicationDeclineFunction(ILevyTransferMatchingApi api, I
                 foreach (var id in applications.ApplicationIdsToDecline)
                 {
                     log.LogInformation("auto-declining application {id}", id);
-                    await api.DeclineAcceptedFunding(new DeclineAcceptedFundingRequest { ApplicationId = id });
+                    await api.DeclineApprovedFunding(new DeclineApprovedFundingRequest { ApplicationId = id });
                 }
             }
             else

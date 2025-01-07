@@ -38,6 +38,6 @@ public class AutomaticApplicationDeclineFunctionTests
         await _handler.Run(default);
 
         // Assert
-        _api.Verify(x => x.DeclineAcceptedFunding(It.IsAny<DeclineAcceptedFundingRequest>()), Times.Exactly(_apiResponse.ApplicationIdsToDecline.Count()));
+        _api.Verify(x => x.DeclineApprovedFunding(It.IsAny<DeclineApprovedFundingRequest>()), Times.Exactly(_apiResponse.ApplicationIdsToDecline.Count()));
     }
 }
