@@ -34,9 +34,9 @@ public class AutomaticApplicationDeclineFunction(ILevyTransferMatchingApi api, I
             if (applications!= null)
             {
                 log.LogInformation("GetApplicationsForAutomaticDecline returns {count} applications",
-                applications.ApplicationsToDecline.Count());
+                applications.ApplicationIdsToDecline.Count());
 
-                foreach (var id in applications.ApplicationsToDecline)
+                foreach (var id in applications.ApplicationIdsToDecline)
                 {
                     log.LogInformation("auto-declining application {id}", id);
                     await api.DeclineAcceptedFunding(new DeclineAcceptedFundingRequest { ApplicationId = id });

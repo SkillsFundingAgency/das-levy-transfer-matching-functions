@@ -2,5 +2,5 @@
 
 public class GetApplicationsForAutomaticDeclineResponse
 {
-    public IEnumerable<int> ApplicationsToDecline { get; set; }
+    public IEnumerable<int> ApplicationIdsToDecline { get; set; }
 }
