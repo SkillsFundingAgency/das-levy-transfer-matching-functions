@@ -23,7 +23,12 @@ public class ApplicationFundingExpiredEventHandler(
 
         try
         {
+            log.LogInformation("ApplicationFundingExpiredEventHandler calling apim for application {ApplicationId}", message.ApplicationId);
+
             await api.ApplicationFundingExpired(request);
+
+            log.LogInformation("ApplicationFundingExpiredEventHandler successfully called apim for application {ApplicationId}", message.ApplicationId);
+
         }
         catch (ApiException ex)
         {
