@@ -42,11 +42,3 @@ public class ApplicationFundingExpiredEventHandler(
     }
 }
 
-// todo remove once the messages package has been updated
-public class ApplicationFundingExpiredEvent(int applicationId, int pledgeId, int amount)
-{
-    public int ApplicationId { get; } = applicationId;
-    public int PledgeId { get; } = pledgeId;
-    public int Amount { get; } = amount;
-}
-

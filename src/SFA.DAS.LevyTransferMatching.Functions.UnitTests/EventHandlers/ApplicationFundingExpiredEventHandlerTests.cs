@@ -6,6 +6,7 @@ using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
+using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
 
