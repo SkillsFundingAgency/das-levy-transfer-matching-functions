@@ -47,7 +47,7 @@ public class ApplicationApprovedEmailEventHandlerTests
             r.ApplicationId == _event.ApplicationId &&
             r.PledgeId == _event.PledgeId &&
             r.ReceiverId == _event.ReceiverAccountId &&
-            r.BaseUrl == _config.ViewTransfersBaseUrl &&
-            r.UnsubscribeNotificationsUrl == _config.UnsubscribeNotificationsUrl)));
+            r.TransfersBaseUrl == _config.ViewTransfersBaseUrl &&
+            r.AccountBaseUrl == _config.ViewAccountBaseUrl)));
     }
 }

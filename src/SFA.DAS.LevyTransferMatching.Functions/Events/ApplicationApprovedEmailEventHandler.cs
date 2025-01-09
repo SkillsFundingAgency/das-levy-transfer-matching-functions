@@ -25,8 +25,8 @@ public class ApplicationApprovedEmailEventHandler(
             ReceiverId = message.ReceiverAccountId,
             EncodedAccountId = encodingService.Encode(message.ReceiverAccountId, EncodingType.PublicAccountId),
             EncodedApplicationId = encodingService.Encode(message.ApplicationId, EncodingType.PledgeApplicationId),
-            BaseUrl = config.ViewTransfersBaseUrl,
-            UnsubscribeNotificationsUrl = config.UnsubscribeNotificationsUrl
+            TransfersBaseUrl = config.ViewTransfersBaseUrl,
+            AccountBaseUrl = config.ViewAccountBaseUrl
         };
 
         try
