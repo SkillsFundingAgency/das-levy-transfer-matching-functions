@@ -8,6 +8,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
 using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Constants;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
@@ -48,6 +49,6 @@ public class ApplicationApprovedEmailEventHandlerTests
             r.PledgeId == _event.PledgeId &&
             r.ReceiverId == _event.ReceiverAccountId &&
             r.TransfersBaseUrl == _config.ViewTransfersBaseUrl &&
-            r.AccountBaseUrl == _config.ViewAccountBaseUrl)));
+            r.UnsubscribeUrl == _config.ViewAccountBaseUrl + NotificationConstants.NotificationSettingsPath)));
     }
 }

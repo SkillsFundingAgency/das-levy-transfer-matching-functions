@@ -8,5 +8,5 @@ public class ApplicationApprovedEmailRequest
     public string EncodedAccountId { get; set; }
     public string EncodedApplicationId { get; set; }
     public string TransfersBaseUrl { get; set; }
-    public string AccountBaseUrl { get; set; }
+    public string UnsubscribeUrl { get; set; }
 }
