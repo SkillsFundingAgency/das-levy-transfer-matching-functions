@@ -2,11 +2,17 @@
 using RestEase;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Constants;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.Events;
 
-public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, IEncodingService encodingService, ILogger<ApplicationCreatedEmailEventHandler> log) : IHandleMessages<ApplicationCreatedEvent>
+public class ApplicationCreatedEmailEventHandler(
+    ILevyTransferMatchingApi api,
+    IEncodingService encodingService,
+    EmailNotificationsConfiguration config,
+    ILogger<ApplicationCreatedEmailEventHandler> log) : IHandleMessages<ApplicationCreatedEvent>
 {
     public async Task Handle(ApplicationCreatedEvent @event, IMessageHandlerContext context)
     {
@@ -17,7 +23,8 @@ public class ApplicationCreatedEmailEventHandler(ILevyTransferMatchingApi api, I
             PledgeId = @event.PledgeId,
             ApplicationId = @event.ApplicationId,
             ReceiverId = @event.ReceiverAccountId,
-            EncodedApplicationId = encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId)
+            EncodedApplicationId = encodingService.Encode(@event.ApplicationId, EncodingType.PledgeApplicationId),
+            UnsubscribeUrl = config.ViewAccountBaseUrl + NotificationConstants.NotificationSettingsPath
         };
 
         try
