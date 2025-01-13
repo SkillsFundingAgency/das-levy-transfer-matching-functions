@@ -6,4 +6,6 @@ public class ApplicationCreatedEmailRequest
     public int PledgeId { get; set; }
     public long ReceiverId { get; set; }
     public string EncodedApplicationId { get; set; }
+    public string UnsubscribeUrl { get; set; }
+
 }
