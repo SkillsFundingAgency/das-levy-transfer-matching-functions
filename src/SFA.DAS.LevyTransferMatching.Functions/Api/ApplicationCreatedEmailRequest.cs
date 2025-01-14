@@ -7,5 +7,4 @@ public class ApplicationCreatedEmailRequest
     public long ReceiverId { get; set; }
     public string EncodedApplicationId { get; set; }
     public string UnsubscribeUrl { get; set; }
-
 }
