@@ -24,7 +24,7 @@ public class ApplicationApprovedEmailEventHandler(
             PledgeId = message.PledgeId,
             ApplicationId = message.ApplicationId,
             ReceiverId = message.ReceiverAccountId,
-            EncodedAccountId = encodingService.Encode(message.ReceiverAccountId, EncodingType.PublicAccountId),
+            EncodedAccountId = encodingService.Encode(message.ReceiverAccountId, EncodingType.AccountId),
             EncodedApplicationId = encodingService.Encode(message.ApplicationId, EncodingType.PledgeApplicationId),
             TransfersBaseUrl = config.ViewTransfersBaseUrl,
             UnsubscribeUrl = config.ViewAccountBaseUrl + NotificationConstants.NotificationSettingsPath
