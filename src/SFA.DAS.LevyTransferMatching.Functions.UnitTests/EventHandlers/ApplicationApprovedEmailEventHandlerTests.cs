@@ -7,6 +7,8 @@ using NUnit.Framework;
 using SFA.DAS.Encoding;
 using SFA.DAS.LevyTransferMatching.Functions.Api;
 using SFA.DAS.LevyTransferMatching.Functions.Events;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Configuration;
+using SFA.DAS.LevyTransferMatching.Infrastructure.Constants;
 using SFA.DAS.LevyTransferMatching.Messages.Events;
 
 namespace SFA.DAS.LevyTransferMatching.Functions.UnitTests.EventHandlers;
@@ -17,6 +19,7 @@ public class ApplicationApprovedEmailEventHandlerTests
     private ApplicationApprovedEmailEventHandler _handler;
     private ApplicationApprovedEvent _event;
     private Mock<ILevyTransferMatchingApi> _levyTransferMatchingApi;
+    private EmailNotificationsConfiguration _config;
     private readonly Fixture _fixture = new();
 
     [SetUp]
@@ -27,8 +30,13 @@ public class ApplicationApprovedEmailEventHandlerTests
         var encodingService = new Mock<IEncodingService>();
 
         _event = _fixture.Create<ApplicationApprovedEvent>();
+        _config = _fixture.Create<EmailNotificationsConfiguration>();
 
-        _handler = new ApplicationApprovedEmailEventHandler(_levyTransferMatchingApi.Object, encodingService.Object, Mock.Of<ILogger<ApplicationApprovedEmailEventHandler>>());
+        _handler = new ApplicationApprovedEmailEventHandler(
+            _levyTransferMatchingApi.Object,
+            encodingService.Object,
+            _config,
+            Mock.Of<ILogger<ApplicationApprovedEmailEventHandler>>());
     }
 
     [Test]
@@ -39,6 +47,8 @@ public class ApplicationApprovedEmailEventHandlerTests
         _levyTransferMatchingApi.Verify(x => x.ApplicationApprovedEmail(It.Is<ApplicationApprovedEmailRequest>(r =>
             r.ApplicationId == _event.ApplicationId &&
             r.PledgeId == _event.PledgeId &&
-            r.ReceiverId == _event.ReceiverAccountId)));
+            r.ReceiverId == _event.ReceiverAccountId &&
+            r.TransfersBaseUrl == _config.ViewTransfersBaseUrl &&
+            r.UnsubscribeUrl == _config.ViewAccountBaseUrl + NotificationConstants.NotificationSettingsPath)));
     }
 }
