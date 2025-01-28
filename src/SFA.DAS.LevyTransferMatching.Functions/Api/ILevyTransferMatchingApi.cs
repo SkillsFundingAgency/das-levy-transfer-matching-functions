@@ -39,6 +39,9 @@ public interface ILevyTransferMatchingApi
 
     [Get("functions/applications-for-auto-approval")]
     Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval([Query] int? pledgeId = null);
+    
+    [Get("functions/applications-for-auto-decline")]
+    Task<GetApplicationsForAutomaticDeclineResponse> GetApplicationsForAutomaticDecline();
 
     [Get("functions/applications-for-auto-rejection")]
     Task<GetApplicationsForAutomaticRejectionResponse> GetApplicationsForAutomaticRejection();
@@ -48,6 +51,9 @@ public interface ILevyTransferMatchingApi
 
     [Post("functions/reject-application")]
     Task RejectApplication([Body] RejectApplicationRequest request);
+    
+    [Post("functions/decline-approved-funding")]
+    Task DeclineApprovedFunding([Body] DeclineApprovedFundingRequest request);
 
     [Post("functions/application-created-immediate-auto-approval")]
     Task ApplicationCreatedForImmediateAutoApproval([Body] ApplicationCreatedForImmediateAutoApprovalRequest request);
