@@ -37,7 +37,7 @@
         <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.3195" />
         <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
         <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
-        <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.112-prerelease-3" />
+        <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.121-prerelease-7" />
         <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
         <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />

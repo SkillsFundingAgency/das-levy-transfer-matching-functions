@@ -63,4 +63,13 @@ public interface ILevyTransferMatchingApi
 
     [Post("functions/application-rejected-receiver-notification")]
     Task ApplicationRejectedEmail([Body] ApplicationRejectedEmailRequest request);
+
+    [Get("functions/applications-for-auto-expire")]
+    Task<GetApplicationsForAutomaticExpireResponse> GetApplicationsForAutomaticExpire();
+
+    [Post("functions/expire-accepted-funding")]
+    Task ExpireAcceptedFunding([Body] ExpireAcceptedFundingRequest request);
+
+    [Post("functions/application-funding-expired")]
+    Task ApplicationFundingExpired([Body] ApplicationFundingExpiredRequest request);
 }
