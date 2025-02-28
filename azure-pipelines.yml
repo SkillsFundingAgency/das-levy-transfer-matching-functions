@@ -14,7 +14,7 @@ variables:
   - group: RELEASE Management Resources
   - group: RELEASE das-levy-transfer-matching-functions
   - name: Deploy
-    value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]
+    value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]  
 
 resources:
   repositories:
@@ -22,12 +22,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.2.20
+    ref: refs/tags/2.1.28
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/5.1.15
+    ref: refs/tags/5.1.8
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
