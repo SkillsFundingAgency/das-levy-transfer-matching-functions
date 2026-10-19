@@ -39,7 +39,7 @@
         <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
         <PackageReference Include="SFA.DAS.LevyTransferMatching.Messages" Version="0.1.121-prerelease-7" />
         <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
-        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.10" />
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.23.0" />
     </ItemGroup>
